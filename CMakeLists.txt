@@ -23,5 +23,7 @@ endmacro()
 add_subdirectory(3rd)
 add_subdirectory(source)
 
+install(FILES README.md DESTINATION .)
 install(FILES LICENSE.txt DESTINATION .)
 install(DIRECTORY include/ DESTINATION include)
+install(FILES User.cmake DESTINATION . RENAME GpuPassflow.cmake)

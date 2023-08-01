@@ -12,7 +12,6 @@ usage() {
     echo "-b | --build_config_mode, { Debug, Release }"
     echo "-h | --help"
     echo ""
-    exit
 }
 
 parse_args() {
@@ -21,6 +20,7 @@ parse_args() {
         case $arg in
             -h | --help)
             usage
+            exit
             ;;
             -b=* | --build_config_mode=*)
             build_config_mode="${arg#*=}"
