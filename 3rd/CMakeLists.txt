@@ -10,7 +10,7 @@ option(BUILD_DEBUG_OPEN_SOURCE "Build dependent open-source libraries with Debug
 if(${DOWNLOAD_OPEN_SOURCE})
   if(WIN32)
     execute_process(WORKING_DIRECTORY ${THIRD_PARTY_PATH}
-      COMMAND curl -LOJ https://github.com/microsoft/DirectX-Headers/archive/refs/tags/v1.608.2.zip)
+      COMMAND curl -LOJ https://github.com/microsoft/DirectX-Headers/archive/refs/tags/v1.610.0.zip)
   endif()
 endif()
 
@@ -22,9 +22,9 @@ if(WIN32)
   execute_process(WORKING_DIRECTORY ${THIRD_PARTY_PATH}
     COMMAND ${CMAKE_COMMAND} -E remove_directory dxheaders)
   execute_process(WORKING_DIRECTORY ${THIRD_PARTY_PATH}
-    COMMAND ${CMAKE_COMMAND} -E tar xzf DirectX-Headers-1.608.2.zip)
+    COMMAND ${CMAKE_COMMAND} -E tar xzf DirectX-Headers-1.610.0.zip)
   execute_process(WORKING_DIRECTORY ${THIRD_PARTY_PATH}
-    COMMAND ${CMAKE_COMMAND} -E rename DirectX-Headers-1.608.2 dxheaders)
+    COMMAND ${CMAKE_COMMAND} -E rename DirectX-Headers-1.610.0 dxheaders)
 endif()
 
 if(${BUILD_DEBUG_OPEN_SOURCE})
