@@ -4,7 +4,6 @@ project(backend)
 file(GLOB SRC *.h *.cpp)
 add_definitions(-DBackendModule)
 add_library(${PROJECT_NAME} SHARED ${SRC} ${INC})
-target_link_libraries(${PROJECT_NAME} framework)
 
 install_artifact(${PROJECT_NAME})
 

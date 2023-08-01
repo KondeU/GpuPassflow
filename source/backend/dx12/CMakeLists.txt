@@ -3,7 +3,7 @@ project(backend_dx12)
 
 file(GLOB_RECURSE SRC *.h *.cpp)
 add_library(${PROJECT_NAME} SHARED ${SRC} ${INC})
-target_link_libraries(${PROJECT_NAME} framework d3dcompiler d3d12 dxgi dxguid)
+target_link_libraries(${PROJECT_NAME} d3dcompiler d3d12 dxgi dxguid)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rd/deps/dxheaders/output/include)

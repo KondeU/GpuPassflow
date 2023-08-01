@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(AuBomb)
+project(GpuPassflow)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -11,8 +11,8 @@ file(GLOB_RECURSE INC include/*)
 macro(install_artifact target_artifact)
   install(TARGETS ${target_artifact}
     ARCHIVE DESTINATION library # .lib/.a
-    LIBRARY DESTINATION runtime # .dll/.so
-    RUNTIME DESTINATION runtime # .exe/.out
+    LIBRARY DESTINATION library # .dll/.so
+    RUNTIME DESTINATION tool # .exe/.out
     PUBLIC_HEADER DESTINATION external)
 endmacro()
 
@@ -24,7 +24,4 @@ add_subdirectory(3rd)
 add_subdirectory(source)
 
 install(FILES LICENSE.txt DESTINATION .)
-install(DIRECTORY docs/manual/ DESTINATION .)
-
 install(DIRECTORY include/ DESTINATION include)
-install(DIRECTORY source/configuration/ DESTINATION runtime)
