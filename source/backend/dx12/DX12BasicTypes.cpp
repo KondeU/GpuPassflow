@@ -1,6 +1,9 @@
 #include "DX12BasicTypes.h"
+#include <unordered_map>
 
 namespace au::backend {
+
+using namespace rhi;
 
 DXGI_FORMAT ConvertBasicFormat(BasicFormat format)
 {
@@ -46,7 +49,8 @@ D3D12_INPUT_CLASSIFICATION ConvertInputClassification(VertexInputRate rate)
 
 D3D12_INDEX_BUFFER_STRIP_CUT_VALUE ConvertStripValue(IndexStripCutValue value)
 {
-    static const std::unordered_map<IndexStripCutValue, D3D12_INDEX_BUFFER_STRIP_CUT_VALUE> map = {
+    static const std::unordered_map<
+        IndexStripCutValue, D3D12_INDEX_BUFFER_STRIP_CUT_VALUE> map = {
         { IndexStripCutValue::NONE_OR_DISABLE,  D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED   },
         { IndexStripCutValue::UINT16_MAX_VALUE, D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_0xFFFF     },
         { IndexStripCutValue::UINT32_MAX_VALUE, D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_0xFFFFFFFF }
@@ -108,7 +112,7 @@ D3D12_RESOURCE_STATES ConvertResourceState(ResourceState state)
 
 unsigned int ConvertMSAA(MSAA msaa)
 {
-    return framework::EnumCast(msaa);
+    return gp::EnumCast(msaa);
 }
 
 D3D12_RESOURCE_FLAGS ConvertImageResourceFlag(ImageType type)
@@ -141,7 +145,7 @@ D3D12_DESCRIPTOR_HEAP_TYPE ConvertDescriptorHeap(DescriptorType type)
         { DescriptorType::ColorOutput,    D3D12_DESCRIPTOR_HEAP_TYPE_RTV         },
         { DescriptorType::DepthStencil,   D3D12_DESCRIPTOR_HEAP_TYPE_DSV         }
     };
-    if (framework::EnumCast(type) & framework::EnumCast(DescriptorType::ShaderResource)) {
+    if (gp::EnumCast(type) & gp::EnumCast(DescriptorType::ShaderResource)) {
         type = DescriptorType::ShaderResource;
     }
     return map.at(type);
@@ -155,7 +159,7 @@ D3D12_DESCRIPTOR_HEAP_FLAGS ConvertDescriptorHeapVisible(DescriptorType type)
         { DescriptorType::ColorOutput,    D3D12_DESCRIPTOR_HEAP_FLAG_NONE           },
         { DescriptorType::DepthStencil,   D3D12_DESCRIPTOR_HEAP_FLAG_NONE           }
     };
-    if (framework::EnumCast(type) & framework::EnumCast(DescriptorType::ShaderResource)) {
+    if (gp::EnumCast(type) & gp::EnumCast(DescriptorType::ShaderResource)) {
         type = DescriptorType::ShaderResource;
     }
     return map.at(type);
@@ -174,7 +178,7 @@ D3D12_DESCRIPTOR_RANGE_TYPE ConvertDescriptorRangeType(DescriptorType type, bool
     success = false;
     if ((type == DescriptorType::ImageSampler) ||
         ((type != DescriptorType::ShaderResource) &&
-            (framework::EnumCast(type) & framework::EnumCast(DescriptorType::ShaderResource)))) {
+            (gp::EnumCast(type) & gp::EnumCast(DescriptorType::ShaderResource)))) {
         success = true;
         return map.at(type);
     }
@@ -291,27 +295,27 @@ D3D12_SAMPLER_DESC ConvertSamplerState(SamplerState state)
     return samplerState;
 }
 
-D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE ConvertRenderPassBeginningAccessType(PassAction action)
+D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE ConvertRenderPassBeginAccessType(PassAction action)
 {
     static const std::unordered_map<PassAction, D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE> map = {
         { PassAction::Discard, D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_DISCARD  },
         { PassAction::Load,    D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_PRESERVE },
         { PassAction::Clear,   D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_CLEAR    }
     };
-    if (framework::EnumCast(action) & framework::EnumCast(PassAction::BeginAction)) {
+    if (gp::EnumCast(action) & gp::EnumCast(PassAction::BeginAction)) {
         return map.at(action);
     }
     return {};
 }
 
-D3D12_RENDER_PASS_ENDING_ACCESS_TYPE ConvertRenderPassEndingAccessType(PassAction action)
+D3D12_RENDER_PASS_ENDING_ACCESS_TYPE ConvertRenderPassEndAccessType(PassAction action)
 {
     static const std::unordered_map<PassAction, D3D12_RENDER_PASS_ENDING_ACCESS_TYPE> map = {
         { PassAction::Discard, D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_DISCARD  },
         { PassAction::Store,   D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_PRESERVE },
         { PassAction::Resolve, D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_RESOLVE  }
     };
-    if (framework::EnumCast(action) & framework::EnumCast(PassAction::EndAction)) {
+    if (gp::EnumCast(action) & gp::EnumCast(PassAction::EndAction)) {
         return map.at(action);
     }
     return {};

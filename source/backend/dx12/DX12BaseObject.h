@@ -3,53 +3,31 @@
 #include "DX12Common.h"
 
 namespace au::backend {
-class DX12ObjectCounter : public common::GlobalSingleton<DX12ObjectCounter> {
+
+class DX12ObjectCounter {
 public:
     using Object = uint32_t;
 
-    Object GetObjectCount() const
-    {
-        return counter;
-    }
-
-    Object Create()
-    {
-        counter++;
-        return (generator++);
-    }
-
-    void Destroy()
-    {
-        counter--;
-    }
+    static Object GetObjectCount();
+    static Object CreateObject();
+    static void DestroyObject();
 
 private:
-    #ifdef AU_OPT_MULTI_THREADS
+    #ifdef GP_MULTI_THREADS_ACCESS_DXOBJECT
     using ObjectType = std::atomic<Object>;
     #else
     using ObjectType = Object;
     #endif
-
-    ObjectType counter = 0;
-    ObjectType generator = 0;
+    static ObjectType counter;
+    static ObjectType generator;
 };
 
 class DX12BaseObject {
 protected:
-    DX12BaseObject()
-    {
-        id = DX12ObjectCounter::GetReference().Create();
-    }
+    explicit DX12BaseObject();
+    virtual ~DX12BaseObject();
 
-    virtual ~DX12BaseObject()
-    {
-        DX12ObjectCounter::GetReference().Destroy();
-    }
-
-    DX12ObjectCounter::Object ObjectID() const
-    {
-        return id;
-    }
+    DX12ObjectCounter::Object ObjectID() const;
 
 private:
     DX12ObjectCounter::Object id = 0;
@@ -58,11 +36,11 @@ private:
 template <typename Object>
 class DX12Object : public DX12BaseObject {
 protected:
-    DX12Object()
+    explicit DX12Object()
     {
         #if defined(DEBUG) || defined(_DEBUG)
         AU_LOG_D(TAG, "Construct DX12 object `%s` instance `%d`: %p.",
-            ObjectUniqueName, ObjectID(), this);
+            typeid(Object).name(), ObjectID(), this);
         #endif
     }
 
@@ -70,11 +48,9 @@ protected:
     {
         #if defined(DEBUG) || defined(_DEBUG)
         AU_LOG_D(TAG, "Deconstruct DX12 object `%s` instance `%d`: %p.",
-            ObjectUniqueName, ObjectID(), this);
+            typeid(Object).name(), ObjectID(), this);
         #endif
     }
-
-private:
-    const char* ObjectUniqueName = typeid(Object).name();
 };
+
 }
