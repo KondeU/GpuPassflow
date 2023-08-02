@@ -1,14 +1,14 @@
 #include "backend/BackendContext.h"
-#include "common/DllWrapper.hpp"
+#include "BackendWrapper.hpp"
 
 namespace {
 
-static std::unordered_map<au::backend::BackendContext::Backend,
-    std::pair<au::common::DllWrapper, au::backend::BackendContext*>> storage;
+static std::unordered_map<au::rhi::BackendContext::Backend,
+    std::pair<au::backend::DllWrapper, au::rhi::BackendContext*>> storage;
 
 }
 
-namespace au::backend {
+namespace au::rhi {
 
 BackendContext* BackendContext::CreateBackend(Backend type)
 {
@@ -47,7 +47,7 @@ void BackendContext::DestroyBackend(Backend type)
     auto& instance = backend->second;
 
     instance.first.ExecuteFunction<void(BackendContext*)>("DestroyBackend", instance.second);
-    instance.first.UnLoad();
+    instance.first.Unload();
 
     storage.erase(backend);
 }

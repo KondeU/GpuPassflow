@@ -4,7 +4,6 @@
 #include <functional>
 #include <unordered_map>
 #include <stdexcept>
-#include "NonCopyable.hpp"
 
 #ifdef _WIN32
 #define NOMINMAX
@@ -31,10 +30,9 @@
 #define LIB_PREN             "lib"
 #endif
 
-namespace au {
-namespace common {
+namespace au::backend {
 
-class DllWrapper final : public NonCopyable {
+class DllWrapper final {
 public:
     DllWrapper()
     {
@@ -43,7 +41,7 @@ public:
 
     ~DllWrapper()
     {
-        UnLoad();
+        Unload();
     }
 
     bool Load(const std::string& file)
@@ -59,7 +57,7 @@ public:
         return true;
     }
 
-    bool UnLoad()
+    bool Unload()
     {
         if (library == LIB_INVALID_LIBRARY) {
             return true;
@@ -103,10 +101,12 @@ public:
         return fn(std::forward<Args>(args)...);
     }
 
+    DllWrapper(const DllWrapper&) = delete;
+    DllWrapper& operator=(const DllWrapper&) = delete;
+
 private:
     LIB_LIBRARY library;
     std::unordered_map<std::string, LIB_PROCESS> cache;
 };
 
-}
 }
