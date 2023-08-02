@@ -2,7 +2,7 @@
 
 #include "Descriptor.h"
 
-namespace au::backend {
+namespace au::rhi {
 
 class DescriptorHeap {
 public:

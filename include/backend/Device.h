@@ -15,7 +15,7 @@
 #include "PipelineLayout.h"
 #include "PipelineState.h"
 
-namespace au::backend {
+namespace au::rhi {
 
 class Device {
 public:

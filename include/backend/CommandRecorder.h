@@ -3,7 +3,7 @@
 #include <vector>
 #include "BasicTypes.h"
 
-namespace au::backend {
+namespace au::rhi {
 
 class InputVertex;
 class InputIndex;

@@ -16,7 +16,7 @@
 
 #include "Device.h"
 
-namespace au::backend {
+namespace au::rhi {
 
 class BackendContext {
 public:

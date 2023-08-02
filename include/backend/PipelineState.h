@@ -3,7 +3,7 @@
 #include <string>
 #include "BasicTypes.h"
 
-namespace au::backend {
+namespace au::rhi {
 
 class PipelineLayout;
 class InputIndexAttribute;

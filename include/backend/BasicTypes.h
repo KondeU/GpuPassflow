@@ -1,8 +1,18 @@
 #pragma once
 
-#include "framework/types/TypeCast.hpp"
+#include <type_traits>
 
-namespace au {
+namespace au::gp {
+
+template <typename T>
+inline constexpr typename std::underlying_type<T>::type EnumCast(const T& value)
+{
+    return static_cast<std::underlying_type<T>::type>(value);
+}
+
+}
+
+namespace au::rhi {
 
 enum class BasicFormat {
     R8G8B8A8_UNORM,
@@ -133,12 +143,12 @@ enum class Stage : uint32_t {
 };
 
 enum class ShaderStage : uint32_t {
-    Vertex   = framework::EnumCast(Stage::VertexShader),
-    Hull     = framework::EnumCast(Stage::HullShader),
-    Domain   = framework::EnumCast(Stage::DomainShader),
-    Geometry = framework::EnumCast(Stage::GeometryShader),
-    Pixel    = framework::EnumCast(Stage::PixelShader),
-    Compute  = framework::EnumCast(Stage::ComputeShader),
+    Vertex   = gp::EnumCast(Stage::VertexShader),
+    Hull     = gp::EnumCast(Stage::HullShader),
+    Domain   = gp::EnumCast(Stage::DomainShader),
+    Geometry = gp::EnumCast(Stage::GeometryShader),
+    Pixel    = gp::EnumCast(Stage::PixelShader),
+    Compute  = gp::EnumCast(Stage::ComputeShader),
     Graphics = Vertex | Hull | Domain | Geometry | Pixel
 };
 
