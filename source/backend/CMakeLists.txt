@@ -1,7 +1,7 @@
 ﻿cmake_minimum_required(VERSION 3.20)
 project(backend)
 
-file(GLOB SRC *.h *.cpp)
+file(GLOB SRC *.hpp *.cpp)
 add_definitions(-DBackendModule)
 add_library(${PROJECT_NAME} SHARED ${SRC} ${INC})
 
