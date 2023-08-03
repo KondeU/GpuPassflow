@@ -13,7 +13,7 @@ public:
     static void DestroyObject();
 
 private:
-    #ifdef GP_MULTI_THREADS_ACCESS_DXOBJECT
+    #ifdef GP_MULTI_THREADS
     using ObjectType = std::atomic<Object>;
     #else
     using ObjectType = Object;

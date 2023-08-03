@@ -1,7 +1,6 @@
 #pragma once
 
-#include "framework/types/TypeCast.hpp"
-#include "framework/dfx/Logger.hpp"
+#include "backend/BackendContext.h"
 
 #define LogOutIfFailed(level, expression, success)                      \
 do {                                                                    \
@@ -43,7 +42,7 @@ do {                    \
 
 namespace au::backend {
 
-AU_LOG_TAG(DX12Backend);
+GP_LOG_TAG(DX12Backend);
 
 std::string FormatResult(HRESULT result);
 

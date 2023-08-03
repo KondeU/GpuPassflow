@@ -4,7 +4,10 @@
 namespace {
 
 static std::unordered_map<au::rhi::BackendContext::Backend,
-    std::pair<au::backend::DllWrapper, au::rhi::BackendContext*>> storage;
+    std::pair<au::backend::DllWrapper, au::rhi::BackendContext*>> storages;
+
+static std::unordered_map<au::gp::ErrorHandler::Instance,
+    au::gp::ErrorHandler::Callback> loggers;
 
 }
 
@@ -18,7 +21,7 @@ BackendContext* BackendContext::CreateBackend(Backend type)
         { Backend::SoftRaster, "backend_cpu"    }
     };
 
-    if (storage.find(type) != storage.end()) {
+    if (storages.find(type) != storages.end()) {
         return nullptr;
     }
 
@@ -27,7 +30,7 @@ BackendContext* BackendContext::CreateBackend(Backend type)
         return nullptr;
     }
 
-    auto& instance = storage[type]; // backend instance(library wrapper and context pointer)
+    auto& instance = storages[type]; // backend instance(library wrapper and context pointer)
 
     if (!instance.first.Load(library->second)) {
         return nullptr;
@@ -39,8 +42,8 @@ BackendContext* BackendContext::CreateBackend(Backend type)
 
 void BackendContext::DestroyBackend(Backend type)
 {
-    auto backend = storage.find(type);
-    if (backend == storage.end()) {
+    auto backend = storages.find(type);
+    if (backend == storages.end()) {
         return;
     }
 
@@ -49,7 +52,45 @@ void BackendContext::DestroyBackend(Backend type)
     instance.first.ExecuteFunction<void(BackendContext*)>("DestroyBackend", instance.second);
     instance.first.Unload();
 
-    storage.erase(backend);
+    storages.erase(backend);
+}
+
+}
+
+namespace au::gp {
+
+ErrorHandler::Instance ErrorHandler::RegisterHandler(Callback callback)
+{
+    return (loggers[callback] = callback);
+}
+
+bool ErrorHandler::UnregisterHandler(Instance instance)
+{
+    return (loggers.erase(instance) > 0);
+}
+
+void ErrorHandler::Logging(const char* level, const char* tag, const char* format, ...)
+{
+    constexpr size_t ContentSize = 2048; // 2KB, half of a page.
+    char content[ContentSize]{};
+
+    va_list args{};
+    va_start(args, format);
+    vsnprintf(content, ContentSize, format, args);
+    va_end(args);
+
+    // Ensuring that access to character arrays is safe.
+    if (content[ContentSize - 4] != '\0') {
+        content[ContentSize - 4] = '.';
+        content[ContentSize - 3] = '.';
+        content[ContentSize - 2] = '.';
+        content[ContentSize - 1] = '\0';
+    }
+
+    for (const auto& [instance, callback] : loggers) {
+        const char* args[3] = { level, tag, content };
+        callback(args);
+    }
 }
 
 }
