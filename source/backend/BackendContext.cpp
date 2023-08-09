@@ -4,10 +4,10 @@
 namespace {
 
 static std::unordered_map<au::rhi::BackendContext::Backend,
-    std::pair<au::backend::DllWrapper, au::rhi::BackendContext*>> storages;
+    std::pair<au::backend::DllWrapper, au::rhi::BackendContext*>> g_storages;
 
 static std::unordered_map<au::gp::ErrorHandler::Instance,
-    au::gp::ErrorHandler::Callback> loggers;
+    au::gp::ErrorHandler::Callback> g_loggers;
 
 }
 
@@ -21,7 +21,7 @@ BackendContext* BackendContext::CreateBackend(Backend type)
         { Backend::SoftRaster, "backend_cpu"    }
     };
 
-    if (storages.find(type) != storages.end()) {
+    if (g_storages.find(type) != g_storages.end()) {
         return nullptr;
     }
 
@@ -30,7 +30,7 @@ BackendContext* BackendContext::CreateBackend(Backend type)
         return nullptr;
     }
 
-    auto& instance = storages[type]; // backend instance(library wrapper and context pointer)
+    auto& instance = g_storages[type]; // backend instance(library wrapper and context pointer)
 
     if (!instance.first.Load(library->second)) {
         return nullptr;
@@ -42,8 +42,8 @@ BackendContext* BackendContext::CreateBackend(Backend type)
 
 void BackendContext::DestroyBackend(Backend type)
 {
-    auto backend = storages.find(type);
-    if (backend == storages.end()) {
+    auto backend = g_storages.find(type);
+    if (backend == g_storages.end()) {
         return;
     }
 
@@ -52,7 +52,7 @@ void BackendContext::DestroyBackend(Backend type)
     instance.first.ExecuteFunction<void(BackendContext*)>("DestroyBackend", instance.second);
     instance.first.Unload();
 
-    storages.erase(backend);
+    g_storages.erase(backend);
 }
 
 }
@@ -61,12 +61,12 @@ namespace au::gp {
 
 ErrorHandler::Instance ErrorHandler::RegisterHandler(Callback callback)
 {
-    return (loggers[callback] = callback);
+    return (g_loggers[callback] = callback);
 }
 
 bool ErrorHandler::UnregisterHandler(Instance instance)
 {
-    return (loggers.erase(instance) > 0);
+    return (g_loggers.erase(instance) > 0);
 }
 
 void ErrorHandler::Logging(const char* level, const char* tag, const char* format, ...)
@@ -88,7 +88,7 @@ void ErrorHandler::Logging(const char* level, const char* tag, const char* forma
     }
 
     const char* CallbackParams[3] = { level, tag, content };
-    for (const auto& [instance, callback] : loggers) {
+    for (const auto& [instance, callback] : g_loggers) {
         if (callback(CallbackParams) != 0) {
             break;
         }
