@@ -7,7 +7,7 @@ do {                                                                    \
     HRESULT result = (expression);                                      \
     success = SUCCEEDED(result);                                        \
     if(!success) {                                                      \
-        au::framework::log::Logger::GetReference().Logging(#level, TAG, \
+        au::gp::ErrorHandler::Logging(#level, TAG,                      \
           "LOCATION: %s, line %d. EXPRESSION: %s. ERROR: 0x%x, %s",     \
             __FILE__, __LINE__, #expression, result,                    \
             au::backend::FormatResult(result).c_str());                 \
