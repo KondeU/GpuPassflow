@@ -7,7 +7,7 @@ namespace au::backend {
 
 class DX12Device;
 
-class DX12PipelineLayout : public PipelineLayout
+class DX12PipelineLayout : public rhi::PipelineLayout
     , DX12Object<DX12PipelineLayout> {
 public:
     explicit DX12PipelineLayout(DX12Device& device);

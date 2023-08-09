@@ -7,7 +7,7 @@ namespace au::backend {
 
 class DX12Device;
 
-class DX12ResourceImage : public ResourceImage
+class DX12ResourceImage : public rhi::ResourceImage
     , DX12Object<DX12ResourceImage> {
 public:
     explicit DX12ResourceImage(DX12Device& device);
@@ -29,7 +29,7 @@ private:
     DX12Device& internal;
     Microsoft::WRL::ComPtr<ID3D12Device> device;
 
-    Description description{ BasicFormat::R32G32B32A32_FLOAT, 0u, 0u };
+    Description description{ rhi::BasicFormat::R32G32B32A32_FLOAT, 0u, 0u };
     Microsoft::WRL::ComPtr<ID3D12Resource> buffer;
 };
 

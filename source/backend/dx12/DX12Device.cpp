@@ -296,7 +296,7 @@ void DX12Device::EnumAdapters()
     for (UINT i = 0; dxgi->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND; i++) {
         DXGI_ADAPTER_DESC desc;
         adapter->GetDesc(&desc);
-        GP_LOG_D(TAG, "* %d : %s", i, std::to_string(desc.Description).c_str());
+        GP_LOG_D(TAG, "> %d : %s", i, std::to_string(desc.Description).c_str());
         adapters.emplace_back(adapter);
     }
 
@@ -310,7 +310,7 @@ void DX12Device::EnumAdapters()
         for (UINT i = 0; adapters[n]->EnumOutputs(i, &output) != DXGI_ERROR_NOT_FOUND; i++) {
             DXGI_OUTPUT_DESC desc;
             output->GetDesc(&desc);
-            GP_LOG_D(TAG, "* %d : %s", i, std::to_string(desc.DeviceName).c_str());
+            GP_LOG_D(TAG, "> %d : %s", i, std::to_string(desc.DeviceName).c_str());
 
             GP_LOG_D(TAG, "  - OutputDisplayModes");
             {

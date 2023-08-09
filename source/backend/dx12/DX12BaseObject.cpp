@@ -2,8 +2,8 @@
 
 namespace au::backend {
 
-DX12ObjectCounter::ObjectType DX12ObjectCounter::counter = 0;
-DX12ObjectCounter::ObjectType DX12ObjectCounter::generator = 0;
+std::atomic<DX12ObjectCounter::Object> DX12ObjectCounter::counter{};
+std::atomic<DX12ObjectCounter::Object> DX12ObjectCounter::generator{};
 
 DX12ObjectCounter::Object DX12ObjectCounter::GetObjectCount()
 {

@@ -16,7 +16,7 @@
 #include "DX12PipelineState.h"
 
 namespace au::backend {
-class DX12Device : public Device
+class DX12Device : public rhi::Device
     , DX12Object<DX12Device> {
 public:
     explicit DX12Device(Microsoft::WRL::ComPtr<IDXGIFactory4> dxgi);

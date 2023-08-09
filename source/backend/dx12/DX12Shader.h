@@ -5,7 +5,7 @@
 
 namespace au::backend {
 
-class DX12Shader : public Shader
+class DX12Shader : public rhi::Shader
     , DX12Object<DX12Shader> {
 public:
     explicit DX12Shader();
@@ -27,7 +27,7 @@ protected:
     void ProcessBytecode(bool fromFile);
 
 private:
-    Description description{ ShaderStage::Vertex, "" };
+    Description description{ rhi::ShaderStage::Vertex, "" };
     Microsoft::WRL::ComPtr<ID3DBlob> bytecode;
 };
 

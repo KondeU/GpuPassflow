@@ -7,7 +7,7 @@ namespace au::backend {
 
 class DX12Device;
 
-class DX12CommandRecorder : public CommandRecorder
+class DX12CommandRecorder : public rhi::CommandRecorder
     , DX12Object<DX12CommandRecorder> {
 public:
     explicit DX12CommandRecorder(DX12Device& device);

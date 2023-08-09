@@ -3,14 +3,13 @@
 #include "DX12Device.h"
 
 #if defined(DEBUG) || defined(_DEBUG)
-#define CHECK_RECORD(check, standard, information)              \
-do {                                                            \
-    if (!(framework::EnumCast(check) &                          \
-          framework::EnumCast(standard))) {                     \
-        GP_LOG_W(TAG, "CheckRecordFailed: <line:%d><info:%s> "  \
-            "The current command type is not suitable for %s.", \
-                __LINE__, #information, #standard);             \
-    }                                                           \
+#define CHECK_RECORD(check, standard, information)                 \
+do {                                                               \
+    if (!(au::gp::EnumCast(check) & au::gp::EnumCast(standard))) { \
+        GP_LOG_W(TAG, "CheckRecordFailed: <line:%d><info:%s> "     \
+            "The current command type is not suitable for %s.",    \
+                __LINE__, #information, #standard);                \
+    }                                                              \
 } while(0)
 #else
 #define CHECK_RECORD(check, standard, information) // Nothing to do.
@@ -18,11 +17,12 @@ do {                                                            \
 
 namespace {
 
+using namespace au::rhi;
 using namespace au::backend;
 
 template <typename Implement, typename Interface>
 inline void RcBarrierTemplate(DX12CommandRecorder& recorder,
-    Interface& resource, au::ResourceState before, au::ResourceState after)
+    Interface& resource, ResourceState before, ResourceState after)
 {
     static_assert(std::is_base_of<Interface, Implement>::value,
         "RcBarrierTemplate: Implement should inherit from Interface!");
@@ -428,11 +428,11 @@ void DX12CommandRecorder::RcBeginPass(
     for (const auto& attachment : colorOutputs) {
         auto dxDescriptor = dynamic_cast<DX12Descriptor*>(std::get<0>(attachment));
         D3D12_RENDER_PASS_BEGINNING_ACCESS beginningAccess{
-            ConvertRenderPassBeginningAccessType(std::get<1>(attachment)),
+            ConvertRenderPassBeginAccessType(std::get<1>(attachment)),
             { dxDescriptor->BindedResourceImage()->RenderTargetClearValue() }
         };
         D3D12_RENDER_PASS_ENDING_ACCESS endingAccess{
-            ConvertRenderPassEndingAccessType(std::get<2>(attachment)),
+            ConvertRenderPassEndAccessType(std::get<2>(attachment)),
             {} // TODO: MSAA resolve is no supported yet!
         };
         D3D12_RENDER_PASS_RENDER_TARGET_DESC renderTargetDesc{
@@ -445,11 +445,11 @@ void DX12CommandRecorder::RcBeginPass(
     for (const auto& attachment : depthStencil) {
         auto dxDescriptor = dynamic_cast<DX12Descriptor*>(std::get<0>(attachment));
         D3D12_RENDER_PASS_BEGINNING_ACCESS beginningAccess{
-            ConvertRenderPassBeginningAccessType(std::get<1>(attachment)),
+            ConvertRenderPassBeginAccessType(std::get<1>(attachment)),
             { dxDescriptor->BindedResourceImage()->DepthStencilClearValue() }
         };
         D3D12_RENDER_PASS_ENDING_ACCESS endingAccess{
-            ConvertRenderPassEndingAccessType(std::get<2>(attachment)),
+            ConvertRenderPassEndAccessType(std::get<2>(attachment)),
             {} // TODO: MSAA resolve is no supported yet!
         };
         D3D12_RENDER_PASS_DEPTH_STENCIL_DESC depthStencilDesc{

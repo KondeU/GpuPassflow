@@ -2,19 +2,17 @@
 
 #include <memory>
 #include <unordered_map>
-#include "framework/dfx/Logger.hpp"
-#include "framework/types/Pointer.hpp"
 #include "backend/BackendContext.h"
 
 namespace au {
 
 template <typename T>
-using Resource = sptr<T>;
+using Resource = std::shared_ptr<T>;
 
 template <typename T, class ...Args>
 Resource<T> MakeResource(Args&& ...args)
 {
-    return make_sptr<T>(std::forward(args)...);
+    return std::make_shared<T>(std::forward(args)...);
 }
 
 template <typename T>
@@ -33,7 +31,7 @@ public:
     void ConfigureAvoidInfight(bool infight);
 
 protected:
-    backend::Device* device; // Not owned!
+    rhi::Device* device; // Not owned!
     unsigned int multipleBufferingCount;
     bool avoidInfight = true;
 };
@@ -47,7 +45,7 @@ public:
     void UploadConstantBuffers();
 
     virtual void* RawCpuPtr() = 0;
-    backend::ResourceBuffer* RawGpuInst(unsigned int index);
+    rhi::ResourceBuffer* RawGpuInst(unsigned int index);
 
     Resource<BaseConstantBuffer> Clone() const;
 
@@ -55,8 +53,8 @@ protected:
     void SetupGPU();
     void CloseGPU();
 
-    backend::ResourceBuffer::Description description{ 0 }; // Default memory type: CPU_TO_GPU
-    std::vector<backend::ResourceBuffer*> buffers;
+    rhi::ResourceBuffer::Description description{ 0 }; // Default memory type: CPU_TO_GPU
+    std::vector<rhi::ResourceBuffer*> buffers;
 };
 
 class BaseStructuredBuffer : public DeviceHolder {
@@ -68,7 +66,7 @@ public:
     void UploadStructuredBuffers();
 
     virtual void* RawCpuPtr() = 0;
-    backend::ResourceBufferEx* RawGpuInst(unsigned int index);
+    rhi::ResourceBufferEx* RawGpuInst(unsigned int index);
 
     Resource<BaseStructuredBuffer> Clone() const;
 
@@ -76,8 +74,8 @@ protected:
     void SetupGPU();
     void CloseGPU();
 
-    backend::ResourceBufferEx::Description description{ 0, 0 }; // Default memory type: GPU_ONLY
-    std::vector<backend::ResourceBufferEx*> buffers;
+    rhi::ResourceBufferEx::Description description{ 0, 0 }; // Default memory type: GPU_ONLY
+    std::vector<rhi::ResourceBufferEx*> buffers;
 };
 
 class BaseIndexBuffer : public DeviceHolder {
@@ -89,7 +87,7 @@ public:
     void UploadIndexBuffers();
 
     virtual void* RawCpuPtr() = 0;
-    backend::InputIndex* RawGpuInst(unsigned int index);
+    rhi::InputIndex* RawGpuInst(unsigned int index);
 
     Resource<BaseIndexBuffer> Clone() const;
 
@@ -97,8 +95,8 @@ protected:
     void SetupGPU();
     void CloseGPU();
 
-    backend::InputIndex::Description description{ 0, 0 }; // Default memory type: GPU_ONLY
-    std::vector<backend::InputIndex*> indices;
+    rhi::InputIndex::Description description{ 0, 0 }; // Default memory type: GPU_ONLY
+    std::vector<rhi::InputIndex*> indices;
 };
 
 class BaseVertexBuffer : public DeviceHolder {
@@ -110,7 +108,7 @@ public:
     void UploadVertexBuffers();
 
     virtual void* RawCpuPtr() = 0;
-    backend::InputVertex* RawGpuInst(unsigned int index);
+    rhi::InputVertex* RawGpuInst(unsigned int index);
 
     Resource<BaseVertexBuffer> Clone() const;
 
@@ -118,8 +116,8 @@ protected:
     void SetupGPU();
     void CloseGPU();
 
-    backend::InputVertex::Description description{ 0, 0 }; // Default memory type: GPU_ONLY
-    std::vector<backend::InputVertex*> vertices;
+    rhi::InputVertex::Description description{ 0, 0 }; // Default memory type: GPU_ONLY
+    std::vector<rhi::InputVertex*> vertices;
 };
 
 class BaseTexture : public DeviceHolder {
@@ -137,7 +135,7 @@ public:
     virtual unsigned int GetDimensions() const = 0;
 
     virtual void* RawCpuPtr() = 0;
-    backend::ResourceImage* RawGpuInst(unsigned int index);
+    rhi::ResourceImage* RawGpuInst(unsigned int index);
 
     Resource<BaseTexture> Clone() const;
 
@@ -145,8 +143,8 @@ protected:
     void SetupGPU();
     void CloseGPU();
 
-    backend::ResourceImage::Description description{ BasicFormat::R32G32B32A32_FLOAT, 1, 1 };
-    std::vector<backend::ResourceImage*> images; // Default memory type: GPU_ONLY
+    rhi::ResourceImage::Description description{ rhi::BasicFormat::R32G32B32A32_FLOAT, 1, 1 };
+    std::vector<rhi::ResourceImage*> images; // Default memory type: GPU_ONLY
 };
 
 //////////////////////////////////////////////////
@@ -179,7 +177,7 @@ public:
     static_assert(std::is_trivial<T>::value && std::is_standard_layout<T>::value,
         "The specialization type of StructuredBuffer must be POD!");
 
-    void ConfigureStructuredBufferHeapType(TransferDirection type);
+    void ConfigureStructuredBufferHeapType(rhi::TransferDirection type);
     void ConfigureStructuredBufferWritable(bool writable);
 
     void SetupStructuredBuffer(unsigned int elementsCount);
@@ -245,11 +243,12 @@ public:
     static_assert((D == 1) || (D == 2) || (D == 3),
         "The specialization dimension of Texture must be 1 or 2 or 3!");
 
-    void ConfigureTextureUsage(ImageType usage);
-    void ConfigureTextureHeapType(TransferDirection type);
+    void ConfigureTextureUsage(rhi::ImageType usage);
+    void ConfigureTextureHeapType(rhi::TransferDirection type);
     void ConfigureTextureWritable(bool writable);
 
-    void SetupTexture(BasicFormat format, uint32_t width, uint32_t height = 1, uint8_t arrays = 1);
+    void SetupTexture(rhi::BasicFormat format,
+        uint32_t width, uint32_t height = 1, uint8_t arrays = 1);
     void ResizeTexture(uint32_t width, uint32_t height = 1, uint8_t arrays = 1);
 
     std::vector<uint8_t>& AcquireTextureBuffer();
@@ -274,7 +273,7 @@ using Texture3D = Texture<3>;
 
 class ColorOutput final : public BaseTexture {
 public:
-    void SetupColorOutput(BasicFormat format, unsigned int width, unsigned int height);
+    void SetupColorOutput(rhi::BasicFormat format, unsigned int width, unsigned int height);
     void ResizeColorOutput(unsigned int width, unsigned int height);
 
     std::vector<uint8_t>& AcquireColorBuffer();
@@ -294,7 +293,7 @@ protected:
 
 class DepthStencilOutput final : public BaseTexture {
 public:
-    void SetupDepthStencilOutput(BasicFormat format, unsigned int width, unsigned int height);
+    void SetupDepthStencilOutput(rhi::BasicFormat format, unsigned int width, unsigned int height);
     void ResizeDepthStencilOutput(unsigned int width, unsigned int height);
 
     std::vector<uint8_t>& AcquireDepthStencilBuffer();
@@ -317,7 +316,7 @@ public:
     DisplayPresentOutput();
     ~DisplayPresentOutput();
 
-    void SetupDisplayPresentOutput(BasicFormat format,
+    void SetupDisplayPresentOutput(rhi::BasicFormat format,
         unsigned int width, unsigned int height, void* window);
     void ResizeDisplay(unsigned int width, unsigned int height);
 
@@ -326,11 +325,11 @@ public:
     unsigned int GetHeight() const;
     void GetSize(unsigned int& width, unsigned int& height) const;
 
-    backend::Swapchain* RawGpuInst();
+    rhi::Swapchain* RawGpuInst();
 
 protected:
-    backend::Swapchain::Description description{ nullptr, 0, 0 };
-    backend::Swapchain* swapchain = nullptr;
+    rhi::Swapchain::Description description{ nullptr, 0, 0 };
+    rhi::Swapchain* swapchain = nullptr;
 };
 
 class Sampler : public DeviceHolder {
@@ -338,19 +337,19 @@ public:
     Sampler() = default;
     ~Sampler() override;
 
-    void ConfigureSamplerState(SamplerState::Filter filterForAll);
-    void ConfigureSamplerState(AddressMode addressModeForUVW);
-    void ConfigureSamplerState(SamplerState samplerState);
+    void ConfigureSamplerState(rhi::SamplerState::Filter filterForAll);
+    void ConfigureSamplerState(rhi::AddressMode addressModeForUVW);
+    void ConfigureSamplerState(rhi::SamplerState samplerState);
     void SetupSampler();
 
-    backend::ImageSampler* RawGpuInst();
+    rhi::ImageSampler* RawGpuInst();
 
     Resource<Sampler> Clone() const;
 
 private:
-    backend::ImageSampler::Description description{
-        SamplerState::Filter::Linear, AddressMode::Wrap };
-    backend::ImageSampler* sampler = nullptr;
+    rhi::ImageSampler::Description description{
+        rhi::SamplerState::Filter::Linear, rhi::AddressMode::Wrap };
+    rhi::ImageSampler* sampler = nullptr;
 };
 
 }

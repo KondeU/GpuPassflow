@@ -7,7 +7,7 @@ namespace au::backend {
 
 class DX12Device;
 
-class DX12Swapchain : public Swapchain
+class DX12Swapchain : public rhi::Swapchain
     , DX12Object<DX12Swapchain> {
 public:
     explicit DX12Swapchain(DX12Device& device);

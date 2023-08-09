@@ -15,7 +15,7 @@ inline void SafeCopyMemory(void* dstAddr, size_t dstSize, const void* srcAddr, s
 // ConstantBuffer<T>
 
 template <typename T>
-inline void ConstantBuffer<T>::ConfigureConstantBufferHeapType(TransferDirection type)
+inline void ConstantBuffer<T>::ConfigureConstantBufferHeapType(rhi::TransferDirection type)
 {
     description.memoryType = type;
 }
@@ -58,7 +58,7 @@ inline void* ConstantBuffer<T>::RawCpuPtr()
 // StructuredBuffer<T>
 
 template <typename T>
-inline void StructuredBuffer<T>::ConfigureStructuredBufferHeapType(TransferDirection type)
+inline void StructuredBuffer<T>::ConfigureStructuredBufferHeapType(rhi::TransferDirection type)
 {
     description.memoryType = type;
 }
@@ -221,13 +221,13 @@ inline void* VertexBuffer<T>::RawCpuPtr()
 // Texture<D>
 
 template <unsigned int D>
-inline void Texture<D>::ConfigureTextureUsage(ImageType usage)
+inline void Texture<D>::ConfigureTextureUsage(rhi::ImageType usage)
 {
     description.usage = usage;
 }
 
 template <unsigned int D>
-inline void Texture<D>::ConfigureTextureHeapType(TransferDirection type)
+inline void Texture<D>::ConfigureTextureHeapType(rhi::TransferDirection type)
 {
     description.memoryType = type;
 }
@@ -239,7 +239,7 @@ inline void Texture<D>::ConfigureTextureWritable(bool writable)
 }
 
 template <unsigned int D>
-inline void Texture<D>::SetupTexture(BasicFormat format,
+inline void Texture<D>::SetupTexture(rhi::BasicFormat format,
     uint32_t width, uint32_t height, uint8_t arrays)
 {
     if constexpr (D >= 1) {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include "DX12Common.h"
 
 namespace au::backend {
@@ -13,13 +14,8 @@ public:
     static void DestroyObject();
 
 private:
-    #ifdef GP_MULTI_THREADS
-    using ObjectType = std::atomic<Object>;
-    #else
-    using ObjectType = Object;
-    #endif
-    static ObjectType counter;
-    static ObjectType generator;
+    static std::atomic<Object> counter;
+    static std::atomic<Object> generator;
 };
 
 class DX12BaseObject {
@@ -51,6 +47,9 @@ protected:
             typeid(Object).name(), ObjectID(), this);
         #endif
     }
+
+    //static_assert(std::is_base_of<DX12Object<Object>, Object>::value,
+    //    "Input template type Object must derived from DX12Object!");
 };
 
 }

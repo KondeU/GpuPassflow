@@ -13,7 +13,7 @@ class DX12ResourceBufferEx;
 class DX12ResourceImage;
 class DX12ImageSampler;
 
-class DX12Descriptor : public Descriptor
+class DX12Descriptor : public rhi::Descriptor
     , DX12Object<DX12Descriptor> {
 public:
     explicit DX12Descriptor(DX12Device& device, DX12DescriptorHeap& heap, unsigned int index);

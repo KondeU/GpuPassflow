@@ -5,14 +5,14 @@
 
 namespace au::backend {
 
-class DX12Context : public BackendContext
+class DX12Context : public rhi::BackendContext
     , DX12Object<DX12Context> {
 public:
     explicit DX12Context();
     ~DX12Context() override;
 
-    Device* CreateDevice(Device::Description description) override;
-    bool DestroyDevice(Device* device) override;
+    rhi::Device* CreateDevice(rhi::Device::Description description) override;
+    bool DestroyDevice(rhi::Device* device) override;
 
 private:
     Microsoft::WRL::ComPtr<IDXGIFactory4> dxgi;

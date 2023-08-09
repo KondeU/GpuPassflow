@@ -6,7 +6,7 @@ namespace au::backend {
 
 class DX12Device;
 
-class DX12DescriptorHeap : public DescriptorHeap
+class DX12DescriptorHeap : public rhi::DescriptorHeap
     , DX12Object<DX12DescriptorHeap> {
 public:
     explicit DX12DescriptorHeap(DX12Device& device);

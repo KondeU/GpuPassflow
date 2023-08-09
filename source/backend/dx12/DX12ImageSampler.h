@@ -7,7 +7,7 @@ namespace au::backend {
 
 class DX12Device;
 
-class DX12ImageSampler : public ImageSampler
+class DX12ImageSampler : public rhi::ImageSampler
     , DX12Object<DX12ImageSampler> {
 public:
     explicit DX12ImageSampler();

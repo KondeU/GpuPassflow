@@ -1,7 +1,6 @@
 #pragma once
 
 #include <map>
-#include "framework/dfx/Logger.hpp"
 #include "backend/BackendContext.h"
 
 namespace au::passflow {
@@ -12,9 +11,9 @@ class BasePass {
 public:
     virtual ~BasePass() = default;
 
-    virtual void OnPreparePass(backend::Device* device) = 0;
+    virtual void OnPreparePass(rhi::Device* device) = 0;
     virtual void OnBeforePass(unsigned int currentBufferingIndex) = 0;
-    virtual void OnExecutePass(backend::CommandRecorder* recorder) = 0;
+    virtual void OnExecutePass(rhi::CommandRecorder* recorder) = 0;
     virtual void OnAfterPass(unsigned int currentPassInFlowIndex) = 0;
     virtual void OnEnablePass(bool enable) = 0;
 
@@ -22,9 +21,9 @@ protected:
     explicit BasePass(Passflow& passflow);
 
     struct InputProperties final {
-        static backend::InputVertexAttributes::Attribute MakeDefaultPositionVertexAttribute();
-        std::vector<backend::InputVertexAttributes::Attribute> vertexAttributes;
-        backend::InputIndexAttribute::Attribute indexAttribute;
+        static rhi::InputVertexAttributes::Attribute MakeDefaultPositionVertexAttribute();
+        std::vector<rhi::InputVertexAttributes::Attribute> vertexAttributes;
+        rhi::InputIndexAttribute::Attribute indexAttribute;
         bool multipleObjects = true;
     };
 
@@ -41,12 +40,12 @@ protected:
             C7 = 7
         };
         struct OutputAttribute final {
-            BasicFormat imagePixelFormat;
-            PassAction beginAction;
-            PassAction endAction;
-            ResourceState beforeState;
-            ResourceState currentState;
-            ResourceState afterState;
+            rhi::BasicFormat imagePixelFormat;
+            rhi::PassAction beginAction;
+            rhi::PassAction endAction;
+            rhi::ResourceState beforeState;
+            rhi::ResourceState currentState;
+            rhi::ResourceState afterState;
         };
         std::map<OutputSlot, OutputAttribute> targets;
     };
@@ -56,7 +55,7 @@ protected:
             std::string source;
             std::string entry;
         };
-        std::map<ShaderStage, ShaderProgram> shaders;
+        std::map<rhi::ShaderStage, ShaderProgram> shaders;
     };
 
     struct ShaderResourceProperties final {
@@ -69,33 +68,33 @@ protected:
         struct ResourceAttribute final {
             unsigned int baseBindingPoint;
             unsigned int bindingPointCount;
-            ShaderStage resourceVisibility;
-            DescriptorType resourceType;
-            ResourceState beforeState;
-            ResourceState currentState;
-            ResourceState afterState;
+            rhi::ShaderStage resourceVisibility;
+            rhi::DescriptorType resourceType;
+            rhi::ResourceState beforeState;
+            rhi::ResourceState currentState;
+            rhi::ResourceState afterState;
         };
         std::map<ResourceSpace, std::vector<ResourceAttribute>> resources;
     };
 
     class DynamicDescriptorManager final {
     public:
-        DynamicDescriptorManager(backend::Device* device, DescriptorType type);
+        DynamicDescriptorManager(rhi::Device* device, rhi::DescriptorType type);
         ~DynamicDescriptorManager();
 
         void ReallocateDescriptorHeap(unsigned int descriptorCount);
-        backend::Descriptor* AcquireDescriptor(unsigned int index);
-        backend::DescriptorHeap* AcquireDescriptorHeap();
+        rhi::Descriptor* AcquireDescriptor(unsigned int index);
+        rhi::DescriptorHeap* AcquireDescriptorHeap();
 
     private:
         GP_LOG_TAG(DynamicDescriptorManager);
 
         void FreeDescriptorHeap();
 
-        DescriptorType heapType;
-        backend::Device* device; // Not owned!
-        backend::DescriptorHeap* descriptorHeap = nullptr;
-        std::vector<backend::Descriptor*> descriptors;
+        rhi::DescriptorType heapType;
+        rhi::Device* device; // Not owned!
+        rhi::DescriptorHeap* descriptorHeap = nullptr;
+        std::vector<rhi::Descriptor*> descriptors;
     };
 
     Passflow& passflow;

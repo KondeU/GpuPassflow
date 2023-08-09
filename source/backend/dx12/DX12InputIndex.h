@@ -8,7 +8,7 @@ namespace au::backend {
 class DX12Device;
 class DX12InputIndexAttribute;
 
-class DX12InputIndex : public InputIndex
+class DX12InputIndex : public rhi::InputIndex
     , DX12Object<DX12InputIndex> {
 public:
     explicit DX12InputIndex(DX12Device& device);

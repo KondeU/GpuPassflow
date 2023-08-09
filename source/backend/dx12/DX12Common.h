@@ -2,16 +2,16 @@
 
 #include "backend/BackendContext.h"
 
-#define LogOutIfFailed(level, expression, success)                      \
-do {                                                                    \
-    HRESULT result = (expression);                                      \
-    success = SUCCEEDED(result);                                        \
-    if(!success) {                                                      \
-        au::gp::ErrorHandler::Logging(#level, TAG,                      \
-          "LOCATION: %s, line %d. EXPRESSION: %s. ERROR: 0x%x, %s",     \
-            __FILE__, __LINE__, #expression, result,                    \
-            au::backend::FormatResult(result).c_str());                 \
-    }                                                                   \
+#define LogOutIfFailed(level, expression, success)    \
+do {                                                  \
+    HRESULT result = (expression);                    \
+    success = SUCCEEDED(result);                      \
+    if(!success) {                                    \
+        au::gp::ErrorHandler::Logging(#level, TAG,    \
+          "* LOC: %s, %d. EXP: %s. ERR: 0x%x, %s",    \
+          __FILE__, __LINE__, #expression, result,    \
+          au::backend::FormatResult(result).c_str()); \
+    }                                                 \
 } while(0)
 
 #define LogIfFailed(level, expression)          \
