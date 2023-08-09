@@ -44,7 +44,7 @@ namespace au::gp {
 class ErrorHandler final {
 public:
     using Instance = void*; // value is equal to callback.
-    using Callback = void(*)(const char* [3]); // level, tag, content.
+    using Callback = int(*)(const char* [3]); // level, tag, content.
 
     BackendApi static Instance RegisterHandler(Callback callback);
     BackendApi static bool UnregisterHandler(Instance instance);

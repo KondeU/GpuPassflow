@@ -87,9 +87,11 @@ void ErrorHandler::Logging(const char* level, const char* tag, const char* forma
         content[ContentSize - 1] = '\0';
     }
 
+    const char* CallbackParams[3] = { level, tag, content };
     for (const auto& [instance, callback] : loggers) {
-        const char* args[3] = { level, tag, content };
-        callback(args);
+        if (callback(CallbackParams) != 0) {
+            break;
+        }
     }
 }
 
