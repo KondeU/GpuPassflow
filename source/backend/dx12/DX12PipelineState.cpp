@@ -86,11 +86,11 @@ void DX12PipelineState::SetVertexAssembly(InputVertexAttributes* iva)
 void DX12PipelineState::SetShader(ShaderStage stage, Shader* shader)
 {
     if (!(framework::EnumCast(stage) & framework::EnumCast(description.enabledStage))) {
-        AU_LOG_RET_E(TAG, "Pipeline state set shader failed, stage not enabled.");
+        GP_LOG_RET_E(TAG, "Pipeline state set shader failed, stage not enabled.");
     }
 
     if (!shader || !shader->IsValid()) {
-        AU_LOG_RET_E(TAG, "Pipeline state set shader failed, shader is invalid.");
+        GP_LOG_RET_E(TAG, "Pipeline state set shader failed, shader is invalid.");
     }
 
     auto dxShader = dynamic_cast<DX12Shader*>(shader);
@@ -107,7 +107,7 @@ void DX12PipelineState::SetShader(ShaderStage stage, Shader* shader)
     case ShaderStage::Geometry: graphicsPipelineState.GS = bytecode; break;
     case ShaderStage::Pixel:    graphicsPipelineState.PS = bytecode; break;
     case ShaderStage::Compute:  computePipelineState.CS  = bytecode; break;
-    default: AU_LOG_RET_W(TAG, "Pipeline state set shader failed, invalid stage!");
+    default: GP_LOG_RET_W(TAG, "Pipeline state set shader failed, invalid stage!");
     }
 }
 
@@ -115,7 +115,7 @@ void DX12PipelineState::SetColorOutputFormat(unsigned int location, BasicFormat 
 {
     if (location >= (sizeof(graphicsPipelineState.RTVFormats) /
                      sizeof(graphicsPipelineState.RTVFormats[0]))) {
-        AU_LOG_RET_W(TAG, "Pipeline state set color attachment failed, location overflow!");
+        GP_LOG_RET_W(TAG, "Pipeline state set color attachment failed, location overflow!");
     }
 
     graphicsPipelineState.RTVFormats[location] = ConvertBasicFormat(format);
@@ -159,7 +159,7 @@ void DX12PipelineState::BuildState()
         framework::EnumCast(ShaderStage::Graphics)) {
         if (framework::EnumCast(description.enabledStage) &
             framework::EnumCast(ShaderStage::Compute)) {
-            AU_LOG_RET_E(TAG, "Build pipeline state failed, you can not "
+            GP_LOG_RET_E(TAG, "Build pipeline state failed, you can not "
                 "enable both Graphics and Compute stage at the same time.");
         }
         LogIfFailedE(device->CreateGraphicsPipelineState(

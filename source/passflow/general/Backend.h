@@ -11,7 +11,7 @@ public:
     bool Close();
 
 private:
-    AU_LOG_TAG(PassflowBackend);
+    GP_LOG_TAG(PassflowBackend);
 
     backend::BackendContext::Backend backend;
     backend::BackendContext* context = nullptr;

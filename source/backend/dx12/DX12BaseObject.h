@@ -39,7 +39,7 @@ protected:
     explicit DX12Object()
     {
         #if defined(DEBUG) || defined(_DEBUG)
-        AU_LOG_D(TAG, "Construct DX12 object `%s` instance `%d`: %p.",
+        GP_LOG_D(TAG, "Construct DX12 object `%s` instance `%d`: %p.",
             typeid(Object).name(), ObjectID(), this);
         #endif
     }
@@ -47,7 +47,7 @@ protected:
     ~DX12Object() override
     {
         #if defined(DEBUG) || defined(_DEBUG)
-        AU_LOG_D(TAG, "Deconstruct DX12 object `%s` instance `%d`: %p.",
+        GP_LOG_D(TAG, "Deconstruct DX12 object `%s` instance `%d`: %p.",
             typeid(Object).name(), ObjectID(), this);
         #endif
     }

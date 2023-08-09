@@ -49,7 +49,7 @@ protected:
     FrameResources& AcquireStagingFrameResource();
 
 private:
-    AU_LOG_TAG(ComputePass);
+    GP_LOG_TAG(ComputePass);
 
     backend::Device* device = nullptr; // Not owned!
 

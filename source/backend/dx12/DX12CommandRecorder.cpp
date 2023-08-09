@@ -7,7 +7,7 @@
 do {                                                            \
     if (!(framework::EnumCast(check) &                          \
           framework::EnumCast(standard))) {                     \
-        AU_LOG_W(TAG, "CheckRecordFailed: <line:%d><info:%s> "  \
+        GP_LOG_W(TAG, "CheckRecordFailed: <line:%d><info:%s> "  \
             "The current command type is not suitable for %s.", \
                 __LINE__, #information, #standard);             \
     }                                                           \
@@ -314,7 +314,7 @@ void DX12CommandRecorder::RcClearColorAttachment(Descriptor* const descriptor)
     auto dxDescriptor = dynamic_cast<DX12Descriptor*>(descriptor);
     auto dxAttachment = dxDescriptor->BindedResourceImage();
     if (!dxAttachment) {
-        AU_LOG_RET_E(TAG, "Clear color attachment failed "
+        GP_LOG_RET_E(TAG, "Clear color attachment failed "
             "because descriptor not bind image.");
     }
     recorder->ClearRenderTargetView(
@@ -330,7 +330,7 @@ void DX12CommandRecorder::RcClearDepthStencilAttachment(Descriptor* const descri
     auto dxDescriptor = dynamic_cast<DX12Descriptor*>(descriptor);
     auto dxAttachment = dxDescriptor->BindedResourceImage();
     if (!dxAttachment) {
-        AU_LOG_RET_E(TAG, "Clear depth stencil attachment failed "
+        GP_LOG_RET_E(TAG, "Clear depth stencil attachment failed "
             "because descriptor not bind image.");
     }
     recorder->ClearDepthStencilView(
@@ -479,7 +479,7 @@ void DX12CommandRecorder::RcSetPipeline(PipelineState* const pipelineState)
     if (auto pso = dxPipelineState->PSO().Get()) {
         recorder->SetPipelineState(pso);
     } else {
-        AU_LOG_RET_E(TAG, "Records RcSetPipeline failed, pipeline state object is invalid.");
+        GP_LOG_RET_E(TAG, "Records RcSetPipeline failed, pipeline state object is invalid.");
     }
     if (dxPipelineState->IsItGraphicsPipelineState()) {
         recorder->SetGraphicsRootSignature(
@@ -488,7 +488,7 @@ void DX12CommandRecorder::RcSetPipeline(PipelineState* const pipelineState)
         recorder->SetComputeRootSignature(
             dxPipelineState->BindedPipelineLayout()->Signature().Get());
     } else {
-        AU_LOG_RET_E(TAG, "Records RcSetPipeline failed, "
+        GP_LOG_RET_E(TAG, "Records RcSetPipeline failed, "
             "input pipeline state is neither graphics nor compute.");
     }
 }
@@ -580,7 +580,7 @@ void DX12CommandRecorder::RcSetGraphicsDescriptors(
     if (dxBaseDescriptor->IsNativeDescriptorsContinuous(dxDescriptorsHandles)) {
         recorder->SetGraphicsRootDescriptorTable(index, dxBaseDescriptor->NativeGpuDescriptor());
     } else {
-        AU_LOG_RET_E(TAG, "Records RcSetGraphicsDescriptors failed, "
+        GP_LOG_RET_E(TAG, "Records RcSetGraphicsDescriptors failed, "
             "descriptors is not continuous or descriptors is empty.");
     }
 }
@@ -605,7 +605,7 @@ void DX12CommandRecorder::RcSetComputeDescriptors(
     if (dxBaseDescriptor->IsNativeDescriptorsContinuous(dxDescriptorsHandles)) {
         recorder->SetComputeRootDescriptorTable(index, dxBaseDescriptor->NativeGpuDescriptor());
     } else {
-        AU_LOG_RET_E(TAG, "Records RcSetComputeDescriptors failed, "
+        GP_LOG_RET_E(TAG, "Records RcSetComputeDescriptors failed, "
             "descriptors is not continuous or descriptors is empty.");
     }
 }
@@ -642,7 +642,7 @@ void DX12CommandRecorder::Wait()
             WaitForSingleObject(eventHandle, INFINITE);
             CloseHandle(eventHandle);
         } else {
-            AU_LOG_F(TAG, "Command recorder wait failed, can not create event!");
+            GP_LOG_F(TAG, "Command recorder wait failed, can not create event!");
         }
     }
 }

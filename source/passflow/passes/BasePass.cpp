@@ -38,7 +38,7 @@ void BasePass::DynamicDescriptorManager::ReallocateDescriptorHeap(unsigned int d
 backend::Descriptor* BasePass::DynamicDescriptorManager::AcquireDescriptor(unsigned int index)
 {
     if (!descriptorHeap || index >= descriptors.size()) {
-        AU_LOG_RETN_W(TAG, "Acquire descriptor out of range!");
+        GP_LOG_RETN_W(TAG, "Acquire descriptor out of range!");
     }
     auto& descriptor = descriptors[index];
     if (!descriptor) {

@@ -14,7 +14,7 @@ public:
     unsigned int GetMultipleBufferingCount() const;
 
 private:
-    AU_LOG_TAG(PassflowConfiguration);
+    GP_LOG_TAG(PassflowConfiguration);
 
     backend::BackendContext::Backend backendType
     #if WIN32

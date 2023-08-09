@@ -38,7 +38,7 @@ public:
     static bool CloseBackend();
 
 private:
-    AU_LOG_TAG(Passflow);
+    GP_LOG_TAG(Passflow);
 
     static unsigned int passflowsCount;
 

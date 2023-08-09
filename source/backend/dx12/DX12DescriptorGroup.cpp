@@ -38,7 +38,7 @@ void DX12DescriptorGroup::AddDescriptors(
     unsigned int beginId = range.first;
     unsigned int endId = range.second;
     if (beginId > endId) {
-        AU_LOG_RET_F(TAG, "Add ranged descriptors information to descriptor group failed! "
+        GP_LOG_RET_F(TAG, "Add ranged descriptors information to descriptor group failed! "
             "Arguments are invalid, failed because the begin id is large then the end id.");
     }
 
@@ -47,7 +47,7 @@ void DX12DescriptorGroup::AddDescriptors(
         ConvertDescriptorRangeType(type, isValidDescriptorType);
 
     if (!isValidDescriptorType) {
-        AU_LOG_RET_F(TAG, "Add descriptor information to descriptor group failed! "
+        GP_LOG_RET_F(TAG, "Add descriptor information to descriptor group failed! "
             "Invalid descriptor type, only can be the buffer/texture/sampler types.");
     }
 

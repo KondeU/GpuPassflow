@@ -19,7 +19,7 @@ void DX12DescriptorHeap::Setup(Description description)
     this->description = description;
 
     if (description.capacity == 0) {
-        AU_LOG_RET_F(TAG, "Create descriptor heap failed, capacity is zero!");
+        GP_LOG_RET_F(TAG, "Create descriptor heap failed, capacity is zero!");
     }
 
     D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};

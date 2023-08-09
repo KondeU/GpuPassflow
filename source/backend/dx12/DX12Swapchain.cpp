@@ -77,7 +77,7 @@ void DX12Swapchain::Resize(unsigned int width, unsigned int height)
     // will rebuild swaphain resources(render target or depth stencil resources/views).
     internal.WaitIdle();
 
-    AU_LOG_I(TAG, "Swapchain resize: width * height = %d * %d", width, height);
+    GP_LOG_I(TAG, "Swapchain resize: width * height = %d * %d", width, height);
     description.width = width;
     description.height = height;
 

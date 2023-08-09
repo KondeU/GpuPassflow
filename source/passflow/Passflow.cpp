@@ -21,7 +21,7 @@ Passflow::Passflow(std::string name) : passflowName(name)
     }
 
     passflowsCount++;
-    AU_LOG_I(TAG, "Passflow `%s` construction.", passflowName.c_str());
+    GP_LOG_I(TAG, "Passflow `%s` construction.", passflowName.c_str());
 }
 
 Passflow::~Passflow()
@@ -37,7 +37,7 @@ Passflow::~Passflow()
     }
 
     passflowsCount--;
-    AU_LOG_I(TAG, "Passflow `%s` destruction.", passflowName.c_str());
+    GP_LOG_I(TAG, "Passflow `%s` destruction.", passflowName.c_str());
 }
 
 unsigned int Passflow::AddPassToFlow(BasePass* pass)
@@ -112,7 +112,7 @@ unsigned int Passflow::ExecuteWorkflow()
 bool Passflow::CloseBackend()
 {
     if (passflowsCount > 0) {
-        AU_LOG_RETF_W(TAG, "Cannot close the backend because passflows count is not zero! "
+        GP_LOG_RETF_W(TAG, "Cannot close the backend because passflows count is not zero! "
             "Passflows count is `%d`, there maybe some passflows are using GPU.", passflowsCount);
     }
     return Backend::GetReference().Close();

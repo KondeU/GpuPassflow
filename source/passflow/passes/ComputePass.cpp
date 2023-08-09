@@ -19,7 +19,7 @@ unsigned int ComputePass::AddDispatchItem(std::weak_ptr<DispatchItem> item)
         AcquireStagingFrameResource().dispatchItems.emplace_back(lockedItem);
         return static_cast<unsigned int>(AcquireStagingFrameResource().dispatchItems.size() - 1);
     }
-    AU_LOG_W(TAG, "Dispatch item has been released and cannot be added to pass for computing.");
+    GP_LOG_W(TAG, "Dispatch item has been released and cannot be added to pass for computing.");
     return std::numeric_limits<unsigned int>::max();
 }
 
@@ -90,7 +90,7 @@ void ComputePass::DeclareResource(const ShaderResourceProperties& properties)
                     computePipelineCounters.objectShaderResourcesCount +=
                         attribute.bindingPointCount;
                 } else {
-                    AU_LOG_F(TAG, "PerObject only can have the resource type of ShaderResource.");
+                    GP_LOG_F(TAG, "PerObject only can have the resource type of ShaderResource.");
                     // Note that continue will cause the descriptor group to be out of order,
                     // but there is no way to solve it, so use LOG_F to print fatal error.
                     continue;
@@ -102,7 +102,7 @@ void ComputePass::DeclareResource(const ShaderResourceProperties& properties)
                 } else if (attribute.resourceType == DescriptorType::ImageSampler) {
                     computePipelineCounters.imageSamplersCount += attribute.bindingPointCount;
                 } else {
-                    AU_LOG_F(TAG, "Resource only can be the type of ShaderResource/ImageSampler.");
+                    GP_LOG_F(TAG, "Resource only can be the type of ShaderResource/ImageSampler.");
                     continue; // NB: Ditto.
                 }
             }
@@ -130,16 +130,16 @@ void ComputePass::DeclareResource(const ShaderResourceProperties& properties)
 bool ComputePass::BuildPipeline()
 {
     if (!pipelineState) {
-        AU_LOG_RETF_E(TAG, "Build pipeline failed, please initialize pipeline first.");
+        GP_LOG_RETF_E(TAG, "Build pipeline failed, please initialize pipeline first.");
     }
     if (!pipelineLayout) {
-        AU_LOG_RETF_E(TAG, "Build pipeline failed, please declare resource first.");
+        GP_LOG_RETF_E(TAG, "Build pipeline failed, please declare resource first.");
     }
     if (!computeShader) {
-        AU_LOG_RETF_E(TAG, "Build pipeline failed, please declare program first.");
+        GP_LOG_RETF_E(TAG, "Build pipeline failed, please declare program first.");
     }
     if (!computeShader->IsValid()) {
-        AU_LOG_RETF_E(TAG, "Build pipeline failed, compute shader is invalid.");
+        GP_LOG_RETF_E(TAG, "Build pipeline failed, compute shader is invalid.");
     }
 
     pipelineState->SetPipelineLayout(pipelineLayout);
@@ -204,7 +204,7 @@ void ComputePass::ReserveEnoughShaderResourceDescriptors(unsigned int bufferingI
     } while (computePipelineCounters.reservedObjectsCount <<= 1);
 
     if (computePipelineCounters.reservedObjectsCount == 0) {
-        AU_LOG_F(TAG, "Dispatch items count overflow and no enough descriptors!");
+        GP_LOG_F(TAG, "Dispatch items count overflow and no enough descriptors!");
     }
 
     shaderResourceDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
@@ -273,7 +273,7 @@ FrameResources& ComputePass::AcquireFrameResource(unsigned int bufferingIndex)
     if (bufferingIndex < (frameResources.size() - 1)) {
         return frameResources[bufferingIndex];
     }
-    AU_LOG_F(TAG, "Acquire frame resource out of range! "
+    GP_LOG_F(TAG, "Acquire frame resource out of range! "
                   "Return the staging frame resource instead.");
     return frameResources.back();
 }

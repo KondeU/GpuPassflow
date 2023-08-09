@@ -9,7 +9,7 @@ extern "C" {
 BackendApiExport au::rhi::BackendContext* CreateBackend()
 {
     if (au::backend::DX12ObjectCounter::GetReference().GetObjectCount() > 0) {
-        AU_LOG_E(au::backend::TAG, "Objects count is not zero when initialize!");
+        GP_LOG_E(au::backend::TAG, "Objects count is not zero when initialize!");
     }
     return new au::backend::DX12Context;
 }
@@ -18,7 +18,7 @@ BackendApiExport void DestroyBackend(au::rhi::BackendContext* context)
 {
     delete dynamic_cast<au::backend::DX12Context*>(context);
     if (au::backend::DX12ObjectCounter::GetReference().GetObjectCount() > 0) {
-        AU_LOG_E(au::backend::TAG, "Objects count is not zero when finalize!");
+        GP_LOG_E(au::backend::TAG, "Objects count is not zero when finalize!");
     }
 }
 

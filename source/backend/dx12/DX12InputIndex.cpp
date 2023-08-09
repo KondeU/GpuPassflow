@@ -20,7 +20,7 @@ void DX12InputIndex::Setup(Description description)
 
     bufferTotalByteSize = description.indicesCount * description.indexByteSize;
     if (bufferTotalByteSize == 0) {
-        AU_LOG_RET_F(TAG, "Create index buffer failed, buffer size is zero!");
+        GP_LOG_RET_F(TAG, "Create index buffer failed, buffer size is zero!");
     }
 
     LogIfFailedF(device->CreateCommittedResource(

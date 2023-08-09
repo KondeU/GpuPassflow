@@ -88,7 +88,7 @@ protected:
         backend::DescriptorHeap* AcquireDescriptorHeap();
 
     private:
-        AU_LOG_TAG(DynamicDescriptorManager);
+        GP_LOG_TAG(DynamicDescriptorManager);
 
         void FreeDescriptorHeap();
 
@@ -103,7 +103,7 @@ protected:
     unsigned int multipleBufferingCount;
 
 private:
-    AU_LOG_TAG(BasePass);
+    GP_LOG_TAG(BasePass);
 };
 
 }

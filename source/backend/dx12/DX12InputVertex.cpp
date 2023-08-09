@@ -20,7 +20,7 @@ void DX12InputVertex::Setup(Description description)
 
     bufferTotalByteSize = description.verticesCount * description.attributesByteSize;
     if (bufferTotalByteSize == 0) {
-        AU_LOG_RET_F(TAG, "Create vertex buffer failed, buffer size is zero!");
+        GP_LOG_RET_F(TAG, "Create vertex buffer failed, buffer size is zero!");
     }
 
     LogIfFailedF(device->CreateCommittedResource(

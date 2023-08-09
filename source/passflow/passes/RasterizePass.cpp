@@ -19,7 +19,7 @@ unsigned int RasterizePass::AddDrawItem(std::weak_ptr<DrawItem> item)
         AcquireStagingFrameResource().drawItems.emplace_back(lockedItem);
         return static_cast<unsigned int>(AcquireStagingFrameResource().drawItems.size() - 1);
     }
-    AU_LOG_W(TAG, "Draw item has been released and cannot be added to pass for rendering.");
+    GP_LOG_W(TAG, "Draw item has been released and cannot be added to pass for rendering.");
     return std::numeric_limits<unsigned int>::max();
 }
 
@@ -142,7 +142,7 @@ void RasterizePass::DeclareResource(const ShaderResourceProperties& properties)
                     rasterizePipelineCounters.objectShaderResourcesCount +=
                         attribute.bindingPointCount;
                 } else {
-                    AU_LOG_F(TAG, "PerObject only can have the resource type of ShaderResource.");
+                    GP_LOG_F(TAG, "PerObject only can have the resource type of ShaderResource.");
                     // Note that continue will cause the descriptor group to be out of order,
                     // but there is no way to solve it, so use LOG_F to print fatal error.
                     continue;
@@ -154,7 +154,7 @@ void RasterizePass::DeclareResource(const ShaderResourceProperties& properties)
                 } else if (attribute.resourceType == DescriptorType::ImageSampler) {
                     rasterizePipelineCounters.imageSamplersCount += attribute.bindingPointCount;
                 } else {
-                    AU_LOG_F(TAG, "Resource only can be the type of ShaderResource/ImageSampler.");
+                    GP_LOG_F(TAG, "Resource only can be the type of ShaderResource/ImageSampler.");
                     continue; // NB: Ditto.
                 }
             }
@@ -182,17 +182,17 @@ void RasterizePass::DeclareResource(const ShaderResourceProperties& properties)
 bool RasterizePass::BuildPipeline()
 {
     if (!pipelineState) {
-        AU_LOG_RETF_E(TAG, "Build pipeline failed, please initialize pipeline first.");
+        GP_LOG_RETF_E(TAG, "Build pipeline failed, please initialize pipeline first.");
     }
     if (!pipelineLayout) {
-        AU_LOG_RETF_E(TAG, "Build pipeline failed, please declare resource first.");
+        GP_LOG_RETF_E(TAG, "Build pipeline failed, please declare resource first.");
     }
     if (programShaders.empty()) {
-        AU_LOG_RETF_E(TAG, "Build pipeline failed, please declare program first.");
+        GP_LOG_RETF_E(TAG, "Build pipeline failed, please declare program first.");
     }
     for (const auto& [stage, shader] : programShaders) {
         if (!shader->IsValid()) {
-            AU_LOG_RETF_E(TAG, "Build pipeline failed, "
+            GP_LOG_RETF_E(TAG, "Build pipeline failed, "
                 "shader(stage is `%d`) is invalid.", framework::EnumCast(stage));
         }
     }
@@ -286,7 +286,7 @@ void RasterizePass::ReserveEnoughShaderResourceDescriptors(unsigned int bufferin
     } while (rasterizePipelineCounters.reservedObjectsCount <<= 1);
 
     if (rasterizePipelineCounters.reservedObjectsCount == 0) {
-        AU_LOG_F(TAG, "Draw items count overflow and no enough descriptors!");
+        GP_LOG_F(TAG, "Draw items count overflow and no enough descriptors!");
     }
 
     shaderResourceDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
@@ -372,7 +372,7 @@ FrameResources& RasterizePass::AcquireFrameResource(unsigned int bufferingIndex)
     if (bufferingIndex < (frameResources.size() - 1)) {
         return frameResources[bufferingIndex];
     }
-    AU_LOG_F(TAG, "Acquire frame resource out of range! "
+    GP_LOG_F(TAG, "Acquire frame resource out of range! "
                   "Return the staging frame resource instead.");
     return frameResources.back();
 }

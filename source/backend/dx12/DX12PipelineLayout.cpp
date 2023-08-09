@@ -54,7 +54,7 @@ void DX12PipelineLayout::BuildLayout()
         &rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1,
         &serializedRootSignature, &serializeRootSignatureError));
     if (serializeRootSignatureError != nullptr) {
-        AU_LOG_RET_W(TAG, "Serialize root signature failed!\nerror:\n%s",
+        GP_LOG_RET_W(TAG, "Serialize root signature failed!\nerror:\n%s",
             serializeRootSignatureError->GetBufferPointer());
     }
 

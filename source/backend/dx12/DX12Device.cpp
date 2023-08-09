@@ -24,9 +24,9 @@ void DX12Device::Setup(Description description)
         , createHardwareDeviceSuccess);
 
     if (createHardwareDeviceSuccess) {
-        AU_LOG_I(TAG, "Created DX12 hardware device with default adapter.");
+        GP_LOG_I(TAG, "Created DX12 hardware device with default adapter.");
     } else {
-        AU_LOG_I(TAG, "Create DX12 hardware device failed, fallback to use soft warp device.");
+        GP_LOG_I(TAG, "Create DX12 hardware device failed, fallback to use soft warp device.");
         Microsoft::WRL::ComPtr<IDXGIAdapter> softWarpAdapter;
         LogIfFailedF(dxgi->EnumWarpAdapter(IID_PPV_ARGS(&softWarpAdapter)));
         LogIfFailedF(D3D12CreateDevice(softWarpAdapter.Get(),
@@ -242,7 +242,7 @@ void DX12Device::WaitIdle()
             WaitForSingleObject(eventHandle, INFINITE);
             CloseHandle(eventHandle);
         } else {
-            AU_LOG_F(TAG, "Device wait idle failed, can not create event!");
+            GP_LOG_F(TAG, "Device wait idle failed, can not create event!");
         }
     }
 }
@@ -253,7 +253,7 @@ void DX12Device::ReleaseCommandRecordersMemory(const std::string& commandContain
     if (iter != allocators.end()) {
         LogIfFailedF(iter->second->Reset());
     } else {
-        AU_LOG_W(TAG, "The command allocator was not reset because it(commandContainer=`%s`) "
+        GP_LOG_W(TAG, "The command allocator was not reset because it(commandContainer=`%s`) "
             "was not found in the allocator.", commandContainer.c_str());
     }
 }
@@ -288,21 +288,21 @@ DX12Device::CommandAllocator(const std::string& name)
 
 void DX12Device::EnumAdapters()
 {
-    AU_LOG_D(TAG, "Enum adapters...");
+    GP_LOG_D(TAG, "Enum adapters...");
     std::vector<IDXGIAdapter*> adapters;
 
-    AU_LOG_D(TAG, "Adapters:");
+    GP_LOG_D(TAG, "Adapters:");
     IDXGIAdapter* adapter = nullptr;
     for (UINT i = 0; dxgi->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND; i++) {
         DXGI_ADAPTER_DESC desc;
         adapter->GetDesc(&desc);
-        AU_LOG_D(TAG, "* %d : %s", i, std::to_string(desc.Description).c_str());
+        GP_LOG_D(TAG, "* %d : %s", i, std::to_string(desc.Description).c_str());
         adapters.emplace_back(adapter);
     }
 
-    AU_LOG_D(TAG, "Enum each adapter outputs...");
+    GP_LOG_D(TAG, "Enum each adapter outputs...");
     for (size_t n = 0; n < adapters.size(); n++) {
-        AU_LOG_D(TAG, "Adapter %d Outputs:", n);
+        GP_LOG_D(TAG, "Adapter %d Outputs:", n);
 
         // Adaptor output: usually is a displayer(monitor).
         size_t outputsCount = 0;
@@ -310,9 +310,9 @@ void DX12Device::EnumAdapters()
         for (UINT i = 0; adapters[n]->EnumOutputs(i, &output) != DXGI_ERROR_NOT_FOUND; i++) {
             DXGI_OUTPUT_DESC desc;
             output->GetDesc(&desc);
-            AU_LOG_D(TAG, "* %d : %s", i, std::to_string(desc.DeviceName).c_str());
+            GP_LOG_D(TAG, "* %d : %s", i, std::to_string(desc.DeviceName).c_str());
 
-            AU_LOG_D(TAG, "  - OutputDisplayModes");
+            GP_LOG_D(TAG, "  - OutputDisplayModes");
             {
                 // Using default back buffer format to get display mode list.
                 constexpr DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -332,7 +332,7 @@ void DX12Device::EnumAdapters()
                         "Height = " + std::to_string(mode.Height) + ", " +
                         "Refresh = " + std::to_string(n) + "/" + std::to_string(d) +
                         "=" + std::to_string(static_cast<float>(n) / static_cast<float>(d));
-                    AU_LOG_D(TAG, "    %s", text.c_str());
+                    GP_LOG_D(TAG, "    %s", text.c_str());
                 }
             }
 
@@ -341,7 +341,7 @@ void DX12Device::EnumAdapters()
         }
 
         if (outputsCount == 0) {
-            AU_LOG_D(TAG, "Adapter %d has no output.", n);
+            GP_LOG_D(TAG, "Adapter %d has no output.", n);
         }
     }
 

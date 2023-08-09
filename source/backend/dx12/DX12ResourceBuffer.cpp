@@ -20,7 +20,7 @@ void DX12ResourceBuffer::Setup(Description description)
 
     allocatedBytesSize = CalculateAlignedBytesSize(description.bufferBytesSize);
     if (allocatedBytesSize == 0) {
-        AU_LOG_RET_F(TAG, "Create constant buffer failed, buffer size is zero!");
+        GP_LOG_RET_F(TAG, "Create constant buffer failed, buffer size is zero!");
     }
 
     LogIfFailedF(device->CreateCommittedResource(

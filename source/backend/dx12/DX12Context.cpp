@@ -11,7 +11,7 @@ DX12Context::DX12Context()
     UINT dxgiFactoryFlags = 0;
 
     #if defined(DEBUG) || defined(_DEBUG)
-    AU_LOG_I(TAG, "Enable DX12 debug layer.");
+    GP_LOG_I(TAG, "Enable DX12 debug layer.");
     Microsoft::WRL::ComPtr<ID3D12Debug> debugger;
     LogIfFailedD(D3D12GetDebugInterface(IID_PPV_ARGS(&debugger)));
     if (debugger != nullptr) {
@@ -35,7 +35,7 @@ DX12Context::~DX12Context()
 {
     devices.resize(0);
     if (dxgi.Reset() > 0) {
-        AU_LOG_E(TAG, "dxgi leak!");
+        GP_LOG_E(TAG, "dxgi leak!");
     }
 }
 

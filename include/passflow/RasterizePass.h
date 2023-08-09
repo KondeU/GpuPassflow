@@ -60,7 +60,7 @@ protected:
     FrameResources& AcquireStagingFrameResource();
 
 private:
-    AU_LOG_TAG(RasterizePass);
+    GP_LOG_TAG(RasterizePass);
 
     backend::Device* device = nullptr; // Not owned!
 

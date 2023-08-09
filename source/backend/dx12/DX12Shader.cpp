@@ -58,7 +58,7 @@ std::string DX12Shader::DumpBytecode() const
         return std::string(static_cast<const char*>(
             bytecode->GetBufferPointer()), bytecode->GetBufferSize());
     } else {
-        AU_LOG_W(TAG, "Dumping shader bytecode failed, shader not compiled!");
+        GP_LOG_W(TAG, "Dumping shader bytecode failed, shader not compiled!");
     }
     return std::string();
 }
@@ -83,7 +83,7 @@ void DX12Shader::ProcessSource(bool fromFile)
     case ShaderStage::Geometry: target = "gs" + target; break;
     case ShaderStage::Pixel:    target = "ps" + target; break;
     case ShaderStage::Compute:  target = "cs" + target; break;
-    default: AU_LOG_RET_W(TAG, "Compile HLSL shader source failed! "
+    default: GP_LOG_RET_W(TAG, "Compile HLSL shader source failed! "
                                "No supported shader stage: %d", description.stage);
     }
 
@@ -98,7 +98,7 @@ void DX12Shader::ProcessSource(bool fromFile)
             target.c_str(), compileFlags, 0, &bytecode, &errors));
     }
     if (errors != nullptr) {
-        AU_LOG_W(TAG, "Compile HLSL shader logs:\nsource:\n%s\nerror:\n%s",
+        GP_LOG_W(TAG, "Compile HLSL shader logs:\nsource:\n%s\nerror:\n%s",
             fromFile ? description.source.c_str() : "[ from string ]",
             errors->GetBufferPointer());
     }
@@ -111,7 +111,7 @@ void DX12Shader::ProcessBytecode(bool fromFile)
         binary = framework::ReadFile(description.source);
     }
     if (binary.empty()) {
-        AU_LOG_W(TAG, "Load shader bytecode failed!");
+        GP_LOG_W(TAG, "Load shader bytecode failed!");
     }
     LogIfFailedW(D3DCreateBlob(binary.size(), &bytecode));
     CopyMemory(bytecode->GetBufferPointer(), binary.data(), binary.size());

@@ -5,17 +5,17 @@ namespace au::passflow {
 bool Configuration::SetBackendType(backend::BackendContext::Backend type)
 {
     if (backendTypeGot) {
-        AU_LOG_RETF_E(TAG, "Set backend type failed, it has been got.");
+        GP_LOG_RETF_E(TAG, "Set backend type failed, it has been got.");
     }
     switch (type) {
     case backend::BackendContext::Backend::DX12:
-        AU_LOG_I(TAG, "Set backend type: DX12.");
+        GP_LOG_I(TAG, "Set backend type: DX12.");
         break;
     case backend::BackendContext::Backend::Vulkan:
-        AU_LOG_I(TAG, "Set backend type: Vulkan.");
+        GP_LOG_I(TAG, "Set backend type: Vulkan.");
         break;
     case backend::BackendContext::Backend::SoftRaster:
-        AU_LOG_I(TAG, "Set backend type: SoftRaster.");
+        GP_LOG_I(TAG, "Set backend type: SoftRaster.");
         break;
     }
     backendType = type;
@@ -27,13 +27,13 @@ backend::BackendContext::Backend Configuration::GetBackendType() const
     if (!backendTypeGot) {
         switch (backendType) {
         case backend::BackendContext::Backend::DX12:
-            AU_LOG_I(TAG, "Backend type is DX12, it is initialized and cannot be modified.");
+            GP_LOG_I(TAG, "Backend type is DX12, it is initialized and cannot be modified.");
             break;
         case backend::BackendContext::Backend::Vulkan:
-            AU_LOG_I(TAG, "Backend type is Vulkan, it is initialized and cannot be modified.");
+            GP_LOG_I(TAG, "Backend type is Vulkan, it is initialized and cannot be modified.");
             break;
         case backend::BackendContext::Backend::SoftRaster:
-            AU_LOG_I(TAG, "Backend type is SoftRaster, it is initialized and cannot be modified.");
+            GP_LOG_I(TAG, "Backend type is SoftRaster, it is initialized and cannot be modified.");
             break;
         }
         backendTypeGot = true;
@@ -44,9 +44,9 @@ backend::BackendContext::Backend Configuration::GetBackendType() const
 bool Configuration::SetMultipleBufferingCount(unsigned int count)
 {
     if (multipleBufferingCountGot) {
-        AU_LOG_RETF_E(TAG, "Set multiple buffering count failed, it has been got.");
+        GP_LOG_RETF_E(TAG, "Set multiple buffering count failed, it has been got.");
     }
-    AU_LOG_I(TAG, "Set multiple buffering count: %d.", count);
+    GP_LOG_I(TAG, "Set multiple buffering count: %d.", count);
     multipleBufferingCount = count;
     return true;
 }
@@ -54,7 +54,7 @@ bool Configuration::SetMultipleBufferingCount(unsigned int count)
 unsigned int Configuration::GetMultipleBufferingCount() const
 {
     if (!multipleBufferingCountGot) {
-        AU_LOG_I(TAG, "Multiple buffering count is %d, "
+        GP_LOG_I(TAG, "Multiple buffering count is %d, "
             "it is initialized and cannot be modified.",
             multipleBufferingCount);
         multipleBufferingCountGot = true;
