@@ -19,76 +19,85 @@ public:
     void BeginRecord() override;
     void EndRecord() override;
 
-    void RcBarrier(InputVertex* const resource,
-        ResourceState before, ResourceState after) override;
-    void RcBarrier(InputIndex* const resource,
-        ResourceState before, ResourceState after) override;
-    void RcBarrier(ResourceBuffer* const resource,
-        ResourceState before, ResourceState after) override;
-    void RcBarrier(ResourceBufferEx* const resource,
-        ResourceState before, ResourceState after) override;
-    void RcBarrier(ResourceImage* const resource,
-        ResourceState before, ResourceState after) override;
-    void RcBarrier(Swapchain* const swapchain,
-        ResourceState before, ResourceState after) override;
+    void RcBarrier(rhi::InputVertex* const resource,
+        rhi::ResourceState before, rhi::ResourceState after) override;
+    void RcBarrier(rhi::InputIndex* const resource,
+        rhi::ResourceState before, rhi::ResourceState after) override;
+    void RcBarrier(rhi::ResourceBuffer* const resource,
+        rhi::ResourceState before, rhi::ResourceState after) override;
+    void RcBarrier(rhi::ResourceBufferEx* const resource,
+        rhi::ResourceState before, rhi::ResourceState after) override;
+    void RcBarrier(rhi::ResourceImage* const resource,
+        rhi::ResourceState before, rhi::ResourceState after) override;
+    void RcBarrier(rhi::Swapchain* const swapchain,
+        rhi::ResourceState before, rhi::ResourceState after) override;
 
     void RcUpload(const void* const data, size_t size,
-        InputVertex* const destination, InputVertex* const staging) override;
+        rhi::InputVertex* const destination, rhi::InputVertex* const staging) override;
     void RcUpload(const void* const data, size_t size,
-        InputIndex* const destination, InputIndex* const staging) override;
+        rhi::InputIndex* const destination, rhi::InputIndex* const staging) override;
     void RcUpload(const void* const data, size_t size,
-        ResourceBuffer* const destination, ResourceBuffer* const staging) override;
+        rhi::ResourceBuffer* const destination, rhi::ResourceBuffer* const staging) override;
     void RcUpload(const void* const data, size_t size,
-        ResourceBufferEx* const destination, ResourceBufferEx* const staging) override;
+        rhi::ResourceBufferEx* const destination, rhi::ResourceBufferEx* const staging) override;
     void RcUpload(const void* const data, size_t size,
-        ResourceImage* const destination, ResourceImage* const staging) override;
+        rhi::ResourceImage* const destination, rhi::ResourceImage* const staging) override;
 
-    void RcCopy(InputVertex* const destination, InputVertex* const source) override;
-    void RcCopy(InputIndex* const destination, InputIndex* const source) override;
-    void RcCopy(ResourceBuffer* const destination, ResourceBuffer* const source) override;
-    void RcCopy(ResourceBufferEx* const destination, ResourceBufferEx* const source) override;
-    void RcCopy(ResourceImage* const destination, ResourceImage* const source) override;
-    void RcCopy(Swapchain* const destination, ResourceImage* const source) override;
+    void RcCopy(rhi::InputVertex* const destination,
+        rhi::InputVertex* const source) override;
+    void RcCopy(rhi::InputIndex* const destination,
+        rhi::InputIndex* const source) override;
+    void RcCopy(rhi::ResourceBuffer* const destination,
+        rhi::ResourceBuffer* const source) override;
+    void RcCopy(rhi::ResourceBufferEx* const destination,
+        rhi::ResourceBufferEx* const source) override;
+    void RcCopy(rhi::ResourceImage* const destination,
+        rhi::ResourceImage* const source) override;
+    void RcCopy(rhi::Swapchain* const destination,
+        rhi::ResourceImage* const source) override;
 
-    void RcSetViewports(const std::vector<Viewport>& viewports) override;
-    void RcSetScissors(const std::vector<Scissor>& scissors) override;
+    void RcSetViewports(const std::vector<rhi::Viewport>& viewports) override;
+    void RcSetScissors(const std::vector<rhi::Scissor>& scissors) override;
 
-    void RcClearColorAttachment(Swapchain* const swapchain) override;
-    void RcClearDepthStencilAttachment(Swapchain* const swapchain) override;
-    void RcClearColorAttachment(Descriptor* const descriptor) override;
-    void RcClearDepthStencilAttachment(Descriptor* const descriptor) override;
+    void RcClearColorAttachment(rhi::Swapchain* const swapchain) override;
+    void RcClearDepthStencilAttachment(rhi::Swapchain* const swapchain) override;
+    void RcClearColorAttachment(rhi::Descriptor* const descriptor) override;
+    void RcClearDepthStencilAttachment(rhi::Descriptor* const descriptor) override;
     void RcSetRenderAttachments(
-        Swapchain* const swapchain,
-        const std::vector<Descriptor*>& colorAttachments,
-        const std::vector<Descriptor*>& depthStencilAttachments,
+        rhi::Swapchain* const swapchain,
+        const std::vector<rhi::Descriptor*>& colorAttachments,
+        const std::vector<rhi::Descriptor*>& depthStencilAttachments,
         bool descriptorsContinuous) override;
 
     void RcBeginPass(
-        Swapchain* const swapchain,
-        const std::vector<std::tuple<Descriptor*, PassAction, PassAction>>& colorOutputs,
-        const std::vector<std::tuple<Descriptor*, PassAction, PassAction>>& depthStencil,
+        rhi::Swapchain* const swapchain,
+        const std::vector<std::tuple<rhi::Descriptor*,
+            rhi::PassAction, rhi::PassAction>>& colorOutputs,
+        const std::vector<std::tuple<rhi::Descriptor*,
+            rhi::PassAction, rhi::PassAction>>& depthStencil,
         bool writeBufferOrTextureResource) override;
     void RcEndPass() override;
 
-    void RcSetPipeline(PipelineState* const pipelineState) override;
+    void RcSetPipeline(rhi::PipelineState* const pipelineState) override;
 
-    void RcSetVertex(const std::vector<InputVertex*>& vertices,
-        InputVertexAttributes* const attributes, unsigned int startSlot) override;
-    void RcSetIndex(InputIndex* const index, InputIndexAttribute* const attribute) override;
+    void RcSetVertex(const std::vector<rhi::InputVertex*>& vertices,
+        rhi::InputVertexAttributes* const attributes, unsigned int startSlot) override;
+    void RcSetIndex(rhi::InputIndex* const index,
+        rhi::InputIndexAttribute* const attribute) override;
 
-    void RcSetDescriptorHeap(const std::vector<DescriptorHeap*>& heaps) override;
+    void RcSetDescriptorHeap(const std::vector<rhi::DescriptorHeap*>& heaps) override;
 
     void RcSetGraphicsDescriptor(
-        unsigned int index, Descriptor* const descriptor) override;
+        unsigned int index, rhi::Descriptor* const descriptor) override;
     void RcSetGraphicsDescriptors(
-        unsigned int index, const std::vector<Descriptor*>& descriptors) override;
+        unsigned int index, const std::vector<rhi::Descriptor*>& descriptors) override;
 
     void RcSetComputeDescriptor(
-        unsigned int index, Descriptor* const descriptor) override;
+        unsigned int index, rhi::Descriptor* const descriptor) override;
     void RcSetComputeDescriptors(
-        unsigned int index, const std::vector<Descriptor*>& descriptors) override;
+        unsigned int index, const std::vector<rhi::Descriptor*>& descriptors) override;
 
-    void RcDraw(InputIndex* const index) override;
+    void RcDraw(rhi::InputIndex* const index) override;
 
     void RcDispatch(
         unsigned int xThreadGroupsCount,

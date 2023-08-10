@@ -2,7 +2,7 @@
 
 #include "Resources.h"
 
-namespace au::passflow {
+namespace au::gp {
 
 struct ResourceContainer final {
     std::unordered_map<std::string, Resource<BaseConstantBuffer>> constantBuffers;

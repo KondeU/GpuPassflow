@@ -1,7 +1,7 @@
 #include "passflow/ComputePass.h"
 #include "passflow/Passflow.h"
 
-namespace au::passflow {
+namespace au::gp {
 
 ComputePass::ComputePass(Passflow& passflow) : BasePass(passflow)
 {
@@ -52,19 +52,19 @@ void ComputePass::ImportFrameResource(
     AcquireStagingFrameResource().frameResources.samplers[name] = sampler;
 }
 
-void ComputePass::InitializePipeline(backend::Device* device)
+void ComputePass::InitializePipeline(rhi::Device* device)
 {
     this->device = device;
-    pipelineState = device->CreatePipelineState({ ShaderStage::Compute });
+    pipelineState = device->CreatePipelineState({ rhi::ShaderStage::Compute });
 }
 
 void ComputePass::DeclareProgram(const ProgramProperties& properties)
 {
     for (const auto& [shaderStage, shaderProgram] : properties.shaders) {
-        if (framework::EnumCast(shaderStage) == framework::EnumCast(ShaderStage::Compute)) {
-            auto sourceType = backend::Shader::Description::SourceType::SourceFile;
+        if (EnumCast(shaderStage) == EnumCast(rhi::ShaderStage::Compute)) {
+            auto sourceType = rhi::Shader::Description::SourceType::SourceFile;
             if (shaderProgram.source.find('\n') != std::string::npos) {
-                sourceType = backend::Shader::Description::SourceType::Source;
+                sourceType = rhi::Shader::Description::SourceType::Source;
             }
             computeShader = device->CreateShader({
                 shaderStage, shaderProgram.source, shaderProgram.entry, sourceType });
@@ -81,12 +81,12 @@ void ComputePass::DeclareResource(const ShaderResourceProperties& properties)
 
     pipelineLayout = device->CreatePipelineLayout({});
     for (const auto& [resourceSpace, resourceAttributes] : properties.resources) {
-        auto space = framework::EnumCast(resourceSpace);
+        auto space = EnumCast(resourceSpace);
         auto group = descriptorGroups[space] = device->CreateDescriptorGroup({ space });
         for (const auto& attribute : resourceAttributes) {
             if (resourceSpace == ShaderResourceProperties::ResourceSpace::PerObject) {
-                if (framework::EnumCast(attribute.resourceType) &
-                    framework::EnumCast(DescriptorType::ShaderResource)) {
+                if (EnumCast(attribute.resourceType) &
+                    EnumCast(rhi::DescriptorType::ShaderResource)) {
                     computePipelineCounters.objectShaderResourcesCount +=
                         attribute.bindingPointCount;
                 } else {
@@ -96,10 +96,10 @@ void ComputePass::DeclareResource(const ShaderResourceProperties& properties)
                     continue;
                 }
             } else {
-                if (framework::EnumCast(attribute.resourceType) &
-                    framework::EnumCast(DescriptorType::ShaderResource)) {
+                if (EnumCast(attribute.resourceType) &
+                    EnumCast(rhi::DescriptorType::ShaderResource)) {
                     computePipelineCounters.shaderResourcesCount += attribute.bindingPointCount;
-                } else if (attribute.resourceType == DescriptorType::ImageSampler) {
+                } else if (attribute.resourceType == rhi::DescriptorType::ImageSampler) {
                     computePipelineCounters.imageSamplersCount += attribute.bindingPointCount;
                 } else {
                     GP_LOG_F(TAG, "Resource only can be the type of ShaderResource/ImageSampler.");
@@ -143,12 +143,12 @@ bool ComputePass::BuildPipeline()
     }
 
     pipelineState->SetPipelineLayout(pipelineLayout);
-    pipelineState->SetShader(ShaderStage::Compute, computeShader);
+    pipelineState->SetShader(rhi::ShaderStage::Compute, computeShader);
     pipelineState->BuildState();
 
     unsigned int mbc = multipleBufferingCount;
-    shaderResourceDescriptorHeaps.resize(mbc, { device, DescriptorType::ShaderResource });
-    imageSamplerDescriptorHeaps.resize(mbc, { device, DescriptorType::ImageSampler });
+    shaderResourceDescriptorHeaps.resize(mbc, { device, rhi::DescriptorType::ShaderResource });
+    imageSamplerDescriptorHeaps.resize(mbc, { device, rhi::DescriptorType::ImageSampler });
     for (unsigned int index = 0; index < mbc; index++) {
         ReserveEnoughAllTypesDescriptors(index);
     }
@@ -189,7 +189,7 @@ void ComputePass::CleanPipeline()
     }
 }
 
-backend::PipelineState* ComputePass::AcquirePipelineState()
+rhi::PipelineState* ComputePass::AcquirePipelineState()
 {
     return pipelineState;
 }

@@ -1,6 +1,6 @@
 #include "Resources.h"
 
-namespace au::passflow {
+namespace au::gp {
 
 inline void SafeCopyMemory(void* dstAddr, size_t dstSize, const void* srcAddr, size_t srcSize)
 {

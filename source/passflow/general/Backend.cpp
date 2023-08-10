@@ -1,7 +1,7 @@
 #include "Backend.h"
 #include "Configuration.h"
 
-namespace au::passflow {
+namespace au::gp {
 
 backend::Device* Backend::Device()
 {

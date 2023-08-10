@@ -15,6 +15,8 @@
 #include "DX12PipelineLayout.h"
 #include "DX12PipelineState.h"
 
+#define DEFINE_DXFUNC_CREATE_DESTROY(T)
+
 namespace au::backend {
 class DX12Device : public rhi::Device
     , DX12Object<DX12Device> {
@@ -25,7 +27,7 @@ public:
     void Setup(Description description);
     void Shutdown();
 
-    Shader* CreateShader(Shader::Description description) override;
+    rhi::Shader* CreateShader(rhi::Shader::Description description) override;
     bool DestroyShader(Shader* instance) override;
 
     Swapchain* CreateSwapchain(Swapchain::Description description) override;
@@ -76,7 +78,7 @@ public:
 
     Microsoft::WRL::ComPtr<IDXGIFactory4> DXGIFactory();
     Microsoft::WRL::ComPtr<ID3D12Device> NativeDevice();
-    Microsoft::WRL::ComPtr<ID3D12CommandQueue> CommandQueue(CommandType type);
+    Microsoft::WRL::ComPtr<ID3D12CommandQueue> CommandQueue(rhi::CommandType type);
     Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CommandAllocator(const std::string& name);
 
 protected:

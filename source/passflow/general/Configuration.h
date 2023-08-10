@@ -1,9 +1,8 @@
 #pragma once
 
-#include "framework/dfx/Logger.hpp"
 #include "backend/BackendContext.h"
 
-namespace au::passflow {
+namespace au::gp {
 
 class Configuration final : public common::GlobalSingleton<Configuration> {
 public:

@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include "backend/BackendContext.h"
 
-namespace au {
+namespace au::gp {
 
 template <typename T>
 using Resource = std::shared_ptr<T>;
@@ -20,8 +20,6 @@ Resource<T> CloneResource(const Resource<T>& resource)
 {
     return (resource ? sptr_down_cast<T>(resource->Clone()) : nullptr);
 }
-
-namespace passflow {
 
 class DeviceHolder : public common::NonCopyable {
 public:
@@ -155,7 +153,7 @@ public:
     static_assert(std::is_trivial<T>::value && std::is_standard_layout<T>::value,
         "The specialization type of ConstantBuffer must be POD!");
 
-    void ConfigureConstantBufferHeapType(TransferDirection type);
+    void ConfigureConstantBufferHeapType(rhi::TransferDirection type);
 
     void SetupConstantBuffer();
 
@@ -352,7 +350,6 @@ private:
     rhi::ImageSampler* sampler = nullptr;
 };
 
-}
 }
 
 #include "Resources.inl"

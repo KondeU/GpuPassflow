@@ -1,7 +1,7 @@
 #include "passflow/BasePass.h"
 #include "../general/Configuration.h"
 
-namespace au::passflow {
+namespace au::gp {
 
 BasePass::BasePass(Passflow& passflow) : passflow(passflow)
 {

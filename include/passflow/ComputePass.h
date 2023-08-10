@@ -3,7 +3,7 @@
 #include "BasePass.h"
 #include "FrameResources.h"
 
-namespace au::passflow {
+namespace au::gp {
 
 class ComputePass : public BasePass {
 public:
@@ -26,7 +26,7 @@ public:
 protected:
     explicit ComputePass(Passflow& passflow);
 
-    void InitializePipeline(backend::Device* device);
+    void InitializePipeline(rhi::Device* device);
     void DeclareProgram(const ProgramProperties& properties);
     void DeclareResource(const ShaderResourceProperties& properties);
     bool BuildPipeline();
@@ -34,7 +34,7 @@ protected:
 
     // Use this function to acquire pipeline state object, inherited
     // classes can use it in the OnExecutePass function when dispatching.
-    backend::PipelineState* AcquirePipelineState();
+    rhi::PipelineState* AcquirePipelineState();
 
     void ReserveEnoughShaderResourceDescriptors(unsigned int bufferingIndex);
     void ReserveEnoughAllTypesDescriptors(unsigned int bufferingIndex);
@@ -51,14 +51,14 @@ protected:
 private:
     GP_LOG_TAG(ComputePass);
 
-    backend::Device* device = nullptr; // Not owned!
+    rhi::Device* device = nullptr; // Not owned!
 
-    backend::PipelineState* pipelineState = nullptr;
-    backend::PipelineLayout* pipelineLayout = nullptr;
+    rhi::PipelineState* pipelineState = nullptr;
+    rhi::PipelineLayout* pipelineLayout = nullptr;
 
-    backend::Shader* computeShader = nullptr;
+    rhi::Shader* computeShader = nullptr;
 
-    std::map<uint8_t, backend::DescriptorGroup*> descriptorGroups;
+    std::map<uint8_t, rhi::DescriptorGroup*> descriptorGroups;
 
     std::vector<DynamicDescriptorManager> shaderResourceDescriptorHeaps;
     std::vector<DynamicDescriptorManager> imageSamplerDescriptorHeaps;

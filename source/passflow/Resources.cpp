@@ -10,27 +10,27 @@ template <typename Resource>
 void UploadHost(Resource* destination, const void* source, size_t size, size_t element = 1)
 {
     auto totalBytes = size * element;
-    au::passflow::SafeCopyMemory(destination->Map(), totalBytes, source, totalBytes);
+    au::gp::SafeCopyMemory(destination->Map(), totalBytes, source, totalBytes);
     destination->Unmap();
 }
 
 template <typename Resource>
-void UploadRemote(au::backend::Device* device,
+void UploadRemote(au::rhi::Device* device,
     Resource* destination, Resource* staging, const void* source, size_t size, size_t element = 1)
 {
     auto command = device->CreateCommandRecorder({ "Upload", au::CommandType::Transfer });
 
     command->BeginRecord();
     command->RcBarrier(destination,
-        au::ResourceState::GENERAL_READ,
-        au::ResourceState::COPY_DESTINATION);
+        au::rhi::ResourceState::GENERAL_READ,
+        au::rhi::ResourceState::COPY_DESTINATION);
 
     auto totalBytes = size * element;
     command->RcUpload(source, totalBytes, destination, staging);
 
     command->RcBarrier(destination,
-        au::ResourceState::COPY_DESTINATION,
-        au::ResourceState::GENERAL_READ);
+        au::rhi::ResourceState::COPY_DESTINATION,
+        au::rhi::ResourceState::GENERAL_READ);
     command->EndRecord();
 
     command->Submit();
@@ -42,7 +42,7 @@ void UploadRemote(au::backend::Device* device,
 
 }
 
-namespace au::passflow {
+namespace au::gp {
 
 DeviceHolder::DeviceHolder()
 {
@@ -78,9 +78,9 @@ void BaseConstantBuffer::UploadConstantBuffer(unsigned int index)
         GP_LOG_RET_W(TAG, "Upload constant buffer failed, index out of range.");
     }
     auto buffer = buffers[index];
-    if (description.memoryType == TransferDirection::CPU_TO_GPU) {
+    if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(buffer, RawCpuPtr(), description.bufferBytesSize);
-    } else if (description.memoryType == TransferDirection::GPU_ONLY) {
+    } else if (description.memoryType == rhi::TransferDirection::GPU_ONLY) {
         auto staging = device->CreateResourceBuffer({ description.bufferBytesSize });
         UploadRemote(device, buffer, staging, RawCpuPtr(), description.bufferBytesSize);
         device->DestroyResourceBuffer(staging);
@@ -96,7 +96,7 @@ void BaseConstantBuffer::UploadConstantBuffers()
     }
 }
 
-backend::ResourceBuffer* BaseConstantBuffer::RawGpuInst(unsigned int index)
+rhi::ResourceBuffer* BaseConstantBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= buffers.size()) {
         GP_LOG_RETN_W(TAG, "Acquire constant buffer backend instance failed, index out of range.");
@@ -143,13 +143,13 @@ void BaseStructuredBuffer::UploadStructuredBuffer(unsigned int index)
         GP_LOG_RET_W(TAG, "Upload structured buffer failed, index out of range.");
     }
     auto buffer = buffers[index];
-    if (description.memoryType == TransferDirection::GPU_ONLY) {
+    if (description.memoryType == rhi::TransferDirection::GPU_ONLY) {
         auto staging = device->CreateResourceBuffer({ description.elementsCount,
-            description.elementBytesSize, false, TransferDirection::CPU_TO_GPU });
+            description.elementBytesSize, false, rhi::TransferDirection::CPU_TO_GPU });
         UploadRemote(device, buffer, staging, RawCpuPtr(),
             description.elementBytesSize, description.elementsCount);
         device->DestroyResourceBuffer(staging);
-    } else if (description.memoryType == TransferDirection::CPU_TO_GPU) {
+    } else if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(buffer, RawCpuPtr(), description.elementBytesSize, description.elementsCount);
     } else {
         GP_LOG_W(TAG, "Upload structured buffer failed, this buffer is in the readback heap.");
@@ -163,7 +163,7 @@ void BaseStructuredBuffer::UploadStructuredBuffers()
     }
 }
 
-backend::ResourceBufferEx* BaseStructuredBuffer::RawGpuInst(unsigned int index)
+rhi::ResourceBufferEx* BaseStructuredBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= buffers.size()) {
         GP_LOG_RETN_W(TAG,
@@ -211,13 +211,13 @@ void BaseIndexBuffer::UploadIndexBuffer(unsigned int index)
         GP_LOG_RET_W(TAG, "Upload index buffer failed, index out of range.");
     }
     auto indexBuffer = indices[index];
-    if (description.memoryType == TransferDirection::GPU_ONLY) {
+    if (description.memoryType == rhi::TransferDirection::GPU_ONLY) {
         auto staging = device->CreateInputIndex({ description.indicesCount,
-            description.indexByteSize, TransferDirection::CPU_TO_GPU });
+            description.indexByteSize, rhi::TransferDirection::CPU_TO_GPU });
         UploadRemote(device, indexBuffer, staging, RawCpuPtr(),
             description.indexByteSize, description.indicesCount);
         device->DestroyInputIndex(staging);
-    } else if (description.memoryType == TransferDirection::CPU_TO_GPU) {
+    } else if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(indexBuffer, RawCpuPtr(), description.indexByteSize, description.indicesCount);
     } else {
         GP_LOG_W(TAG, "Upload index buffer failed, this buffer is in the readback heap.");
@@ -231,7 +231,7 @@ void BaseIndexBuffer::UploadIndexBuffers()
     }
 }
 
-backend::InputIndex* BaseIndexBuffer::RawGpuInst(unsigned int index)
+rhi::InputIndex* BaseIndexBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= indices.size()) {
         GP_LOG_RETN_W(TAG, "Acquire index buffer backend instance failed, index out of range.");
@@ -278,13 +278,13 @@ void BaseVertexBuffer::UploadVertexBuffer(unsigned int index)
         GP_LOG_RET_W(TAG, "Upload vertex buffer failed, index out of range.");
     }
     auto vertexBuffer = vertices[index];
-    if (description.memoryType == TransferDirection::GPU_ONLY) {
+    if (description.memoryType == rhi::TransferDirection::GPU_ONLY) {
         auto staging = device->CreateInputVertex({ description.verticesCount,
-            description.attributesByteSize, TransferDirection::CPU_TO_GPU });
+            description.attributesByteSize, rhi::TransferDirection::CPU_TO_GPU });
         UploadRemote(device, vertexBuffer, staging, RawCpuPtr(),
             description.attributesByteSize, description.verticesCount);
         device->DestroyInputVertex(staging);
-    } else if (description.memoryType == TransferDirection::CPU_TO_GPU) {
+    } else if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(vertexBuffer, RawCpuPtr(),
             description.attributesByteSize, description.verticesCount);
     } else {
@@ -299,7 +299,7 @@ void BaseVertexBuffer::UploadVertexBuffers()
     }
 }
 
-backend::InputVertex* BaseVertexBuffer::RawGpuInst(unsigned int index)
+rhi::InputVertex* BaseVertexBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= vertices.size()) {
         GP_LOG_RETN_W(TAG, "Acquire vertex buffer backend instance failed, index out of range.");
@@ -349,14 +349,14 @@ void BaseTexture::UploadTextureBuffer(unsigned int index)
     // TODO: Current only support 1x MSAA and 1 mipmap.
     size_t bytes = static_cast<size_t>(QueryBasicFormatBytes(description.format))
         * description.width * description.height * description.arrays;
-    if (description.memoryType == TransferDirection::GPU_ONLY) {
+    if (description.memoryType == rhi::TransferDirection::GPU_ONLY) {
         auto stagingImageDescription = description;
-        stagingImageDescription.usage = ImageType::ShaderResource;
-        stagingImageDescription.memoryType = TransferDirection::CPU_TO_GPU;
+        stagingImageDescription.usage = rhi::ImageType::ShaderResource;
+        stagingImageDescription.memoryType = rhi::TransferDirection::CPU_TO_GPU;
         auto staging = device->CreateResourceImage(stagingImageDescription);
         UploadRemote(device, image, staging, RawCpuPtr(), bytes);
         device->DestroyResourceImage(staging);
-    } else if (description.memoryType == TransferDirection::CPU_TO_GPU) {
+    } else if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(image, RawCpuPtr(), bytes);
     } else {
         GP_LOG_W(TAG, "Upload texture buffer failed, this buffer is in the readback heap.");
@@ -392,7 +392,7 @@ void BaseTexture::GetSize(unsigned int& width, unsigned int& height, unsigned in
     arrays = description.arrays;
 }
 
-backend::ResourceImage* BaseTexture::RawGpuInst(unsigned int index)
+rhi::ResourceImage* BaseTexture::RawGpuInst(unsigned int index)
 {
     if (index >= images.size()) {
         GP_LOG_RETN_W(TAG, "Acquire texture backend instance failed, index out of range.");
@@ -427,7 +427,8 @@ Resource<BaseTexture> BaseTexture::Clone() const
 
 //////////////////////////////////////////////////
 
-void ColorOutput::SetupColorOutput(BasicFormat format, unsigned int width, unsigned int height)
+void ColorOutput::SetupColorOutput(
+    rhi::BasicFormat format, unsigned int width, unsigned int height)
 {
     this->width = width;
     this->height = height;
@@ -437,8 +438,8 @@ void ColorOutput::SetupColorOutput(BasicFormat format, unsigned int width, unsig
     description.height = height;
     description.arrays = 1;
     description.format = format;
-    description.usage = ImageType::Color;
-    description.dimension = ImageDimension::Dimension2D;
+    description.usage = rhi::ImageType::Color;
+    description.dimension = rhi::ImageDimension::Dimension2D;
     SetupGPU();
 }
 
@@ -473,26 +474,26 @@ void* ColorOutput::RawCpuPtr()
 }
 
 void DepthStencilOutput::SetupDepthStencilOutput(
-    BasicFormat format, unsigned int width, unsigned int height)
+    rhi::BasicFormat format, unsigned int width, unsigned int height)
 {
     this->width = width;
     this->height = height;
     pixelBytes = QueryBasicFormatBytes(format);
 
-    std::underlying_type<ImageType>::type usage = 0;
+    std::underlying_type<rhi::ImageType>::type usage = 0;
     if (IsBasicFormatHasDepth(format)) {
-        usage |= framework::EnumCast(ImageType::Depth);
+        usage |= EnumCast(rhi::ImageType::Depth);
     }
     if (IsBasicFormatHasStencil(format)) {
-        usage |= framework::EnumCast(ImageType::Stencil);
+        usage |= EnumCast(rhi::ImageType::Stencil);
     }
 
     description.width = width;
     description.height = height;
     description.arrays = 1;
     description.format = format;
-    description.usage = static_cast<ImageType>(usage);
-    description.dimension = ImageDimension::Dimension2D;
+    description.usage = static_cast<rhi::ImageType>(usage);
+    description.dimension = rhi::ImageDimension::Dimension2D;
     SetupGPU();
 }
 
@@ -539,7 +540,7 @@ DisplayPresentOutput::~DisplayPresentOutput()
 }
 
 void DisplayPresentOutput::SetupDisplayPresentOutput(
-    BasicFormat format, unsigned int width, unsigned int height, void* window)
+    rhi::BasicFormat format, unsigned int width, unsigned int height, void* window)
 {
     description.width = width;
     description.height = height;
@@ -586,7 +587,7 @@ void DisplayPresentOutput::GetSize(unsigned int& width, unsigned int& height) co
     height = description.height;
 }
 
-backend::Swapchain* DisplayPresentOutput::RawGpuInst()
+rhi::Swapchain* DisplayPresentOutput::RawGpuInst()
 {
     return swapchain;
 }
@@ -598,21 +599,21 @@ Sampler::~Sampler()
     }
 }
 
-void Sampler::ConfigureSamplerState(SamplerState::Filter filterForAll)
+void Sampler::ConfigureSamplerState(rhi::SamplerState::Filter filterForAll)
 {
     description.state.minification  = filterForAll;
     description.state.magnification = filterForAll;
     description.state.mipLevel      = filterForAll;
 }
 
-void Sampler::ConfigureSamplerState(AddressMode addressModeForUVW)
+void Sampler::ConfigureSamplerState(rhi::AddressMode addressModeForUVW)
 {
     description.state.addressMode[0] = addressModeForUVW;
     description.state.addressMode[1] = addressModeForUVW;
     description.state.addressMode[2] = addressModeForUVW;
 }
 
-void Sampler::ConfigureSamplerState(SamplerState samplerState)
+void Sampler::ConfigureSamplerState(rhi::SamplerState samplerState)
 {
     description.state = samplerState;
 }
@@ -625,7 +626,7 @@ void Sampler::SetupSampler()
     sampler = device->CreateImageSampler(description);
 }
 
-backend::ImageSampler* Sampler::RawGpuInst()
+rhi::ImageSampler* Sampler::RawGpuInst()
 {
     return sampler;
 }

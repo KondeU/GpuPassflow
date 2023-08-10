@@ -3,7 +3,7 @@
 #include "BasePass.h"
 #include "FrameResources.h"
 
-namespace au::passflow {
+namespace au::gp {
 
 class RasterizePass : public BasePass {
 public:
@@ -33,7 +33,7 @@ public:
 protected:
     explicit RasterizePass(Passflow& passflow);
 
-    void InitializePipeline(backend::Device* device);
+    void InitializePipeline(rhi::Device* device);
     void DeclareInput(const InputProperties& properties);
     void DeclareOutput(const OutputProperties& properties);
     void DeclareProgram(const ProgramProperties& properties);
@@ -43,15 +43,15 @@ protected:
 
     // Use these functions to acquire pipeline state object or input attributes,
     // inherited classes can use them in the OnExecutePass function when drawing.
-    backend::PipelineState* AcquirePipelineState();
-    backend::InputIndexAttribute* AcquireIndexAttribute();
-    backend::InputVertexAttributes* AcquireVertexAttributes();
+    rhi::PipelineState* AcquirePipelineState();
+    rhi::InputIndexAttribute* AcquireIndexAttribute();
+    rhi::InputVertexAttributes* AcquireVertexAttributes();
 
     void ReserveEnoughShaderResourceDescriptors(unsigned int bufferingIndex);
     void ReserveEnoughAllTypesDescriptors(unsigned int bufferingIndex);
 
     DynamicDescriptorManager& AcquireDescriptorManager(
-        unsigned int bufferingIndex, DescriptorType descriptorType);
+        unsigned int bufferingIndex, rhi::DescriptorType descriptorType);
 
     void UpdateDrawItems(unsigned int bufferingIndex);
     void UpdateFrameResources(unsigned int bufferingIndex);
@@ -62,16 +62,16 @@ protected:
 private:
     GP_LOG_TAG(RasterizePass);
 
-    backend::Device* device = nullptr; // Not owned!
+    rhi::Device* device = nullptr; // Not owned!
 
-    backend::PipelineState* pipelineState = nullptr;
-    backend::PipelineLayout* pipelineLayout = nullptr;
+    rhi::PipelineState* pipelineState = nullptr;
+    rhi::PipelineLayout* pipelineLayout = nullptr;
 
-    backend::InputVertexAttributes* inputVertexAttributes = nullptr;
-    backend::InputIndexAttribute* inputIndexAttribute = nullptr;
+    rhi::InputVertexAttributes* inputVertexAttributes = nullptr;
+    rhi::InputIndexAttribute* inputIndexAttribute = nullptr;
 
-    std::map<ShaderStage, backend::Shader*> programShaders;
-    std::map<uint8_t, backend::DescriptorGroup*> descriptorGroups;
+    std::map<rhi::ShaderStage, rhi::Shader*> programShaders;
+    std::map<uint8_t, rhi::DescriptorGroup*> descriptorGroups;
 
     std::vector<DynamicDescriptorManager> shaderResourceDescriptorHeaps;
     std::vector<DynamicDescriptorManager> imageSamplerDescriptorHeaps;

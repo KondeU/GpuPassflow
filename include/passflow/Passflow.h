@@ -3,7 +3,7 @@
 #include "RasterizePass.h"
 #include "ComputePass.h"
 
-namespace au::passflow {
+namespace au::gp {
 
 class Passflow {
 public:
@@ -52,8 +52,8 @@ private:
 
     std::vector<std::string> commandRecorderNames;
 
-    backend::Device* bkDevice = nullptr; // Not owned!
-    std::vector<backend::CommandRecorder*> bkCommands;
+    rhi::Device* bkDevice = nullptr; // Not owned!
+    std::vector<rhi::CommandRecorder*> bkCommands;
 };
 
 }

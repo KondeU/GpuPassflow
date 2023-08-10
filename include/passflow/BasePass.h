@@ -3,7 +3,7 @@
 #include <map>
 #include "backend/BackendContext.h"
 
-namespace au::passflow {
+namespace au::gp {
 
 class Passflow;
 

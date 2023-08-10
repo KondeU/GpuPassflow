@@ -1,7 +1,7 @@
 #include "passflow/RasterizePass.h"
 #include "passflow/Passflow.h"
 
-namespace au::passflow {
+namespace au::gp {
 
 RasterizePass::RasterizePass(Passflow& passflow) : BasePass(passflow)
 {
@@ -70,10 +70,10 @@ void RasterizePass::ImportFrameOutput(
     AcquireStagingFrameResource().frameOutputs.displayPresentOutputs[name] = output;
 }
 
-void RasterizePass::InitializePipeline(backend::Device* device)
+void RasterizePass::InitializePipeline(rhi::Device* device)
 {
     this->device = device;
-    pipelineState = device->CreatePipelineState({ ShaderStage::Graphics });
+    pipelineState = device->CreatePipelineState({ rhi::ShaderStage::Graphics });
 }
 
 void RasterizePass::DeclareInput(const InputProperties& properties)
@@ -105,7 +105,7 @@ void RasterizePass::DeclareOutput(const OutputProperties& properties)
             rasterizePipelineCounters.depthStencilOutputCount = 1;
         } else { // Color: C0,...,C7
             pipelineState->SetColorOutputFormat(
-                framework::EnumCast(outputSlot), outputAttribute.imagePixelFormat);
+                EnumCast(outputSlot), outputAttribute.imagePixelFormat);
             rasterizePipelineCounters.colorOutputCount++;
         }
     }
@@ -114,10 +114,10 @@ void RasterizePass::DeclareOutput(const OutputProperties& properties)
 void RasterizePass::DeclareProgram(const ProgramProperties& properties)
 {
     for (const auto& [shaderStage, shaderProgram] : properties.shaders) {
-        if (framework::EnumCast(shaderStage) & framework::EnumCast(ShaderStage::Graphics)) {
-            auto sourceType = backend::Shader::Description::SourceType::SourceFile;
+        if (EnumCast(shaderStage) & EnumCast(rhi::ShaderStage::Graphics)) {
+            auto sourceType = rhi::Shader::Description::SourceType::SourceFile;
             if (shaderProgram.source.find('\n') != std::string::npos) {
-                sourceType = backend::Shader::Description::SourceType::Source;
+                sourceType = rhi::Shader::Description::SourceType::Source;
             }
             programShaders[shaderStage] = device->CreateShader({
                 shaderStage, shaderProgram.source, shaderProgram.entry, sourceType });
@@ -133,12 +133,12 @@ void RasterizePass::DeclareResource(const ShaderResourceProperties& properties)
 
     pipelineLayout = device->CreatePipelineLayout({});
     for (const auto& [resourceSpace, resourceAttributes] : properties.resources) {
-        auto space = framework::EnumCast(resourceSpace);
+        auto space = EnumCast(resourceSpace);
         auto group = descriptorGroups[space] = device->CreateDescriptorGroup({ space });
         for (const auto& attribute : resourceAttributes) {
             if (resourceSpace == ShaderResourceProperties::ResourceSpace::PerObject) {
-                if (framework::EnumCast(attribute.resourceType) &
-                    framework::EnumCast(DescriptorType::ShaderResource)) {
+                if (EnumCast(attribute.resourceType) &
+                    EnumCast(rhi::DescriptorType::ShaderResource)) {
                     rasterizePipelineCounters.objectShaderResourcesCount +=
                         attribute.bindingPointCount;
                 } else {
@@ -148,10 +148,10 @@ void RasterizePass::DeclareResource(const ShaderResourceProperties& properties)
                     continue;
                 }
             } else {
-                if (framework::EnumCast(attribute.resourceType) &
-                    framework::EnumCast(DescriptorType::ShaderResource)) {
+                if (EnumCast(attribute.resourceType) &
+                    EnumCast(rhi::DescriptorType::ShaderResource)) {
                     rasterizePipelineCounters.shaderResourcesCount += attribute.bindingPointCount;
-                } else if (attribute.resourceType == DescriptorType::ImageSampler) {
+                } else if (attribute.resourceType == rhi::DescriptorType::ImageSampler) {
                     rasterizePipelineCounters.imageSamplersCount += attribute.bindingPointCount;
                 } else {
                     GP_LOG_F(TAG, "Resource only can be the type of ShaderResource/ImageSampler.");
@@ -193,7 +193,7 @@ bool RasterizePass::BuildPipeline()
     for (const auto& [stage, shader] : programShaders) {
         if (!shader->IsValid()) {
             GP_LOG_RETF_E(TAG, "Build pipeline failed, "
-                "shader(stage is `%d`) is invalid.", framework::EnumCast(stage));
+                "shader(stage is `%d`) is invalid.", EnumCast(stage));
         }
     }
 
@@ -206,10 +206,10 @@ bool RasterizePass::BuildPipeline()
     pipelineState->BuildState();
 
     unsigned int mbc = multipleBufferingCount;
-    shaderResourceDescriptorHeaps.resize(mbc, { device, DescriptorType::ShaderResource });
-    imageSamplerDescriptorHeaps.resize(mbc, { device, DescriptorType::ImageSampler });
-    renderTargetDescriptorHeaps.resize(mbc, { device, DescriptorType::ColorOutput });
-    depthStencilDescriptorHeaps.resize(mbc, { device, DescriptorType::DepthStencil });
+    shaderResourceDescriptorHeaps.resize(mbc, { device, rhi::DescriptorType::ShaderResource });
+    imageSamplerDescriptorHeaps.resize(mbc, { device, rhi::DescriptorType::ImageSampler });
+    renderTargetDescriptorHeaps.resize(mbc, { device, rhi::DescriptorType::ColorOutput });
+    depthStencilDescriptorHeaps.resize(mbc, { device, rhi::DescriptorType::DepthStencil });
     for (unsigned int index = 0; index < mbc; index++) {
         ReserveEnoughAllTypesDescriptors(index);
     }
@@ -261,17 +261,17 @@ void RasterizePass::CleanPipeline()
     }
 }
 
-backend::PipelineState* RasterizePass::AcquirePipelineState()
+rhi::PipelineState* RasterizePass::AcquirePipelineState()
 {
     return pipelineState;
 }
 
-backend::InputIndexAttribute* RasterizePass::AcquireIndexAttribute()
+rhi::InputIndexAttribute* RasterizePass::AcquireIndexAttribute()
 {
     return inputIndexAttribute;
 }
 
-backend::InputVertexAttributes* RasterizePass::AcquireVertexAttributes()
+rhi::InputVertexAttributes* RasterizePass::AcquireVertexAttributes()
 {
     return inputVertexAttributes;
 }
@@ -310,17 +310,17 @@ void RasterizePass::ReserveEnoughAllTypesDescriptors(unsigned int bufferingIndex
 }
 
 BasePass::DynamicDescriptorManager& RasterizePass::AcquireDescriptorManager(
-    unsigned int bufferingIndex, DescriptorType descriptorType)
+    unsigned int bufferingIndex, rhi::DescriptorType descriptorType)
 {
-    const std::unordered_map<DescriptorType, std::vector<DynamicDescriptorManager>*> map = {
-        { DescriptorType::ShaderResource, &shaderResourceDescriptorHeaps },
-        { DescriptorType::ImageSampler,   &imageSamplerDescriptorHeaps   },
-        { DescriptorType::ColorOutput,    &renderTargetDescriptorHeaps   },
-        { DescriptorType::DepthStencil,   &depthStencilDescriptorHeaps   }
+    const std::unordered_map<rhi::DescriptorType, std::vector<DynamicDescriptorManager>*> map = {
+        { rhi::DescriptorType::ShaderResource, &shaderResourceDescriptorHeaps },
+        { rhi::DescriptorType::ImageSampler,   &imageSamplerDescriptorHeaps   },
+        { rhi::DescriptorType::ColorOutput,    &renderTargetDescriptorHeaps   },
+        { rhi::DescriptorType::DepthStencil,   &depthStencilDescriptorHeaps   }
     };
-    if (framework::EnumCast(descriptorType) &
-        framework::EnumCast(DescriptorType::ShaderResource)) {
-        descriptorType = DescriptorType::ShaderResource;
+    if (EnumCast(descriptorType) &
+        EnumCast(rhi::DescriptorType::ShaderResource)) {
+        descriptorType = rhi::DescriptorType::ShaderResource;
     }
     return map.at(descriptorType)->at(bufferingIndex);
 }

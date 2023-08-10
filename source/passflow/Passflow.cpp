@@ -2,7 +2,7 @@
 #include "general/Configuration.h"
 #include "general/Backend.h"
 
-namespace au::passflow {
+namespace au::gp {
 
 Passflow::Passflow(std::string name) : passflowName(name)
 {

@@ -1,6 +1,6 @@
 #include "Configuration.h"
 
-namespace au::passflow {
+namespace au::gp {
 
 bool Configuration::SetBackendType(backend::BackendContext::Backend type)
 {
