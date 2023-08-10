@@ -53,19 +53,19 @@ void DX12PipelineState::Setup(Description description)
 
 void DX12PipelineState::Shutdown()
 {
-    description = { ShaderStage::Graphics };
+    description = { rhi::ShaderStage::Graphics };
     pipelineStateObject.Reset();
     pLayout = nullptr;
 }
 
-void DX12PipelineState::SetPipelineLayout(PipelineLayout* layout)
+void DX12PipelineState::SetPipelineLayout(rhi::PipelineLayout* layout)
 {
     pLayout = dynamic_cast<DX12PipelineLayout*>(layout);
     computePipelineState.pRootSignature = pLayout->Signature().Get();
     graphicsPipelineState.pRootSignature = pLayout->Signature().Get();
 }
 
-void DX12PipelineState::SetIndexAssembly(InputIndexAttribute* iia)
+void DX12PipelineState::SetIndexAssembly(rhi::InputIndexAttribute* iia)
 {
     auto dxIia = dynamic_cast<DX12InputIndexAttribute*>(iia);
     graphicsPipelineState.IBStripCutValue =
@@ -74,7 +74,7 @@ void DX12PipelineState::SetIndexAssembly(InputIndexAttribute* iia)
         dxIia->GetIndexInformation().PrimitiveTopologyType;
 }
 
-void DX12PipelineState::SetVertexAssembly(InputVertexAttributes* iva)
+void DX12PipelineState::SetVertexAssembly(rhi::InputVertexAttributes* iva)
 {
     auto dxIva = dynamic_cast<DX12InputVertexAttributes*>(iva);
     graphicsPipelineState.InputLayout = {
@@ -83,9 +83,9 @@ void DX12PipelineState::SetVertexAssembly(InputVertexAttributes* iva)
     };
 }
 
-void DX12PipelineState::SetShader(ShaderStage stage, Shader* shader)
+void DX12PipelineState::SetShader(rhi::ShaderStage stage, rhi::Shader* shader)
 {
-    if (!(framework::EnumCast(stage) & framework::EnumCast(description.enabledStage))) {
+    if (!(gp::EnumCast(stage) & gp::EnumCast(description.enabledStage))) {
         GP_LOG_RET_E(TAG, "Pipeline state set shader failed, stage not enabled.");
     }
 
@@ -101,17 +101,17 @@ void DX12PipelineState::SetShader(ShaderStage stage, Shader* shader)
     };
 
     switch (stage) {
-    case ShaderStage::Vertex:   graphicsPipelineState.VS = bytecode; break;
-    case ShaderStage::Hull:     graphicsPipelineState.HS = bytecode; break;
-    case ShaderStage::Domain:   graphicsPipelineState.DS = bytecode; break;
-    case ShaderStage::Geometry: graphicsPipelineState.GS = bytecode; break;
-    case ShaderStage::Pixel:    graphicsPipelineState.PS = bytecode; break;
-    case ShaderStage::Compute:  computePipelineState.CS  = bytecode; break;
+    case rhi::ShaderStage::Vertex:   graphicsPipelineState.VS = bytecode; break;
+    case rhi::ShaderStage::Hull:     graphicsPipelineState.HS = bytecode; break;
+    case rhi::ShaderStage::Domain:   graphicsPipelineState.DS = bytecode; break;
+    case rhi::ShaderStage::Geometry: graphicsPipelineState.GS = bytecode; break;
+    case rhi::ShaderStage::Pixel:    graphicsPipelineState.PS = bytecode; break;
+    case rhi::ShaderStage::Compute:  computePipelineState.CS  = bytecode; break;
     default: GP_LOG_RET_W(TAG, "Pipeline state set shader failed, invalid stage!");
     }
 }
 
-void DX12PipelineState::SetColorOutputFormat(unsigned int location, BasicFormat format)
+void DX12PipelineState::SetColorOutputFormat(unsigned int location, rhi::BasicFormat format)
 {
     if (location >= (sizeof(graphicsPipelineState.RTVFormats) /
                      sizeof(graphicsPipelineState.RTVFormats[0]))) {
@@ -128,37 +128,37 @@ void DX12PipelineState::SetColorOutputFormat(unsigned int location, BasicFormat 
     }
 }
 
-void DX12PipelineState::SetDepthStencilOutputFormat(BasicFormat format)
+void DX12PipelineState::SetDepthStencilOutputFormat(rhi::BasicFormat format)
 {
     graphicsPipelineState.DSVFormat = ConvertBasicFormat(format);
 }
 
-void DX12PipelineState::SetRasterizerState(RasterizerState state)
+void DX12PipelineState::SetRasterizerState(rhi::RasterizerState state)
 {
     graphicsPipelineState.RasterizerState = ConvertRasterizerState(state);
 }
 
-void DX12PipelineState::SetRasterizerStateFillMode(FillMode mode)
+void DX12PipelineState::SetRasterizerStateFillMode(rhi::FillMode mode)
 {
     graphicsPipelineState.RasterizerState.FillMode = ConvertFillMode(mode);
 }
 
-void DX12PipelineState::SetRasterizerStateCullMode(CullMode mode)
+void DX12PipelineState::SetRasterizerStateCullMode(rhi::CullMode mode)
 {
     graphicsPipelineState.RasterizerState.CullMode = ConvertCullMode(mode);
 }
 
-void DX12PipelineState::SetMSAA(MSAA msaa)
+void DX12PipelineState::SetMSAA(rhi::MSAA msaa)
 {
     graphicsPipelineState.SampleDesc.Count = ConvertMSAA(msaa);
 }
 
 void DX12PipelineState::BuildState()
 {
-    if (framework::EnumCast(description.enabledStage) &
-        framework::EnumCast(ShaderStage::Graphics)) {
-        if (framework::EnumCast(description.enabledStage) &
-            framework::EnumCast(ShaderStage::Compute)) {
+    if (gp::EnumCast(description.enabledStage) &
+        gp::EnumCast(rhi::ShaderStage::Graphics)) {
+        if (gp::EnumCast(description.enabledStage) &
+            gp::EnumCast(rhi::ShaderStage::Compute)) {
             GP_LOG_RET_E(TAG, "Build pipeline state failed, you can not "
                 "enable both Graphics and Compute stage at the same time.");
         }
@@ -173,10 +173,10 @@ void DX12PipelineState::BuildState()
 
 bool DX12PipelineState::IsItGraphicsPipelineState() const
 {
-    if (framework::EnumCast(description.enabledStage) &
-        framework::EnumCast(ShaderStage::Graphics)) {
-        if (framework::EnumCast(description.enabledStage) &
-            framework::EnumCast(ShaderStage::Compute)) {
+    if (gp::EnumCast(description.enabledStage) &
+        gp::EnumCast(rhi::ShaderStage::Graphics)) {
+        if (gp::EnumCast(description.enabledStage) &
+            gp::EnumCast(rhi::ShaderStage::Compute)) {
             return false;
         }
         return true;
@@ -186,10 +186,10 @@ bool DX12PipelineState::IsItGraphicsPipelineState() const
 
 bool DX12PipelineState::IsItComputePipelineState() const
 {
-    if (framework::EnumCast(description.enabledStage) &
-        framework::EnumCast(ShaderStage::Compute)) {
-        if (framework::EnumCast(description.enabledStage) &
-            framework::EnumCast(ShaderStage::Graphics)) {
+    if (gp::EnumCast(description.enabledStage) &
+        gp::EnumCast(rhi::ShaderStage::Compute)) {
+        if (gp::EnumCast(description.enabledStage) &
+            gp::EnumCast(rhi::ShaderStage::Graphics)) {
             return false;
         }
         return true;

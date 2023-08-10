@@ -22,10 +22,10 @@ public:
     void Setup(Description description);
     void Shutdown();
 
-    void BuildDescriptor(ResourceBuffer* resource) override;
-    void BuildDescriptor(ResourceBufferEx* resource, bool write) override;
-    void BuildDescriptor(ResourceImage* resource, bool write) override;
-    void BuildDescriptor(ImageSampler* sampler) override;
+    void BuildDescriptor(rhi::ResourceBuffer* resource) override;
+    void BuildDescriptor(rhi::ResourceBufferEx* resource, bool write) override;
+    void BuildDescriptor(rhi::ResourceImage* resource, bool write) override;
+    void BuildDescriptor(rhi::ImageSampler* sampler) override;
 
     D3D12_CPU_DESCRIPTOR_HANDLE AttachmentView() const;      // RTV/DSV
     D3D12_CPU_DESCRIPTOR_HANDLE NativeCpuDescriptor() const; // CBV/SRV/UAV/Sampler
@@ -51,7 +51,7 @@ private:
     UINT mRenderTargetViewDescriptorHandleIncrementSize = 0; // RTV
     UINT mDepthStencilViewDescriptorHandleIncrementSize = 0; // DSV
 
-    Description description{ DescriptorType::ConstantBuffer };
+    Description description{ rhi::DescriptorType::ConstantBuffer };
     UINT descriptorHandleIncrementSize = 0;
     D3D12_CPU_DESCRIPTOR_HANDLE hCpuDescriptor;
     D3D12_GPU_DESCRIPTOR_HANDLE hGpuDescriptor;

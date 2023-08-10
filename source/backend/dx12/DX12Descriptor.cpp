@@ -30,17 +30,13 @@ void DX12Descriptor::Setup(Description description)
     this->description = description;
 
     descriptorHandleIncrementSize = 0;
-    if (framework::EnumCast(description.type) &
-        framework::EnumCast(DescriptorType::ShaderResource)) {
+    if (gp::EnumCast(description.type) & gp::EnumCast(rhi::DescriptorType::ShaderResource)) {
         descriptorHandleIncrementSize = mResourceDescriptorHandleIncrementSize;
-    } else if (framework::EnumCast(description.type) &
-        framework::EnumCast(DescriptorType::ImageSampler)) {
+    } else if (gp::EnumCast(description.type) & gp::EnumCast(rhi::DescriptorType::ImageSampler)) {
         descriptorHandleIncrementSize = mImageSamplerDescriptorHandleIncrementSize;
-    } else if (framework::EnumCast(description.type) &
-        framework::EnumCast(DescriptorType::ColorOutput)) {
+    } else if (gp::EnumCast(description.type) & gp::EnumCast(rhi::DescriptorType::ColorOutput)) {
         descriptorHandleIncrementSize = mRenderTargetViewDescriptorHandleIncrementSize;
-    } else if (framework::EnumCast(description.type) &
-        framework::EnumCast(DescriptorType::DepthStencil)) {
+    } else if (gp::EnumCast(description.type) & gp::EnumCast(rhi::DescriptorType::DepthStencil)) {
         descriptorHandleIncrementSize = mDepthStencilViewDescriptorHandleIncrementSize;
     } else {
         GP_LOG_RET_E(TAG, "The descriptor type is invalid!");
@@ -61,13 +57,13 @@ void DX12Descriptor::Setup(Description description)
 
 void DX12Descriptor::Shutdown()
 {
-    description = { DescriptorType::ConstantBuffer };
+    description = { rhi::DescriptorType::ConstantBuffer };
     hCpuDescriptor = {};
     hGpuDescriptor = {};
     pResource = static_cast<void*>(nullptr);
 }
 
-void DX12Descriptor::BuildDescriptor(ResourceBuffer* resource)
+void DX12Descriptor::BuildDescriptor(rhi::ResourceBuffer* resource)
 {
     if (heap.GetHeapType() != D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) {
         GP_LOG_RET_E(TAG, "This descriptor heap and descriptor is not support buffer!");
@@ -84,7 +80,7 @@ void DX12Descriptor::BuildDescriptor(ResourceBuffer* resource)
     pResource = dxResource;
 }
 
-void DX12Descriptor::BuildDescriptor(ResourceBufferEx* resource, bool write)
+void DX12Descriptor::BuildDescriptor(rhi::ResourceBufferEx* resource, bool write)
 {
     if (heap.GetHeapType() != D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) {
         GP_LOG_RET_E(TAG, "This descriptor heap and descriptor is not support buffer!");
@@ -119,7 +115,7 @@ void DX12Descriptor::BuildDescriptor(ResourceBufferEx* resource, bool write)
     pResource = dxResource;
 }
 
-void DX12Descriptor::BuildDescriptor(ResourceImage* resource, bool write)
+void DX12Descriptor::BuildDescriptor(rhi::ResourceImage* resource, bool write)
 {
     auto dxResource = dynamic_cast<DX12ResourceImage*>(resource);
 
@@ -146,7 +142,7 @@ void DX12Descriptor::BuildDescriptor(ResourceImage* resource, bool write)
     pResource = dxResource;
 }
 
-void DX12Descriptor::BuildDescriptor(ImageSampler* sampler)
+void DX12Descriptor::BuildDescriptor(rhi::ImageSampler* sampler)
 {
     if (heap.GetHeapType() != D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER) {
         GP_LOG_RET_E(TAG, "This descriptor heap and descriptor is not support sampler!");

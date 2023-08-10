@@ -36,7 +36,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> buffer;
 };
 
-class DX12ResourceBufferEx : public ResourceBufferEx
+class DX12ResourceBufferEx : public rhi::ResourceBufferEx
     , DX12Object<DX12ResourceBufferEx> {
 public:
     explicit DX12ResourceBufferEx(DX12Device& device);

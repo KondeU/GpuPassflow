@@ -1,7 +1,7 @@
-#include "framework/types/TString.hpp"
 #include "DX12Device.h"
 
 namespace au::backend {
+
 DX12Device::DX12Device(Microsoft::WRL::ComPtr<IDXGIFactory4> dxgi) : dxgi(dxgi)
 {
     EnumAdapters();
@@ -65,152 +65,167 @@ void DX12Device::Shutdown()
     device.Reset();
 }
 
-Shader* DX12Device::CreateShader(Shader::Description description)
+rhi::Shader*
+DX12Device::CreateShader(rhi::Shader::Description description)
 {
-    return CreateInstance<Shader>(shaders, description);
+    return CreateInstance<rhi::Shader>(shaders, description);
 }
 
-bool DX12Device::DestroyShader(Shader* instance)
+bool DX12Device::DestroyShader(rhi::Shader* instance)
 {
     return DestroyInstance(shaders, instance);
 }
 
-Swapchain* DX12Device::CreateSwapchain(Swapchain::Description description)
+rhi::Swapchain*
+DX12Device::CreateSwapchain(rhi::Swapchain::Description description)
 {
-    return CreateInstance<Swapchain>(swapchains, description, *this);
+    return CreateInstance<rhi::Swapchain>(swapchains, description, *this);
 }
 
-bool DX12Device::DestroySwapchain(Swapchain* instance)
+bool DX12Device::DestroySwapchain(rhi::Swapchain* instance)
 {
     return DestroyInstance(swapchains, instance);
 }
 
-CommandRecorder* DX12Device::CreateCommandRecorder(CommandRecorder::Description description)
+rhi::CommandRecorder*
+DX12Device::CreateCommandRecorder(rhi::CommandRecorder::Description description)
 {
-    return CreateInstance<CommandRecorder>(commandRecorders, description, *this);
+    return CreateInstance<rhi::CommandRecorder>(commandRecorders, description, *this);
 }
 
-bool DX12Device::DestroyCommandRecorder(CommandRecorder* instance)
+bool DX12Device::DestroyCommandRecorder(rhi::CommandRecorder* instance)
 {
     return DestroyInstance(commandRecorders, instance);
 }
 
-InputVertex* DX12Device::CreateInputVertex(InputVertex::Description description)
+rhi::InputVertex*
+DX12Device::CreateInputVertex(rhi::InputVertex::Description description)
 {
-    return CreateInstance<InputVertex>(inputVertices, description, *this);
+    return CreateInstance<rhi::InputVertex>(inputVertices, description, *this);
 }
 
-bool DX12Device::DestroyInputVertex(InputVertex* instance)
+bool DX12Device::DestroyInputVertex(rhi::InputVertex* instance)
 {
     return DestroyInstance(inputVertices, instance);
 }
 
-InputVertexAttributes* DX12Device::CreateInputVertexAttributes()
+rhi::InputVertexAttributes*
+DX12Device::CreateInputVertexAttributes()
 {
-    return CreateInstance<InputVertexAttributes>(inputVertexAttributes, {});
+    return CreateInstance<rhi::InputVertexAttributes>(inputVertexAttributes, {});
 }
 
-bool DX12Device::DestroyInputVertexAttributes(InputVertexAttributes* instance)
+bool DX12Device::DestroyInputVertexAttributes(rhi::InputVertexAttributes* instance)
 {
     return DestroyInstance(inputVertexAttributes, instance);
 }
 
-InputIndex* DX12Device::CreateInputIndex(InputIndex::Description description)
+rhi::InputIndex*
+DX12Device::CreateInputIndex(rhi::InputIndex::Description description)
 {
-    return CreateInstance<InputIndex>(inputIndices, description, *this);
+    return CreateInstance<rhi::InputIndex>(inputIndices, description, *this);
 }
 
-bool DX12Device::DestroyInputIndex(InputIndex* instance)
+bool DX12Device::DestroyInputIndex(rhi::InputIndex* instance)
 {
     return DestroyInstance(inputIndices, instance);
 }
 
-InputIndexAttribute* DX12Device::CreateInputIndexAttribute()
+rhi::InputIndexAttribute*
+DX12Device::CreateInputIndexAttribute()
 {
-    return CreateInstance<InputIndexAttribute>(inputIndexAttributes, {});
+    return CreateInstance<rhi::InputIndexAttribute>(inputIndexAttributes, {});
 }
 
-bool DX12Device::DestroyInputIndexAttribute(InputIndexAttribute* instance)
+bool DX12Device::DestroyInputIndexAttribute(rhi::InputIndexAttribute* instance)
 {
     return DestroyInstance(inputIndexAttributes, instance);
 }
 
-ResourceBuffer* DX12Device::CreateResourceBuffer(ResourceBuffer::Description description)
+rhi::ResourceBuffer*
+DX12Device::CreateResourceBuffer(rhi::ResourceBuffer::Description description)
 {
-    return CreateInstance<ResourceBuffer>(resourceConstantBuffers, description, *this);
+    return CreateInstance<rhi::ResourceBuffer>(resourceConstantBuffers, description, *this);
 }
 
-bool DX12Device::DestroyResourceBuffer(ResourceBuffer* instance)
+bool DX12Device::DestroyResourceBuffer(rhi::ResourceBuffer* instance)
 {
     return DestroyInstance(resourceConstantBuffers, instance);
 }
 
-ResourceBufferEx* DX12Device::CreateResourceBuffer(ResourceBufferEx::Description description)
+rhi::ResourceBufferEx*
+DX12Device::CreateResourceBuffer(rhi::ResourceBufferEx::Description description)
 {
-    return CreateInstance<ResourceBufferEx>(resourceArrayBuffers, description, *this);
+    return CreateInstance<rhi::ResourceBufferEx>(resourceArrayBuffers, description, *this);
 }
 
-bool DX12Device::DestroyResourceBuffer(ResourceBufferEx* instance)
+bool DX12Device::DestroyResourceBuffer(rhi::ResourceBufferEx* instance)
 {
     return DestroyInstance(resourceArrayBuffers, instance);
 }
 
-ResourceImage* DX12Device::CreateResourceImage(ResourceImage::Description description)
+rhi::ResourceImage*
+DX12Device::CreateResourceImage(rhi::ResourceImage::Description description)
 {
-    return CreateInstance<ResourceImage>(resourceImages, description, *this);
+    return CreateInstance<rhi::ResourceImage>(resourceImages, description, *this);
 }
 
-bool DX12Device::DestroyResourceImage(ResourceImage* instance)
+bool DX12Device::DestroyResourceImage(rhi::ResourceImage* instance)
 {
     return DestroyInstance(resourceImages, instance);
 }
 
-ImageSampler* DX12Device::CreateImageSampler(ImageSampler::Description description)
+rhi::ImageSampler*
+DX12Device::CreateImageSampler(rhi::ImageSampler::Description description)
 {
-    return CreateInstance<ImageSampler>(imageSamplers, description);
+    return CreateInstance<rhi::ImageSampler>(imageSamplers, description);
 }
 
-bool DX12Device::DestroyImageSampler(ImageSampler* instance)
+bool DX12Device::DestroyImageSampler(rhi::ImageSampler* instance)
 {
     return DestroyInstance(imageSamplers, instance);
 }
 
-DescriptorHeap* DX12Device::CreateDescriptorHeap(DescriptorHeap::Description description)
+rhi::DescriptorHeap*
+DX12Device::CreateDescriptorHeap(rhi::DescriptorHeap::Description description)
 {
-    return CreateInstance<DescriptorHeap>(descriptorHeaps, description, *this);
+    return CreateInstance<rhi::DescriptorHeap>(descriptorHeaps, description, *this);
 }
 
-bool DX12Device::DestroyDescriptorHeap(DescriptorHeap* instance)
+bool DX12Device::DestroyDescriptorHeap(rhi::DescriptorHeap* instance)
 {
     return DestroyInstance(descriptorHeaps, instance);
 }
 
-DescriptorGroup* DX12Device::CreateDescriptorGroup(DescriptorGroup::Description description)
+rhi::DescriptorGroup*
+DX12Device::CreateDescriptorGroup(rhi::DescriptorGroup::Description description)
 {
-    return CreateInstance<DescriptorGroup>(descriptorGroups, description, *this);
+    return CreateInstance<rhi::DescriptorGroup>(descriptorGroups, description, *this);
 }
 
-bool DX12Device::DestroyDescriptorGroup(DescriptorGroup* instance)
+bool DX12Device::DestroyDescriptorGroup(rhi::DescriptorGroup* instance)
 {
     return DestroyInstance(descriptorGroups, instance);
 }
 
-PipelineLayout* DX12Device::CreatePipelineLayout(PipelineLayout::Description description)
+rhi::PipelineLayout*
+DX12Device::CreatePipelineLayout(rhi::PipelineLayout::Description description)
 {
-    return CreateInstance<PipelineLayout>(pipelineLayouts, description, *this);
+    return CreateInstance<rhi::PipelineLayout>(pipelineLayouts, description, *this);
 }
 
-bool DX12Device::DestroyPipelineLayout(PipelineLayout* instance)
+bool DX12Device::DestroyPipelineLayout(rhi::PipelineLayout* instance)
 {
     return DestroyInstance(pipelineLayouts, instance);
 }
 
-PipelineState* DX12Device::CreatePipelineState(PipelineState::Description description)
+rhi::PipelineState*
+DX12Device::CreatePipelineState(rhi::PipelineState::Description description)
 {
-    return CreateInstance<PipelineState>(pipelineStates, description, *this);
+    return CreateInstance<rhi::PipelineState>(pipelineStates, description, *this);
 }
 
-bool DX12Device::DestroyPipelineState(PipelineState* instance)
+bool DX12Device::DestroyPipelineState(rhi::PipelineState* instance)
 {
     return DestroyInstance(pipelineStates, instance);
 }
@@ -219,9 +234,9 @@ void DX12Device::WaitIdle()
 {
     // TODO: Only a graphics command queue is used currently,
     //       so only one fence is used currently. :-)
-    auto& queue = queues[CommandType::Graphics];
-    auto& fence = fences[CommandType::Graphics].first;
-    auto& currentFence = fences[CommandType::Graphics].second;
+    auto& queue = queues[rhi::CommandType::Graphics];
+    auto& fence = fences[rhi::CommandType::Graphics].first;
+    auto& currentFence = fences[rhi::CommandType::Graphics].second;
 
     // Advance the fence value to mark commands up to this fence point.
     currentFence++;
@@ -269,10 +284,10 @@ Microsoft::WRL::ComPtr<ID3D12Device> DX12Device::NativeDevice()
 }
 
 Microsoft::WRL::ComPtr<ID3D12CommandQueue>
-DX12Device::CommandQueue(CommandType type)
+DX12Device::CommandQueue(rhi::CommandType type)
 {
     // TODO: Only a CommandType::Graphics CommandQueue is used currently.
-    return queues[CommandType::Graphics];
+    return queues[rhi::CommandType::Graphics];
 }
 
 Microsoft::WRL::ComPtr<ID3D12CommandAllocator>

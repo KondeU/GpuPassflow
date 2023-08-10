@@ -26,14 +26,14 @@ void DX12DescriptorGroup::Shutdown()
     descriptorRanges.clear();
 }
 
-void DX12DescriptorGroup::AddDescriptor(
-    DescriptorType type, unsigned int id, ShaderStage visibility)
+void DX12DescriptorGroup::AddDescriptor(rhi::DescriptorType type,
+    unsigned int id, rhi::ShaderStage visibility)
 {
     AddDescriptors(type, { id, id }, visibility);
 }
 
-void DX12DescriptorGroup::AddDescriptors(
-    DescriptorType type, std::pair<unsigned int, unsigned int> range, ShaderStage visibility)
+void DX12DescriptorGroup::AddDescriptors(rhi::DescriptorType type,
+    std::pair<unsigned int, unsigned int> range, rhi::ShaderStage visibility)
 {
     unsigned int beginId = range.first;
     unsigned int endId = range.second;

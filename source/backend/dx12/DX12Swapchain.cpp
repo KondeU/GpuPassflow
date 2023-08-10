@@ -7,7 +7,7 @@ namespace au::backend {
 DX12Swapchain::DX12Swapchain(DX12Device& internal) : internal(internal)
 {
     device = internal.NativeDevice();
-    queue = internal.CommandQueue(CommandType::Graphics);
+    queue = internal.CommandQueue(rhi::CommandType::Graphics);
     descriptorSizeOfRtv = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
     descriptorSizeOfDsv = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 }

@@ -16,11 +16,11 @@ public:
     void Setup(Description description);
     void Shutdown();
 
-    void AddDescriptor(DescriptorType type,
-        unsigned int id, ShaderStage visibility) override;
+    void AddDescriptor(rhi::DescriptorType type,
+        unsigned int id, rhi::ShaderStage visibility) override;
 
-    void AddDescriptors(DescriptorType type,
-        std::pair<unsigned int, unsigned int> range, ShaderStage visibility) override;
+    void AddDescriptors(rhi::DescriptorType type,
+        std::pair<unsigned int, unsigned int> range, rhi::ShaderStage visibility) override;
 
     const std::vector<CD3DX12_ROOT_PARAMETER>& GetRootParameters() const;
 

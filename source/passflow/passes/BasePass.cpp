@@ -8,14 +8,14 @@ BasePass::BasePass(Passflow& passflow) : passflow(passflow)
     multipleBufferingCount = Configuration::GetReference().GetMultipleBufferingCount();
 }
 
-backend::InputVertexAttributes::Attribute
+rhi::InputVertexAttributes::Attribute
 BasePass::InputProperties::MakeDefaultPositionVertexAttribute()
 {
-    return { VertexFormat::FLOAT32x3, "POSITION", 0, 0 };
+    return { rhi::VertexFormat::FLOAT32x3, "POSITION", 0, 0 };
 }
 
 BasePass::DynamicDescriptorManager::DynamicDescriptorManager(
-    backend::Device* device, DescriptorType type) : device(device)
+    rhi::Device* device, rhi::DescriptorType type) : device(device)
 {
     heapType = type;
 }
@@ -35,7 +35,7 @@ void BasePass::DynamicDescriptorManager::ReallocateDescriptorHeap(unsigned int d
     descriptors.resize(descriptorCount, nullptr); // Vector of Descriptor pointers.
 }
 
-backend::Descriptor* BasePass::DynamicDescriptorManager::AcquireDescriptor(unsigned int index)
+rhi::Descriptor* BasePass::DynamicDescriptorManager::AcquireDescriptor(unsigned int index)
 {
     if (!descriptorHeap || index >= descriptors.size()) {
         GP_LOG_RETN_W(TAG, "Acquire descriptor out of range!");
@@ -53,7 +53,7 @@ backend::Descriptor* BasePass::DynamicDescriptorManager::AcquireDescriptor(unsig
     return descriptor;
 }
 
-backend::DescriptorHeap* BasePass::DynamicDescriptorManager::AcquireDescriptorHeap()
+rhi::DescriptorHeap* BasePass::DynamicDescriptorManager::AcquireDescriptorHeap()
 {
     return descriptorHeap;
 }

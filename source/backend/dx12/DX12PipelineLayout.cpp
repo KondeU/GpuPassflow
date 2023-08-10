@@ -26,7 +26,7 @@ void DX12PipelineLayout::Shutdown()
     signature.Reset();
 }
 
-void DX12PipelineLayout::AddGroup(DescriptorGroup* group)
+void DX12PipelineLayout::AddGroup(rhi::DescriptorGroup* group)
 {
     const auto& params = dynamic_cast<DX12DescriptorGroup*>(group)->GetRootParameters();
     parameters.insert(parameters.end(), params.begin(), params.end());

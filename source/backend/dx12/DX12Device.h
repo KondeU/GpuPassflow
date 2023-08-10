@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include "DX12Shader.h"
 #include "DX12Swapchain.h"
 #include "DX12CommandRecorder.h"
@@ -15,9 +16,8 @@
 #include "DX12PipelineLayout.h"
 #include "DX12PipelineState.h"
 
-#define DEFINE_DXFUNC_CREATE_DESTROY(T)
-
 namespace au::backend {
+
 class DX12Device : public rhi::Device
     , DX12Object<DX12Device> {
 public:
@@ -27,50 +27,63 @@ public:
     void Setup(Description description);
     void Shutdown();
 
-    rhi::Shader* CreateShader(rhi::Shader::Description description) override;
-    bool DestroyShader(Shader* instance) override;
+    rhi::Shader* CreateShader(
+        rhi::Shader::Description description) override;
+    bool DestroyShader(rhi::Shader* instance) override;
 
-    Swapchain* CreateSwapchain(Swapchain::Description description) override;
-    bool DestroySwapchain(Swapchain* instance) override;
+    rhi::Swapchain* CreateSwapchain(
+        rhi::Swapchain::Description description) override;
+    bool DestroySwapchain(rhi::Swapchain* instance) override;
 
-    CommandRecorder* CreateCommandRecorder(CommandRecorder::Description description) override;
-    bool DestroyCommandRecorder(CommandRecorder* instance) override;
+    rhi::CommandRecorder* CreateCommandRecorder(
+        rhi::CommandRecorder::Description description) override;
+    bool DestroyCommandRecorder(rhi::CommandRecorder* instance) override;
 
-    InputVertex* CreateInputVertex(InputVertex::Description description) override;
-    bool DestroyInputVertex(InputVertex* instance) override;
+    rhi::InputVertex* CreateInputVertex(
+        rhi::InputVertex::Description description) override;
+    bool DestroyInputVertex(rhi::InputVertex* instance) override;
 
-    InputVertexAttributes* CreateInputVertexAttributes() override;
-    bool DestroyInputVertexAttributes(InputVertexAttributes* instance) override;
+    rhi::InputVertexAttributes* CreateInputVertexAttributes() override;
+    bool DestroyInputVertexAttributes(rhi::InputVertexAttributes* instance) override;
 
-    InputIndex* CreateInputIndex(InputIndex::Description description) override;
-    bool DestroyInputIndex(InputIndex* instance) override;
+    rhi::InputIndex* CreateInputIndex(
+        rhi::InputIndex::Description description) override;
+    bool DestroyInputIndex(rhi::InputIndex* instance) override;
 
-    InputIndexAttribute* CreateInputIndexAttribute() override;
-    bool DestroyInputIndexAttribute(InputIndexAttribute* instance) override;
+    rhi::InputIndexAttribute* CreateInputIndexAttribute() override;
+    bool DestroyInputIndexAttribute(rhi::InputIndexAttribute* instance) override;
 
-    ResourceBuffer* CreateResourceBuffer(ResourceBuffer::Description description) override;
-    bool DestroyResourceBuffer(ResourceBuffer* instance) override;
+    rhi::ResourceBuffer* CreateResourceBuffer(
+        rhi::ResourceBuffer::Description description) override;
+    bool DestroyResourceBuffer(rhi::ResourceBuffer* instance) override;
 
-    ResourceBufferEx* CreateResourceBuffer(ResourceBufferEx::Description description) override;
-    bool DestroyResourceBuffer(ResourceBufferEx* instance) override;
+    rhi::ResourceBufferEx* CreateResourceBuffer(
+        rhi::ResourceBufferEx::Description description) override;
+    bool DestroyResourceBuffer(rhi::ResourceBufferEx* instance) override;
 
-    ResourceImage* CreateResourceImage(ResourceImage::Description description) override;
-    bool DestroyResourceImage(ResourceImage* instance) override;
+    rhi::ResourceImage* CreateResourceImage(
+        rhi::ResourceImage::Description description) override;
+    bool DestroyResourceImage(rhi::ResourceImage* instance) override;
 
-    ImageSampler* CreateImageSampler(ImageSampler::Description description) override;
-    bool DestroyImageSampler(ImageSampler* instance) override;
+    rhi::ImageSampler* CreateImageSampler(
+        rhi::ImageSampler::Description description) override;
+    bool DestroyImageSampler(rhi::ImageSampler* instance) override;
 
-    DescriptorHeap* CreateDescriptorHeap(DescriptorHeap::Description description) override;
-    bool DestroyDescriptorHeap(DescriptorHeap* instance) override;
+    rhi::DescriptorHeap* CreateDescriptorHeap(
+        rhi::DescriptorHeap::Description description) override;
+    bool DestroyDescriptorHeap(rhi::DescriptorHeap* instance) override;
 
-    DescriptorGroup* CreateDescriptorGroup(DescriptorGroup::Description description) override;
-    bool DestroyDescriptorGroup(DescriptorGroup* instance) override;
+    rhi::DescriptorGroup* CreateDescriptorGroup(
+        rhi::DescriptorGroup::Description description) override;
+    bool DestroyDescriptorGroup(rhi::DescriptorGroup* instance) override;
 
-    PipelineLayout* CreatePipelineLayout(PipelineLayout::Description description) override;
-    bool DestroyPipelineLayout(PipelineLayout* instance) override;
+    rhi::PipelineLayout* CreatePipelineLayout(
+        rhi::PipelineLayout::Description description) override;
+    bool DestroyPipelineLayout(rhi::PipelineLayout* instance) override;
 
-    PipelineState* CreatePipelineState(PipelineState::Description description) override;
-    bool DestroyPipelineState(PipelineState* instance) override;
+    rhi::PipelineState* CreatePipelineState(
+        rhi::PipelineState::Description description) override;
+    bool DestroyPipelineState(rhi::PipelineState* instance) override;
 
     void WaitIdle() override;
 
@@ -95,8 +108,8 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Device> device;
 
     // TODO:  CommandQueue has not been abstracted into a separate class yet.
-    std::unordered_map<CommandType, Microsoft::WRL::ComPtr<ID3D12CommandQueue>> queues;
-    std::unordered_map<CommandType, std::pair<Microsoft::WRL::ComPtr<ID3D12Fence>, UINT64>> fences;
+    std::unordered_map<rhi::CommandType, Microsoft::WRL::ComPtr<ID3D12CommandQueue>> queues;
+    std::unordered_map<rhi::CommandType, std::pair<Microsoft::WRL::ComPtr<ID3D12Fence>, UINT64>> fences;
 
     // TODO: CommandMemory has not been abstracted into a separate class yet.
     std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D12CommandAllocator>> allocators;

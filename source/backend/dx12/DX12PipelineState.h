@@ -17,20 +17,20 @@ public:
     void Setup(Description description);
     void Shutdown();
 
-    void SetPipelineLayout(PipelineLayout* layout) override;
+    void SetPipelineLayout(rhi::PipelineLayout* layout) override;
 
-    void SetIndexAssembly(InputIndexAttribute* iia) override;
-    void SetVertexAssembly(InputVertexAttributes* iva) override;
+    void SetIndexAssembly(rhi::InputIndexAttribute* iia) override;
+    void SetVertexAssembly(rhi::InputVertexAttributes* iva) override;
 
-    void SetShader(ShaderStage stage, Shader* shader) override;
+    void SetShader(rhi::ShaderStage stage, rhi::Shader* shader) override;
 
-    void SetColorOutputFormat(unsigned int location, BasicFormat format) override;
-    void SetDepthStencilOutputFormat(BasicFormat format) override;
+    void SetColorOutputFormat(unsigned int location, rhi::BasicFormat format) override;
+    void SetDepthStencilOutputFormat(rhi::BasicFormat format) override;
 
-    void SetRasterizerState(RasterizerState state) override;
-    void SetRasterizerStateFillMode(FillMode mode) override;
-    void SetRasterizerStateCullMode(CullMode mode) override;
-    void SetMSAA(MSAA msaa) override;
+    void SetRasterizerState(rhi::RasterizerState state) override;
+    void SetRasterizerStateFillMode(rhi::FillMode mode) override;
+    void SetRasterizerStateCullMode(rhi::CullMode mode) override;
+    void SetMSAA(rhi::MSAA msaa) override;
 
     void BuildState() override;
 
@@ -45,7 +45,7 @@ private:
     DX12Device& internal;
     Microsoft::WRL::ComPtr<ID3D12Device> device;
 
-    Description description{ ShaderStage::Graphics };
+    Description description{ rhi::ShaderStage::Graphics };
     D3D12_COMPUTE_PIPELINE_STATE_DESC computePipelineState;
     D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineState;
     Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineStateObject; // PSO

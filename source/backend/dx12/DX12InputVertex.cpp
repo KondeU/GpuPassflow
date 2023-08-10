@@ -54,7 +54,7 @@ D3D12_VERTEX_BUFFER_VIEW DX12InputVertex::BufferView(DX12InputVertexAttributes* 
 void* DX12InputVertex::Map()
 {
     void* mapped = nullptr;
-    if (description.memoryType != TransferDirection::GPU_ONLY) {
+    if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
         LogIfFailedF(buffer->Map(0, NULL, &mapped));
     }
     return mapped;
@@ -62,7 +62,7 @@ void* DX12InputVertex::Map()
 
 void DX12InputVertex::Unmap()
 {
-    if (description.memoryType != TransferDirection::GPU_ONLY) {
+    if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
         buffer->Unmap(0, NULL);
     }
 }

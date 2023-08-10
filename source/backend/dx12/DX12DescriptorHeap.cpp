@@ -32,15 +32,15 @@ void DX12DescriptorHeap::Setup(Description description)
 
 void DX12DescriptorHeap::Shutdown()
 {
-    description = { 0u, DescriptorType::ShaderResource };
+    description = { 0u, rhi::DescriptorType::ShaderResource };
     heap.Reset();
     descriptors.resize(0);
 }
 
-Descriptor* DX12DescriptorHeap::AllocateDescriptor(Descriptor::Description description)
+rhi::Descriptor* DX12DescriptorHeap::AllocateDescriptor(rhi::Descriptor::Description description)
 {
     unsigned int index = static_cast<unsigned int>(descriptors.size());
-    return CreateInstance<Descriptor>(descriptors, description, internal, *this, index);
+    return CreateInstance<rhi::Descriptor>(descriptors, description, internal, *this, index);
 }
 
 D3D12_DESCRIPTOR_HEAP_TYPE DX12DescriptorHeap::GetHeapType() const

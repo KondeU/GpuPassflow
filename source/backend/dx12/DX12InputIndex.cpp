@@ -26,7 +26,7 @@ void DX12InputIndex::Setup(Description description)
     LogIfFailedF(device->CreateCommittedResource(
         &CD3DX12_HEAP_PROPERTIES(ConvertHeap(description.memoryType)),
         D3D12_HEAP_FLAG_NONE, &CD3DX12_RESOURCE_DESC::Buffer(bufferTotalByteSize),
-        ConvertResourceState(ResourceState::GENERAL_READ),
+        ConvertResourceState(rhi::ResourceState::GENERAL_READ),
         NULL, IID_PPV_ARGS(&buffer)));
 }
 
@@ -40,7 +40,7 @@ void DX12InputIndex::Shutdown()
 void* DX12InputIndex::Map()
 {
     void* mapped = nullptr;
-    if (description.memoryType != TransferDirection::GPU_ONLY) {
+    if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
         LogIfFailedF(buffer->Map(0, NULL, &mapped));
     }
     return mapped;
@@ -48,7 +48,7 @@ void* DX12InputIndex::Map()
 
 void DX12InputIndex::Unmap()
 {
-    if (description.memoryType != TransferDirection::GPU_ONLY) {
+    if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
         buffer->Unmap(0, NULL);
     }
 }
