@@ -19,7 +19,7 @@ void DX12ResourceImage::Setup(Description description)
     this->description = description;
 
     D3D12_RESOURCE_DESC resourceDesc{};
-    if (description.memoryType == TransferDirection::GPU_ONLY) {
+    if (description.memoryType == rhi::TransferDirection::GPU_ONLY) {
         resourceDesc.Dimension = ConvertImageDimension(description.dimension);
         resourceDesc.Alignment = 0;
         resourceDesc.Width = description.width;
@@ -47,21 +47,21 @@ void DX12ResourceImage::Setup(Description description)
     LogIfFailedF(device->CreateCommittedResource(
         &CD3DX12_HEAP_PROPERTIES(ConvertHeap(description.memoryType)),
         D3D12_HEAP_FLAG_NONE, &resourceDesc,
-        ConvertResourceState(ResourceState::GENERAL_READ),
-        ((description.usage == ImageType::ShaderResource) ?
+        ConvertResourceState(rhi::ResourceState::GENERAL_READ),
+        ((description.usage == rhi::ImageType::ShaderResource) ?
             NULL : &clearValue), IID_PPV_ARGS(&buffer)));
 }
 
 void DX12ResourceImage::Shutdown()
 {
-    description = { BasicFormat::R32G32B32A32_FLOAT, 0u, 0u };
+    description = { rhi::BasicFormat::R32G32B32A32_FLOAT, 0u, 0u };
     buffer.Reset();
 }
 
 void* DX12ResourceImage::Map(unsigned int msaaLayer)
 {
     void* mapped = nullptr;
-    if (description.memoryType != TransferDirection::GPU_ONLY
+    if (description.memoryType != rhi::TransferDirection::GPU_ONLY
         && msaaLayer < ConvertMSAA(description.msaa)) {
         LogIfFailedF(buffer->Map(msaaLayer, NULL, &mapped));
     }
@@ -70,7 +70,7 @@ void* DX12ResourceImage::Map(unsigned int msaaLayer)
 
 void DX12ResourceImage::Unmap(unsigned int msaaLayer)
 {
-    if (description.memoryType != TransferDirection::GPU_ONLY
+    if (description.memoryType != rhi::TransferDirection::GPU_ONLY
         && msaaLayer < ConvertMSAA(description.msaa)) {
         buffer->Unmap(msaaLayer, NULL);
     }

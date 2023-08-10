@@ -39,12 +39,12 @@ DX12Context::~DX12Context()
     }
 }
 
-Device* DX12Context::CreateDevice(Device::Description description)
+rhi::Device* DX12Context::CreateDevice(rhi::Device::Description description)
 {
-    return CreateInstance<Device>(devices, description, dxgi);
+    return CreateInstance<rhi::Device>(devices, description, dxgi);
 }
 
-bool DX12Context::DestroyDevice(Device* device)
+bool DX12Context::DestroyDevice(rhi::Device* device)
 {
     return DestroyInstance(devices, device);
 }

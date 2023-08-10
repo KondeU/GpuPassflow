@@ -37,9 +37,9 @@ void DX12Device::Setup(Description description)
     commandQueueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
     commandQueueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
     LogIfFailedF(device->CreateCommandQueue(
-        &commandQueueDesc, IID_PPV_ARGS(&queues[CommandType::Graphics])));
-    LogIfFailedF(device->CreateFence(fences[CommandType::Graphics].second,
-        D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fences[CommandType::Graphics].first)));
+        &commandQueueDesc, IID_PPV_ARGS(&queues[rhi::CommandType::Graphics])));
+    LogIfFailedF(device->CreateFence(fences[rhi::CommandType::Graphics].second,
+        D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fences[rhi::CommandType::Graphics].first)));
 }
 
 void DX12Device::Shutdown()

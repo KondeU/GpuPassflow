@@ -18,7 +18,7 @@ template <typename Resource>
 void UploadRemote(au::rhi::Device* device,
     Resource* destination, Resource* staging, const void* source, size_t size, size_t element = 1)
 {
-    auto command = device->CreateCommandRecorder({ "Upload", au::CommandType::Transfer });
+    auto command = device->CreateCommandRecorder({ "Upload", au::rhi::CommandType::Transfer });
 
     command->BeginRecord();
     command->RcBarrier(destination,

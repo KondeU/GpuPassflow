@@ -26,7 +26,7 @@ void DX12InputVertex::Setup(Description description)
     LogIfFailedF(device->CreateCommittedResource(
         &CD3DX12_HEAP_PROPERTIES(ConvertHeap(description.memoryType)),
         D3D12_HEAP_FLAG_NONE, &CD3DX12_RESOURCE_DESC::Buffer(bufferTotalByteSize),
-        ConvertResourceState(ResourceState::GENERAL_READ),
+        ConvertResourceState(rhi::ResourceState::GENERAL_READ),
         NULL, IID_PPV_ARGS(&buffer)));
 }
 

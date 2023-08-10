@@ -26,7 +26,7 @@ void DX12ResourceBuffer::Setup(Description description)
     LogIfFailedF(device->CreateCommittedResource(
         &CD3DX12_HEAP_PROPERTIES(ConvertHeap(description.memoryType)),
         D3D12_HEAP_FLAG_NONE, &CD3DX12_RESOURCE_DESC::Buffer(allocatedBytesSize),
-        ConvertResourceState(ResourceState::GENERAL_READ),
+        ConvertResourceState(rhi::ResourceState::GENERAL_READ),
         NULL, IID_PPV_ARGS(&buffer)));
 }
 
@@ -40,7 +40,7 @@ void DX12ResourceBuffer::Shutdown()
 void* DX12ResourceBuffer::Map()
 {
     void* mapped = nullptr;
-    if (description.memoryType != TransferDirection::GPU_ONLY) {
+    if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
         LogIfFailedF(buffer->Map(0, NULL, &mapped));
     }
     return mapped;
@@ -48,7 +48,7 @@ void* DX12ResourceBuffer::Map()
 
 void DX12ResourceBuffer::Unmap()
 {
-    if (description.memoryType != TransferDirection::GPU_ONLY) {
+    if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
         buffer->Unmap(0, NULL);
     }
 }
@@ -106,7 +106,7 @@ void DX12ResourceBufferEx::Setup(Description description)
     LogIfFailedF(device->CreateCommittedResource(
         &CD3DX12_HEAP_PROPERTIES(ConvertHeap(description.memoryType)), D3D12_HEAP_FLAG_NONE,
         &CD3DX12_RESOURCE_DESC::Buffer(allocatedBytesSize, bufferResourceFlag),
-        ConvertResourceState(ResourceState::GENERAL_READ),
+        ConvertResourceState(rhi::ResourceState::GENERAL_READ),
         NULL, IID_PPV_ARGS(&buffer)));
 }
 
@@ -119,7 +119,7 @@ void DX12ResourceBufferEx::Shutdown()
 void* DX12ResourceBufferEx::Map()
 {
     void* mapped = nullptr;
-    if (description.memoryType != TransferDirection::GPU_ONLY) {
+    if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
         LogIfFailedF(buffer->Map(0, NULL, &mapped));
     }
     return mapped;
@@ -127,7 +127,7 @@ void* DX12ResourceBufferEx::Map()
 
 void DX12ResourceBufferEx::Unmap()
 {
-    if (description.memoryType != TransferDirection::GPU_ONLY) {
+    if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
         buffer->Unmap(0, NULL);
     }
 }
