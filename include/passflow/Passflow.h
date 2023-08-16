@@ -7,10 +7,17 @@ namespace au::gp {
 
 class Passflow {
 public:
-    explicit Passflow(std::string name);
+    explicit Passflow(const std::string& name,
+        rhi::BackendContext::Backend backend =
+        #ifdef WIN32
+        rhi::BackendContext::Backend::DX12,
+        #else
+        rhi::BackendContext::Backend::Vulkan,
+        #endif
+        unsigned int multiBufferingCount = 3);
     virtual ~Passflow();
 
-    template <typename Pass, typename ...Args>
+    template <typename Pass, class ...Args>
     Pass* CreateOrGetPass(const std::string& name, const Args& ...args)
     {
         static_assert(std::is_base_of<BasePass, Pass>(), "Pass should inherit from BasePass!");
@@ -34,26 +41,26 @@ public:
 
     unsigned int ExecuteWorkflow();
 
-    // Close the backend manually.
-    static bool CloseBackend();
+    template <typename T, class ...Args>
+    Resource<T> MakeResource(Args&& ...args)
+    {
+        return std::make_shared<T>(std::forward(args)...);
+    }
 
 private:
     GP_LOG_TAG(Passflow);
 
-    static unsigned int passflowsCount;
-
     std::string passflowName;
 
-    unsigned int multipleBufferingCount = 0;
+    const unsigned int multipleBufferingCount;
     unsigned int currentBufferingIndex = 0;
 
     std::unordered_map<std::string, std::unique_ptr<BasePass>> passes;
     std::vector<std::pair<BasePass*, bool>> passflow;
 
-    std::vector<std::string> commandRecorderNames;
-
-    rhi::Device* bkDevice = nullptr; // Not owned!
+    rhi::Device* bkDevice = nullptr;
     std::vector<rhi::CommandRecorder*> bkCommands;
+    std::vector<std::string> commandRecorderNames;
 };
 
 }

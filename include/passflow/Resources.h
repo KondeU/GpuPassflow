@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <memory>
 #include <unordered_map>
 #include "backend/BackendContext.h"
@@ -15,23 +16,33 @@ Resource<T> MakeResource(Args&& ...args)
     return std::make_shared<T>(std::forward(args)...);
 }
 
+class MakeResourceLocker final {
+    static std::mutex mutex;
+    std::lock_guard<std::mutex> locker{ mutex };
+};
+
 template <typename T>
 Resource<T> CloneResource(const Resource<T>& resource)
 {
     return (resource ? sptr_down_cast<T>(resource->Clone()) : nullptr);
 }
 
-class DeviceHolder : public common::NonCopyable {
+class DeviceHolder {
 public:
-    DeviceHolder();
-    virtual ~DeviceHolder() = 0;
-
     void ConfigureAvoidInfight(bool infight);
 
 protected:
+    DeviceHolder();
+    virtual ~DeviceHolder() = 0;
+
+
     rhi::Device* device; // Not owned!
     unsigned int multipleBufferingCount;
     bool avoidInfight = true;
+
+private:
+    DeviceHolder(const DeviceHolder&) = delete;
+    DeviceHolder& operator=(const DeviceHolder&) = delete;
 };
 
 class BaseConstantBuffer : public DeviceHolder {
