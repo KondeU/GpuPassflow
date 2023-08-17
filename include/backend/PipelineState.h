@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include "BasicTypes.h"
 
 namespace au::rhi {

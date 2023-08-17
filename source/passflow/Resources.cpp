@@ -1,6 +1,4 @@
 #include "passflow/Resources.h"
-#include "general/Configuration.h"
-#include "general/Backend.h"
 
 namespace {
 
@@ -43,12 +41,6 @@ void UploadRemote(au::rhi::Device* device,
 }
 
 namespace au::gp {
-
-DeviceHolder::DeviceHolder()
-{
-    device = Backend::GetReference().Device();
-    multipleBufferingCount = Configuration::GetReference().GetMultipleBufferingCount();
-}
 
 DeviceHolder::~DeviceHolder()
 {
@@ -529,7 +521,7 @@ void* DepthStencilOutput::RawCpuPtr()
 
 DisplayPresentOutput::DisplayPresentOutput()
 {
-    description.bufferCount = Configuration::GetReference().GetMultipleBufferingCount();
+    description.bufferCount = multipleBufferingCount;
 }
 
 DisplayPresentOutput::~DisplayPresentOutput()

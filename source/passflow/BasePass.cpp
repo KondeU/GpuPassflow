@@ -1,5 +1,4 @@
 #include "passflow/BasePass.h"
-#include "../general/Configuration.h"
 
 namespace au::gp {
 

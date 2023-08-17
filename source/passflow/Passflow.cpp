@@ -5,6 +5,7 @@ namespace {
 static std::mutex g_mutex;
 static std::unordered_map<au::gp::Passflow*, au::rhi::BackendContext::Backend> g_passflows;
 static std::unordered_map<au::rhi::BackendContext::Backend, au::rhi::BackendContext*> g_contexts;
+// TODO: support multiple passflows use a shared device: static au::rhi::Device* g_sharedDevice;
 
 }
 
@@ -144,6 +145,16 @@ unsigned int Passflow::ExecuteWorkflow()
 
     currentBufferingIndex = (currentBufferingIndex + 1) % multipleBufferingCount;
     return currentBufferingIndex; // Return next frame index.
+}
+
+unsigned int Passflow::GetCurrentBufferingIndex() const noexcept
+{
+    return currentBufferingIndex;
+}
+
+unsigned int Passflow::GetMultipleBufferingCount() const noexcept
+{
+    return multipleBufferingCount;
 }
 
 }

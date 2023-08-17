@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include "RasterizePass.h"
 #include "ComputePass.h"
 
@@ -41,10 +42,16 @@ public:
 
     unsigned int ExecuteWorkflow();
 
+    unsigned int GetCurrentBufferingIndex() const noexcept;
+    unsigned int GetMultipleBufferingCount() const noexcept;
+
     template <typename T, class ...Args>
     Resource<T> MakeResource(Args&& ...args)
     {
-        return std::make_shared<T>(std::forward(args)...);
+        auto resource = std::make_shared<T>(std::forward(args)...);
+        resource->multipleBufferingCount = multipleBufferingCount;
+        resource->device = bkDevice;
+        return resource;
     }
 
 private:

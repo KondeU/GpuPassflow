@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "backend/BackendContext.h"
 
 #define LogOutIfFailed(level, expression, success)    \

@@ -1,8 +1,6 @@
 #pragma once
 
-#include <mutex>
 #include <memory>
-#include <unordered_map>
 #include "backend/BackendContext.h"
 
 namespace au::gp {
@@ -10,40 +8,28 @@ namespace au::gp {
 template <typename T>
 using Resource = std::shared_ptr<T>;
 
-template <typename T, class ...Args>
-Resource<T> MakeResource(Args&& ...args)
-{
-    return std::make_shared<T>(std::forward(args)...);
-}
-
-class MakeResourceLocker final {
-    static std::mutex mutex;
-    std::lock_guard<std::mutex> locker{ mutex };
-};
-
-template <typename T>
-Resource<T> CloneResource(const Resource<T>& resource)
-{
-    return (resource ? sptr_down_cast<T>(resource->Clone()) : nullptr);
-}
-
+// Please use Passflow::MakeResource to create resource,
+// otherwise device in the DeviceHolder will be nullptr!
 class DeviceHolder {
 public:
     void ConfigureAvoidInfight(bool infight);
 
 protected:
-    DeviceHolder();
+    DeviceHolder() = default;
     virtual ~DeviceHolder() = 0;
 
-
-    rhi::Device* device; // Not owned!
-    unsigned int multipleBufferingCount;
     bool avoidInfight = true;
 
+    rhi::Device* device = nullptr;
+    unsigned int multipleBufferingCount = 0;
+
 private:
+    friend class Passflow;
     DeviceHolder(const DeviceHolder&) = delete;
     DeviceHolder& operator=(const DeviceHolder&) = delete;
 };
+
+//////////////////////////////////////////////////
 
 class BaseConstantBuffer : public DeviceHolder {
 public:
