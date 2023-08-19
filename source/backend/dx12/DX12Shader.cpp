@@ -107,7 +107,7 @@ void DX12Shader::ProcessBytecode(bool fromFile)
 {
     std::string binary = description.source;
     if (fromFile) {
-        binary = framework::ReadFile(description.source);
+        binary = gp::ReadFile(description.source);
     }
     if (binary.empty()) {
         GP_LOG_W(TAG, "Load shader bytecode failed!");

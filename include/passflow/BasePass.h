@@ -99,7 +99,7 @@ protected:
 
     Passflow& passflow;
 
-    unsigned int multipleBufferingCount;
+    const unsigned int multipleBufferingCount;
 
 private:
     GP_LOG_TAG(BasePass);

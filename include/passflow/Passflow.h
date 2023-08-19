@@ -65,7 +65,7 @@ private:
     std::unordered_map<std::string, std::unique_ptr<BasePass>> passes;
     std::vector<std::pair<BasePass*, bool>> passflow;
 
-    rhi::Device* bkDevice = nullptr;
+    rhi::Device* bkDevice = nullptr; // Owner!
     std::vector<rhi::CommandRecorder*> bkCommands;
     std::vector<std::string> commandRecorderNames;
 };

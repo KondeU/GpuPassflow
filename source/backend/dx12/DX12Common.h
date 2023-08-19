@@ -1,6 +1,6 @@
 #pragma once
 
-#include <memory>
+#include <comdef.h> // DX12 COM.
 #include "backend/BackendContext.h"
 
 #define LogOutIfFailed(level, expression, success)    \

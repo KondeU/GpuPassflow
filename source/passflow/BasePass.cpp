@@ -1,10 +1,11 @@
 #include "passflow/BasePass.h"
+#include "passflow/Passflow.h"
 
 namespace au::gp {
 
-BasePass::BasePass(Passflow& passflow) : passflow(passflow)
+BasePass::BasePass(Passflow& passflow) : passflow(passflow),
+    multipleBufferingCount(passflow.GetMultipleBufferingCount())
 {
-    multipleBufferingCount = Configuration::GetReference().GetMultipleBufferingCount();
 }
 
 rhi::InputVertexAttributes::Attribute

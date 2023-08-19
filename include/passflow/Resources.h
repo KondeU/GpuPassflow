@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include "backend/BackendContext.h"
 
 namespace au::gp {
@@ -20,7 +19,7 @@ protected:
 
     bool avoidInfight = true;
 
-    rhi::Device* device = nullptr;
+    rhi::Device* device = nullptr; // Not owned!
     unsigned int multipleBufferingCount = 0;
 
 private:
