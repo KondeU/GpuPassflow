@@ -3,6 +3,7 @@ project(backend_cpu)
 
 file(GLOB_RECURSE SRC *.h *.cpp)
 add_library(backend_cpu SHARED ${SRC} ${INC})
+target_link_libraries(${PROJECT_NAME} backend)
 
 install_artifact(${PROJECT_NAME})
 

@@ -3,6 +3,7 @@ project(backend_vulkan)
 
 file(GLOB_RECURSE SRC *.h *.cpp)
 add_library(backend_vulkan SHARED ${SRC} ${INC})
+target_link_libraries(${PROJECT_NAME} backend)
 
 install_artifact(${PROJECT_NAME})
 
