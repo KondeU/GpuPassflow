@@ -519,11 +519,6 @@ void* DepthStencilOutput::RawCpuPtr()
     return AcquireDepthStencilBuffer().data();
 }
 
-DisplayPresentOutput::DisplayPresentOutput()
-{
-    description.bufferCount = multipleBufferingCount;
-}
-
 DisplayPresentOutput::~DisplayPresentOutput()
 {
     if (swapchain) {
@@ -536,6 +531,7 @@ void DisplayPresentOutput::SetupDisplayPresentOutput(
 {
     description.width = width;
     description.height = height;
+    description.bufferCount = multipleBufferingCount;
     description.window = window;
     description.colorFormat = format;
     description.isEnabledDepthStencil = false;

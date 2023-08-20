@@ -20,17 +20,17 @@ Passflow::Passflow(const std::string& name,
 {
     GP_LOG_I(TAG, "Passflow `%s` constructing.", passflowName.c_str());
 
-    rhi::BackendContext* bkContext = nullptr;
     {
         std::lock_guard<std::mutex> locker(g_mutex);
         g_passflows[this] = backend;
         if (!g_contexts[backend]) {
             g_contexts[backend] = rhi::BackendContext::CreateBackend(backend);
         }
-        bkContext = g_contexts[backend];
-    }
-    if (!bkContext) {
-        GP_LOG_F(TAG, "Invalid backend context when passflow constructing!");
+        if (g_contexts[backend]) {
+            bkDevice = g_contexts[backend]->CreateDevice({ "" /* default adaptor */ });
+        } else {
+            GP_LOG_F(TAG, "Invalid backend context when passflow constructing!");
+        }
     }
 
     commandRecorderNames.resize(multipleBufferingCount);
@@ -38,7 +38,6 @@ Passflow::Passflow(const std::string& name,
         commandRecorderNames[n] = passflowName + "." + std::to_string(n);
     }
 
-    bkDevice = bkContext->CreateDevice({ "" /* default adaptor */ });
     bkCommands.resize(multipleBufferingCount);
     for (unsigned int n = 0; n < multipleBufferingCount; n++) {
         bkCommands[n] = bkDevice->CreateCommandRecorder({
@@ -62,8 +61,12 @@ Passflow::~Passflow()
         bkDevice->DestroyCommandRecorder(recorder);
     }
 
+    passflow.clear();
+    passes.clear();
+
     {
         std::lock_guard<std::mutex> locker(g_mutex);
+        g_contexts[g_passflows[this]]->DestroyDevice(bkDevice);
         g_passflows.erase(this);
         if (g_passflows.empty()) {
             for (const auto& [backend, context] : g_contexts) {

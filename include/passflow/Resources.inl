@@ -257,7 +257,7 @@ inline void Texture<D>::SetupTexture(rhi::BasicFormat format,
     description.width  = elementArray[0];
     description.height = elementArray[1];
     description.arrays = elementArray[2];
-    description.dimension = static_cast<ImageDimension>(D);
+    description.dimension = static_cast<rhi::ImageDimension>(D);
     SetupGPU();
 }
 

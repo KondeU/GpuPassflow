@@ -307,8 +307,8 @@ protected:
 
 class DisplayPresentOutput final : public DeviceHolder {
 public:
-    DisplayPresentOutput();
-    ~DisplayPresentOutput();
+    DisplayPresentOutput() = default;
+    ~DisplayPresentOutput() override;
 
     void SetupDisplayPresentOutput(rhi::BasicFormat format,
         unsigned int width, unsigned int height, void* window);

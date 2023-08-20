@@ -54,6 +54,12 @@ public:
         return resource;
     }
 
+    template <typename T>
+    void CleanResource(Resource<T>& resource)
+    {
+        resource.reset();
+    }
+
 private:
     GP_LOG_TAG(Passflow);
 
