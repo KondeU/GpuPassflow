@@ -69,3 +69,7 @@ cmake -S . -B build                               \
   -DBUILD_DEBUG_OPEN_SOURCE=${_build_debug_mode}
 cmake --build build --config ${build_config_mode} --parallel
 cmake --install build --prefix output --config ${build_config_mode}
+
+cmake -S ./sample -B build/sample/build
+cmake --build build/sample/build --config ${build_config_mode} --parallel
+cmake --install build/sample/build --prefix build/sample/output --config ${build_config_mode}

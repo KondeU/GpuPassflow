@@ -10,9 +10,9 @@ file(GLOB_RECURSE INC include/*)
 
 macro(install_artifact target_artifact)
   install(TARGETS ${target_artifact}
-    ARCHIVE DESTINATION library # .lib/.a
-    LIBRARY DESTINATION library # .dll/.so
-    RUNTIME DESTINATION tool # .exe/.out
+    ARCHIVE DESTINATION library
+    LIBRARY DESTINATION library
+    RUNTIME DESTINATION runtime
     PUBLIC_HEADER DESTINATION external)
 endmacro()
 
@@ -27,3 +27,4 @@ install(FILES README.md DESTINATION .)
 install(FILES LICENSE.txt DESTINATION .)
 install(DIRECTORY include/ DESTINATION include)
 install(FILES User.cmake DESTINATION . RENAME GpuPassflow.cmake)
+install_external_directory(3rd/deps/dxmath/output/include/)

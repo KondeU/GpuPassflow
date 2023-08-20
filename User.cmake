@@ -6,6 +6,7 @@ macro(target_use_gpu_passflow target_artifact)
   target_include_directories(
     ${target_artifact} PUBLIC
       ${GPU_PASSFLOW_DIR}/include
+      ${GPU_PASSFLOW_DIR}/external
   )
   target_link_directories(
     ${target_artifact} PUBLIC
