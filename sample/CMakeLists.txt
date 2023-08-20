@@ -13,4 +13,5 @@ target_use_gpu_passflow(${PROJECT_NAME})
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/.. FILES ${SRC} ${INC})
 
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../output/runtime/ DESTINATION .)

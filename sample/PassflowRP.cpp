@@ -1,20 +1,4 @@
-#include "GpuPassflow.h"
-
-struct Float3 {
-    union {
-        struct { float x, y, z; } xyz;
-        struct { float r, g, b; } rgb;
-        float v[3];
-    };
-};
-
-struct Float4 {
-    union {
-        struct { float x, y, z, w; } xyzw;
-        struct { float r, g, b, a; } rgba;
-        float v[4];
-    };
-};
+#include "PassflowRP.h"
 
 const std::string VertexShaderString = R"(
 StructuredBuffer<float4> inColor : register(t0);
@@ -73,15 +57,15 @@ PixelOut Main(VertexOut pin)
 }
 )";
 
-const std::vector<Float3> CubeVertices = {
-    Float3{ -1.0f, -1.0f, -1.0f },
-    Float3{ -1.0f, +1.0f, -1.0f },
-    Float3{ +1.0f, +1.0f, -1.0f },
-    Float3{ +1.0f, -1.0f, -1.0f },
-    Float3{ -1.0f, -1.0f, +1.0f },
-    Float3{ -1.0f, +1.0f, +1.0f },
-    Float3{ +1.0f, +1.0f, +1.0f },
-    Float3{ +1.0f, -1.0f, +1.0f }
+const std::vector<DirectX::XMFLOAT3> CubeVertices = {
+    DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f),
+    DirectX::XMFLOAT3(-1.0f, +1.0f, -1.0f),
+    DirectX::XMFLOAT3(+1.0f, +1.0f, -1.0f),
+    DirectX::XMFLOAT3(+1.0f, -1.0f, -1.0f),
+    DirectX::XMFLOAT3(-1.0f, -1.0f, +1.0f),
+    DirectX::XMFLOAT3(-1.0f, +1.0f, +1.0f),
+    DirectX::XMFLOAT3(+1.0f, +1.0f, +1.0f),
+    DirectX::XMFLOAT3(+1.0f, -1.0f, +1.0f)
 };
 
 const std::vector<uint32_t> CubeIndices = {
@@ -105,15 +89,15 @@ const std::vector<uint32_t> CubeIndices = {
     4, 3, 7
 };
 
-const std::vector<Float4> CubeColors = {
-    Float4{ 1.000000000f, 1.000000000f, 1.000000000f, 1.000000000f }, // White
-    Float4{ 0.000000000f, 0.000000000f, 0.000000000f, 1.000000000f }, // Black
-    Float4{ 1.000000000f, 0.000000000f, 0.000000000f, 1.000000000f }, // Red
-    Float4{ 0.000000000f, 0.501960814f, 0.000000000f, 1.000000000f }, // Green
-    Float4{ 0.000000000f, 0.000000000f, 1.000000000f, 1.000000000f }, // Blue
-    Float4{ 1.000000000f, 1.000000000f, 0.000000000f, 1.000000000f }, // Yellow
-    Float4{ 0.000000000f, 1.000000000f, 1.000000000f, 1.000000000f }, // Cyan
-    Float4{ 1.000000000f, 0.000000000f, 1.000000000f, 1.000000000f }  // Magenta
+const std::vector<DirectX::XMFLOAT4> CubeColors = {
+    DirectX::XMFLOAT4(1.000000000f, 1.000000000f, 1.000000000f, 1.000000000f), // White
+    DirectX::XMFLOAT4(0.000000000f, 0.000000000f, 0.000000000f, 1.000000000f), // Black
+    DirectX::XMFLOAT4(1.000000000f, 0.000000000f, 0.000000000f, 1.000000000f), // Red
+    DirectX::XMFLOAT4(0.000000000f, 0.501960814f, 0.000000000f, 1.000000000f), // Green
+    DirectX::XMFLOAT4(0.000000000f, 0.000000000f, 1.000000000f, 1.000000000f), // Blue
+    DirectX::XMFLOAT4(1.000000000f, 1.000000000f, 0.000000000f, 1.000000000f), // Yellow
+    DirectX::XMFLOAT4(0.000000000f, 1.000000000f, 1.000000000f, 1.000000000f), // Cyan
+    DirectX::XMFLOAT4(1.000000000f, 0.000000000f, 1.000000000f, 1.000000000f)  // Magenta
 };
 
 class DrawPass : public au::gp::RasterizePass {
@@ -459,36 +443,54 @@ void PresentPass::OnEnablePass(bool enable)
     (void)enable; // Nothing to do.
 }
 
-void PassflowRP()
+PassflowRP::~PassflowRP()
 {
-    GP_LOG_TAG(PassflowRP);
+    passflow->CleanResource(cubeVertices);
+    passflow->CleanResource(cubeIndices);
 
-    auto passflow = std::make_unique<au::gp::Passflow>("[Demo][Passflow]");
+    passflow->CleanResource(cubeVerticesColors);
 
-    auto drawPass = passflow->CreateOrGetPass<DrawPass>("[Demo][DrawPass]");
+    passflow->CleanResource(cubeMVP);
+
+    passflow->CleanResource(sampledTexture);
+    passflow->CleanResource(textureSampler);
+
+    passflow->CleanResource(displayOutput);
+    passflow->CleanResource(depthStencilOutput);
+    passflow->CleanResource(presentColorOutput);
+    passflow->CleanResource(halfColorOutput);
+
+    passflow.reset();
+}
+
+void PassflowRP::Setup()
+{
+    passflow = std::make_unique<au::gp::Passflow>("[Demo][Passflow]");
+
+    drawPass = passflow->CreateOrGetPass<DrawPass>("[Demo][DrawPass]");
     passflow->EnablePass(passflow->AddPassToFlow(drawPass), true);
-    auto presentPass = passflow->CreateOrGetPass<PresentPass>("[Demo][PresentPass]");
+    presentPass = passflow->CreateOrGetPass<PresentPass>("[Demo][PresentPass]");
     passflow->EnablePass(passflow->AddPassToFlow(presentPass), true);
 
-    auto cubeVertices = std::make_shared<au::gp::VertexBuffer<Float3>>();
+    cubeVertices = passflow->MakeResource<au::gp::VertexBuffer<DirectX::XMFLOAT3>>();
     cubeVertices->SetupVertexBuffer(static_cast<unsigned int>(CubeVertices.size()));
     cubeVertices->UpdateVertexBuffer(CubeVertices, 0);
     cubeVertices->UploadVertexBuffers();
 
-    auto cubeIndices = std::make_shared<au::gp::IndexBuffer<uint32_t>>();
+    cubeIndices = passflow->MakeResource<au::gp::IndexBuffer<uint32_t>>();
     cubeIndices->SetupIndexBuffer(static_cast<unsigned int>(CubeIndices.size()));
     cubeIndices->UpdateIndexBuffer(CubeIndices, 0);
     cubeIndices->UploadIndexBuffers();
 
-    auto cubeVerticesColors = std::make_shared<au::gp::StructuredBuffer<Float4>>();
+    cubeVerticesColors = passflow->MakeResource<au::gp::StructuredBuffer<DirectX::XMFLOAT4>>();
     cubeVerticesColors->SetupStructuredBuffer(static_cast<unsigned int>(CubeColors.size()));
     cubeVerticesColors->UpdateStructuredBuffer(CubeColors, 0);
     cubeVerticesColors->UploadStructuredBuffers();
 
-    auto cubeMVP = std::make_shared<au::gp::ConstantBuffer<ObjectMVP>>();
+    cubeMVP = passflow->MakeResource<au::gp::ConstantBuffer<ObjectMVP>>();
     cubeMVP->SetupConstantBuffer();
 
-    auto sampledTexture = std::make_shared<au::gp::Texture2D>();
+    sampledTexture = passflow->MakeResource<au::gp::Texture2D>();
     sampledTexture->SetupTexture(au::rhi::BasicFormat::R32G32B32A32_FLOAT, 1, 1);
     auto colorFloat = reinterpret_cast<float*>(sampledTexture->AcquireTextureBuffer().data());
     colorFloat[0] = 0.5f;
@@ -497,64 +499,53 @@ void PassflowRP()
     colorFloat[3] = 1.0f;
     sampledTexture->UploadTextureBuffers();
 
-    auto textureSampler = std::make_shared<au::gp::Sampler>();
+    textureSampler = passflow->MakeResource<au::gp::Sampler>();
     textureSampler->SetupSampler();
-
-
-
-
-
-
-
 }
 
+void PassflowRP::ExecuteOneFrame()
+{
+    AutomateRotate();
+    UpdateData();
+    Draw();
+}
 
-
-
-
-
-void Demo_02_Passflow::OnSize(Window window, unsigned int width, unsigned int height, float scale)
+void PassflowRP::SizeChanged(void* window, unsigned int width, unsigned int height)
 {
     if (displayOutput) {
         displayOutput->ResizeDisplay(width, height); // It will call WaitIdle.
     } else {
-        displayOutput = std::make_shared<au::gp::DisplayPresentOutput>();
+        displayOutput = passflow->MakeResource<au::gp::DisplayPresentOutput>();
         displayOutput->SetupDisplayPresentOutput(
-            au::BasicFormat::R8G8B8A8_UNORM, width, height, window);
+            au::rhi::BasicFormat::R8G8B8A8_UNORM, width, height, window);
     }
 
     if (depthStencilOutput) {
         depthStencilOutput->ResizeDepthStencilOutput(width, height);
     } else {
-        depthStencilOutput = std::make_shared<au::gp::DepthStencilOutput>();
+        depthStencilOutput = passflow->MakeResource<au::gp::DepthStencilOutput>();
         depthStencilOutput->SetupDepthStencilOutput(
-            au::BasicFormat::D24_UNORM_S8_UINT, width, height);
+            au::rhi::BasicFormat::D24_UNORM_S8_UINT, width, height);
     }
 
     if (presentColorOutput) {
         presentColorOutput->ResizeColorOutput(width, height);
     } else {
-        presentColorOutput = std::make_shared<au::gp::ColorOutput>();
-        presentColorOutput->SetupColorOutput(au::BasicFormat::R8G8B8A8_UNORM, width, height);
+        presentColorOutput = passflow->MakeResource<au::gp::ColorOutput>();
+        presentColorOutput->SetupColorOutput(au::rhi::BasicFormat::R8G8B8A8_UNORM, width, height);
     }
 
     if (halfColorOutput) {
         halfColorOutput->ResizeColorOutput(width, height);
     } else {
-        halfColorOutput = std::make_shared<au::gp::ColorOutput>();
-        halfColorOutput->SetupColorOutput(au::BasicFormat::R8G8B8A8_UNORM, width, height);
+        halfColorOutput = passflow->MakeResource<au::gp::ColorOutput>();
+        halfColorOutput->SetupColorOutput(au::rhi::BasicFormat::R8G8B8A8_UNORM, width, height);
     }
 
     aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 }
 
-void Demo_02_Passflow::OnTick()
-{
-    Update();
-    Draw();
-}
-
-void Demo_02_Passflow::AutomateRotate()
+void PassflowRP::AutomateRotate()
 {
     theta += delta;
 
@@ -564,28 +555,27 @@ void Demo_02_Passflow::AutomateRotate()
     float y = radius * cosf(phi);
 
     // Build the model matrix.
-    au::math::XMMATRIX world = au::math::XMMatrixIdentity();
+    DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
     // Build the view matrix.
-    au::math::XMVECTOR position = au::math::XMVectorSet(x, y, z, 1.0f);
-    au::math::XMVECTOR target = au::math::XMVectorZero();
-    au::math::XMVECTOR up = au::math::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-    au::math::XMMATRIX view = au::math::XMMatrixLookAtLH(position, target, up);
+    DirectX::XMVECTOR position = DirectX::XMVectorSet(x, y, z, 1.0f);
+    DirectX::XMVECTOR target = DirectX::XMVectorZero();
+    DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+    DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(position, target, up);
 
     // Build the projection matrix.
-    au::math::XMMATRIX projection = au::math::XMMatrixPerspectiveFovLH(
-        0.25f * au::math::XM_PI, aspectRatio, 0.1f, 100.0f);
+    DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(
+        0.25f * DirectX::XM_PI, aspectRatio, 0.1f, 100.0f);
 
     // Build the MVP matrix.
-    au::math::XMMATRIX mvp = world * view * projection;
+    DirectX::XMMATRIX mvp = world * view * projection;
 
     // Update the buffer with the latest MVP matrix.
-    au::math::XMStoreFloat4x4(&(cubeMVP->AcquireConstantBuffer().mvp), XMMatrixTranspose(mvp));
+    DirectX::XMStoreFloat4x4(&(cubeMVP->AcquireConstantBuffer().mvp), XMMatrixTranspose(mvp));
 }
 
-void Demo_02_Passflow::Update()
+void PassflowRP::UpdateData()
 {
-    AutomateRotate();
     cubeMVP->UploadConstantBuffer(frameIndex);
 
     auto drawItem = std::make_shared<au::gp::DrawItem>();
@@ -604,65 +594,7 @@ void Demo_02_Passflow::Update()
     presentPass->ImportFrameOutput("Present", displayOutput);
 }
 
-void Demo_02_Passflow::Draw()
+void PassflowRP::Draw()
 {
     frameIndex = passflow->ExecuteWorkflow();
 }
-
-
-//class Demo_02_Passflow
-//    : public DemosBase
-//    , public au::ebus::BusActor<
-//    au::ebus::BusHandler<au::TickBusEvent>,
-//    au::ebus::BusHandler<au::framework::InputBusEvent>> {
-//public:
-//    void Setup() override;
-//    void Shutdown() override;
-//
-//protected:
-//    void OnSize(Window window, unsigned int width, unsigned int height, float scale) override;
-//
-//    void OnTick() override;
-//
-//private:
-//    void AutomateRotate();
-//    void Update();
-//    void Draw();
-//
-//    float aspectRatio = 0.0f;
-//
-//    float theta = 1.5f * au::math::XM_PI;
-//    float phi = au::math::XM_PIDIV4;
-//    float radius = 5.0f;
-//    float delta = 0.01f;
-//
-//    static const std::vector<uint16_t> indices;
-//    static const std::vector<au::math::XMFLOAT3> positions;
-//    static const std::vector<au::math::XMFLOAT4> colors;
-//
-//    struct ObjectMVP {
-//        au::math::XMFLOAT4X4 mvp;
-//    };
-//
-//    std::unique_ptr<au::gp::Passflow> passflow;
-//
-//    au::gp::RasterizePass* drawPass = nullptr;
-//    au::gp::RasterizePass* presentPass = nullptr;
-//
-//    std::shared_ptr<au::gp::VertexBuffer<au::math::XMFLOAT3>> cubeVertices;
-//    std::shared_ptr<au::gp::IndexBuffer<uint32_t>> cubeIndices;
-//
-//    std::shared_ptr<au::gp::StructuredBuffer<au::math::XMFLOAT4>> cubeVerticesColors;
-//
-//    std::shared_ptr<au::gp::ConstantBuffer<ObjectMVP>> cubeMVP;
-//
-//    std::shared_ptr<au::gp::Texture2D> sampledTexture;
-//    std::shared_ptr<au::gp::Sampler> textureSampler;
-//
-//    std::shared_ptr<au::gp::DisplayPresentOutput> displayOutput;
-//    std::shared_ptr<au::gp::DepthStencilOutput> depthStencilOutput;
-//    std::shared_ptr<au::gp::ColorOutput> presentColorOutput;
-//    std::shared_ptr<au::gp::ColorOutput> halfColorOutput;
-//
-//    unsigned int frameIndex = 0;
-//};
