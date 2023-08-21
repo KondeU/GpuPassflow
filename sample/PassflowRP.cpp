@@ -325,7 +325,7 @@ void DrawPass::OnExecutePass(au::rhi::CommandRecorder* recorder)
         }
 
         auto vinColorD = shaderResourceDM.AcquireDescriptor(shaderResourceDescriptorIndex++);
-        vinColorD->BuildDescriptor(vinColor->second->RawGpuInst(currentBufferingIndex), false);
+        vinColorD->BuildDescriptor(vinColor->second->RawGpuInst(0), false);
 
         auto mvpMatD = shaderResourceDM.AcquireDescriptor(shaderResourceDescriptorIndex++);
         mvpMatD->BuildDescriptor(mvpMat->second->RawGpuInst(currentBufferingIndex));
@@ -335,10 +335,10 @@ void DrawPass::OnExecutePass(au::rhi::CommandRecorder* recorder)
         recorder->RcSetGraphicsDescriptor(2, samTexDescriptor);
         recorder->RcSetGraphicsDescriptor(3, samplerDescriptor);
 
-        recorder->RcSetVertex({ drawItem->vertexBuffer->
-            RawGpuInst(currentBufferingIndex) }, AcquireVertexAttributes());
-        recorder->RcSetIndex(drawItem->indexBuffer->
-            RawGpuInst(currentBufferingIndex), AcquireIndexAttribute());
+        recorder->RcSetVertex(
+            { drawItem->vertexBuffer->RawGpuInst(0) }, AcquireVertexAttributes());
+        recorder->RcSetIndex(
+            drawItem->indexBuffer->RawGpuInst(0), AcquireIndexAttribute());
         recorder->RcDraw(drawItem->indexBuffer->RawGpuInst(currentBufferingIndex));
     }
 
@@ -473,16 +473,19 @@ void PassflowRP::Setup()
     passflow->EnablePass(passflow->AddPassToFlow(presentPass), true);
 
     cubeVertices = passflow->MakeResource<au::gp::VertexBuffer<DirectX::XMFLOAT3>>();
+    cubeVertices->ConfigureAvoidInfight(false);
     cubeVertices->SetupVertexBuffer(static_cast<unsigned int>(CubeVertices.size()));
     cubeVertices->UpdateVertexBuffer(CubeVertices, 0);
     cubeVertices->UploadVertexBuffers();
 
     cubeIndices = passflow->MakeResource<au::gp::IndexBuffer<uint32_t>>();
+    cubeIndices->ConfigureAvoidInfight(false);
     cubeIndices->SetupIndexBuffer(static_cast<unsigned int>(CubeIndices.size()));
     cubeIndices->UpdateIndexBuffer(CubeIndices, 0);
     cubeIndices->UploadIndexBuffers();
 
     cubeVerticesColors = passflow->MakeResource<au::gp::StructuredBuffer<DirectX::XMFLOAT4>>();
+    cubeVerticesColors->ConfigureAvoidInfight(false);
     cubeVerticesColors->SetupStructuredBuffer(static_cast<unsigned int>(CubeColors.size()));
     cubeVerticesColors->UpdateStructuredBuffer(CubeColors, 0);
     cubeVerticesColors->UploadStructuredBuffers();
