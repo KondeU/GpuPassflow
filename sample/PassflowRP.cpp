@@ -1,5 +1,7 @@
 #include "PassflowRP.h"
 
+namespace {
+
 const std::string VertexShaderString = R"(
 StructuredBuffer<float4> inColor : register(t0);
 
@@ -339,7 +341,7 @@ void DrawPass::OnExecutePass(au::rhi::CommandRecorder* recorder)
             { drawItem->vertexBuffer->RawGpuInst(0) }, AcquireVertexAttributes());
         recorder->RcSetIndex(
             drawItem->indexBuffer->RawGpuInst(0), AcquireIndexAttribute());
-        recorder->RcDraw(drawItem->indexBuffer->RawGpuInst(currentBufferingIndex));
+        recorder->RcDraw(drawItem->indexBuffer->RawGpuInst(0));
     }
 
     recorder->RcEndPass();
@@ -441,6 +443,8 @@ void PresentPass::OnAfterPass(unsigned int currentPassInFlowIndex)
 void PresentPass::OnEnablePass(bool enable)
 {
     (void)enable; // Nothing to do.
+}
+
 }
 
 PassflowRP::~PassflowRP()

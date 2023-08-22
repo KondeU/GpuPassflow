@@ -1,5 +1,7 @@
 #include "PassflowCP.h"
 
+namespace {
+
 // Resources
 constexpr auto SR = R"(
 cbuffer inputProps : register(b0, space2)
@@ -314,6 +316,8 @@ void PresentPass::OnEnablePass(bool enable)
     (void)enable; // Nothing to do.
 }
 
+}
+
 PassflowCP::~PassflowCP()
 {
     passflow->CleanResource(outputColor);
@@ -387,8 +391,8 @@ void PassflowCP::ExecuteOneFrame()
     computePass->ImportFrameResource("outputColor", outputColor);
     computePass->ImportFrameResource("simpleSampler", inputTextureSampler);
 
-    presentPass->ImportFrameOutput("Color", presentColorOutput);
-    presentPass->ImportFrameOutput("Present", displayOutput);
+    //presentPass->ImportFrameOutput("Color", presentColorOutput);
+    //presentPass->ImportFrameOutput("Present", displayOutput);
 
     frameIndex = passflow->ExecuteWorkflow();
 }
@@ -406,7 +410,7 @@ void PassflowCP::SizeChanged(void* window, unsigned int width, unsigned int heig
     if (outputColor) {
         outputColor->ResizeTexture(width, height);
     } else {
-        outputColor = passflow->MakeResource<au::gp::ColorOutput>();
+        outputColor = passflow->MakeResource<au::gp::Texture2D>();
         outputColor->ConfigureTextureUsage(au::rhi::ImageType::Color);
         outputColor->ConfigureTextureWritable(true);
         outputColor->SetupTexture(au::rhi::BasicFormat::R8G8B8A8_UNORM, width, height);
