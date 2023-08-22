@@ -17,6 +17,8 @@ protected:
     DeviceHolder() = default;
     virtual ~DeviceHolder() = 0;
 
+    void CheckSize(unsigned int& size);
+
     bool avoidInfight = true;
 
     rhi::Device* device = nullptr; // Not owned!

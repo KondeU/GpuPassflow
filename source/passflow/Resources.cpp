@@ -51,6 +51,15 @@ DeviceHolder::~DeviceHolder()
     // provided, it will cause the problem when process destruction.
 }
 
+void DeviceHolder::CheckSize(unsigned int& size)
+{
+    if (size > 0) {
+        return; // Check pass.
+    }
+    size = 1;
+    GP_LOG_W(TAG, "Resource size check failed(size=0)! fallback to using 1.");
+}
+
 void DeviceHolder::ConfigureAvoidInfight(bool infight)
 {
     avoidInfight = infight;
@@ -422,8 +431,8 @@ Resource<BaseTexture> BaseTexture::Clone() const
 void ColorOutput::SetupColorOutput(
     rhi::BasicFormat format, unsigned int width, unsigned int height)
 {
-    width = width > 0 ? width : 1;
-    height = height > 0 ? height : 1;
+    CheckSize(width);
+    CheckSize(height);
 
     this->width = width;
     this->height = height;
@@ -471,8 +480,8 @@ void* ColorOutput::RawCpuPtr()
 void DepthStencilOutput::SetupDepthStencilOutput(
     rhi::BasicFormat format, unsigned int width, unsigned int height)
 {
-    width = width > 0 ? width : 1;
-    height = height > 0 ? height : 1;
+    CheckSize(width);
+    CheckSize(height);
 
     this->width = width;
     this->height = height;
@@ -535,8 +544,8 @@ DisplayPresentOutput::~DisplayPresentOutput()
 void DisplayPresentOutput::SetupDisplayPresentOutput(
     rhi::BasicFormat format, unsigned int width, unsigned int height, void* window)
 {
-    width = width > 0 ? width : 1;
-    height = height > 0 ? height : 1;
+    CheckSize(width);
+    CheckSize(height);
 
     description.width = width;
     description.height = height;
@@ -553,8 +562,8 @@ void DisplayPresentOutput::SetupDisplayPresentOutput(
 
 void DisplayPresentOutput::ResizeDisplay(unsigned int width, unsigned int height)
 {
-    width = width > 0 ? width : 1;
-    height = height > 0 ? height : 1;
+    CheckSize(width);
+    CheckSize(height);
 
     description.width = width;
     description.height = height;

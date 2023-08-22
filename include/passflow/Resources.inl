@@ -72,7 +72,7 @@ inline void StructuredBuffer<T>::ConfigureStructuredBufferWritable(bool writable
 template <typename T>
 inline void StructuredBuffer<T>::SetupStructuredBuffer(unsigned int elementsCount)
 {
-    elementsCount = elementsCount > 0 ? elementsCount : 1;
+    CheckSize(elementsCount);
     description.elementsCount = elementsCount;
     description.elementBytesSize = sizeof(T);
     SetupGPU();
@@ -124,7 +124,7 @@ inline void* StructuredBuffer<T>::RawCpuPtr()
 template <typename T>
 inline void IndexBuffer<T>::SetupIndexBuffer(unsigned int indicesCount)
 {
-    indicesCount = indicesCount > 0 ? indicesCount : 1;
+    CheckSize(indicesCount);
     description.indicesCount = indicesCount;
     description.indexByteSize = sizeof(T);
     SetupGPU();
@@ -175,7 +175,7 @@ inline void* IndexBuffer<T>::RawCpuPtr()
 template <typename T>
 inline void VertexBuffer<T>::SetupVertexBuffer(unsigned int verticesCount)
 {
-    verticesCount = verticesCount > 0 ? verticesCount : 1;
+    CheckSize(verticesCount);
     description.verticesCount = verticesCount;
     description.attributesByteSize = sizeof(T);
     SetupGPU();
@@ -245,9 +245,9 @@ template <unsigned int D>
 inline void Texture<D>::SetupTexture(rhi::BasicFormat format,
     uint32_t width, uint32_t height, uint8_t arrays)
 {
-    width = width   > 0 ? width  : 1;
-    height = height > 0 ? height : 1;
-    arrays = arrays > 0 ? arrays : 1;
+    CheckSize(width);
+    CheckSize(height);
+    CheckSize(arrays);
 
     if constexpr (D >= 1) {
         elementArray[0] = width;
