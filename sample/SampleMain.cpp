@@ -52,7 +52,33 @@ int main(int argc, char* argv[])
     #endif
 
     GP_LOG_I(TAG, "Initialize passflow demo.");
-    passflowDemo = std::make_unique<PassflowRP>();
+    // Parse environment configurations from command line.
+    unsigned int selector = 0;
+    {
+        int argc = 0;
+        LPWSTR* argv = NULL;
+        argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+        if (argv != NULL) {
+            for (int argn = 1; argn < argc; argn++) {
+                std::string command = std::to_string(argv[argn]);
+                if (command == "RP") {
+                    selector = 0;
+                } else if (command == "CP") {
+                    selector = 1;
+                }
+            }
+            LocalFree(argv);
+        }
+    }
+    switch (selector) {
+    default:
+    case 0:
+        passflowDemo = std::make_unique<PassflowRP>();
+        break;
+    case 1:
+        passflowDemo = std::make_unique<PassflowCP>();
+        break;
+    }
     passflowDemo->Setup();
 
     GP_LOG_I(TAG, "Initialize window.");
@@ -73,22 +99,22 @@ int main(int argc, char* argv[])
         wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
         wndclass.hbrBackground = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
         wndclass.lpszMenuName = NULL;
-        wndclass.lpszClassName = TAG;
+        wndclass.lpszClassName = TEXT("DEMO");
 
         if (!RegisterClass(&wndclass)) {
             GP_LOG_F(TAG, "Register main window class failed, requires at least WindowsNT!");
             MessageBox(NULL, TEXT("Regist main window class failed, requires at least WindowsNT!"),
-                TEXT(TAG), MB_ICONERROR | MB_OK);
+                TEXT("DEMO"), MB_ICONERROR | MB_OK);
             return 0;
         }
 
-        hwnd = CreateWindow(TAG, TAG, WS_OVERLAPPEDWINDOW,
+        hwnd = CreateWindow(TEXT("DEMO"), TEXT("DEMO"), WS_OVERLAPPEDWINDOW,
             CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
             GetDesktopWindow(), NULL, hInstance, NULL);
         if (!hwnd) {
             GP_LOG_F(TAG, "Create application window failed!");
             MessageBox(NULL, TEXT("Create application window failed!"),
-                TEXT(TAG), MB_ICONERROR | MB_OK);
+                TEXT("DEMO"), MB_ICONERROR | MB_OK);
             return 0;
         }
 

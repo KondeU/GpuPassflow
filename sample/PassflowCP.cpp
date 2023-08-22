@@ -277,8 +277,8 @@ void PresentPass::OnExecutePass(au::rhi::CommandRecorder* recorder)
 {
     auto& resources = AcquireFrameResource(currentBufferingIndex);
 
-    auto& color = resources.frameOutputs.colorOutputs.find("Color");
-    if (color == resources.frameOutputs.colorOutputs.end()) {
+    auto& color = resources.frameResources.textures.find("Color");
+    if (color == resources.frameResources.textures.end()) {
         GP_LOG_RET_E(TAG, "Not found color output!");
     }
 
@@ -320,6 +320,7 @@ void PresentPass::OnEnablePass(bool enable)
 
 PassflowCP::~PassflowCP()
 {
+    passflow->CleanResource(outputDisplay);
     passflow->CleanResource(outputColor);
     passflow->CleanResource(inputProperties);
     passflow->CleanResource(input2DTexturesArray);
@@ -384,6 +385,7 @@ void PassflowCP::ExecuteOneFrame()
     properties.delta = delta;
     properties.frames += 1.0f;
     properties.fps = properties.frames / (properties.time / 1000.0f);
+    inputProperties->UploadConstantBuffer(frameIndex);
 
     computePass->AddDispatchItem(dispatchItem);
     computePass->ImportFrameResource("inputProps", inputProperties);
@@ -391,8 +393,8 @@ void PassflowCP::ExecuteOneFrame()
     computePass->ImportFrameResource("outputColor", outputColor);
     computePass->ImportFrameResource("simpleSampler", inputTextureSampler);
 
-    //presentPass->ImportFrameOutput("Color", presentColorOutput);
-    //presentPass->ImportFrameOutput("Present", displayOutput);
+    presentPass->ImportFrameResource("Color", outputColor);
+    presentPass->ImportFrameOutput("Present", outputDisplay);
 
     frameIndex = passflow->ExecuteWorkflow();
 }
