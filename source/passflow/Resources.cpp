@@ -422,6 +422,9 @@ Resource<BaseTexture> BaseTexture::Clone() const
 void ColorOutput::SetupColorOutput(
     rhi::BasicFormat format, unsigned int width, unsigned int height)
 {
+    width = width > 0 ? width : 1;
+    height = height > 0 ? height : 1;
+
     this->width = width;
     this->height = height;
     pixelBytes = QueryBasicFormatBytes(format);
@@ -468,6 +471,9 @@ void* ColorOutput::RawCpuPtr()
 void DepthStencilOutput::SetupDepthStencilOutput(
     rhi::BasicFormat format, unsigned int width, unsigned int height)
 {
+    width = width > 0 ? width : 1;
+    height = height > 0 ? height : 1;
+
     this->width = width;
     this->height = height;
     pixelBytes = QueryBasicFormatBytes(format);
@@ -529,6 +535,9 @@ DisplayPresentOutput::~DisplayPresentOutput()
 void DisplayPresentOutput::SetupDisplayPresentOutput(
     rhi::BasicFormat format, unsigned int width, unsigned int height, void* window)
 {
+    width = width > 0 ? width : 1;
+    height = height > 0 ? height : 1;
+
     description.width = width;
     description.height = height;
     description.bufferCount = multipleBufferingCount;
@@ -544,6 +553,9 @@ void DisplayPresentOutput::SetupDisplayPresentOutput(
 
 void DisplayPresentOutput::ResizeDisplay(unsigned int width, unsigned int height)
 {
+    width = width > 0 ? width : 1;
+    height = height > 0 ? height : 1;
+
     description.width = width;
     description.height = height;
 
