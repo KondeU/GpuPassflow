@@ -18,6 +18,7 @@ protected:
     virtual ~DeviceHolder() = 0;
 
     void CheckSize(unsigned int& size);
+    void CheckSize(unsigned int& size, unsigned int limit);
 
     bool avoidInfight = true;
 
@@ -244,8 +245,9 @@ public:
     void ConfigureTextureWritable(bool writable);
 
     void SetupTexture(rhi::BasicFormat format,
-        uint32_t width, uint32_t height = 1, uint8_t arrays = 1);
-    void ResizeTexture(uint32_t width, uint32_t height = 1, uint8_t arrays = 1);
+        unsigned int width, unsigned int height = 1, unsigned int arrays = 1);
+    void ResizeTexture(
+        unsigned int width, unsigned int height = 1, unsigned int arrays = 1);
 
     std::vector<uint8_t>& AcquireTextureBuffer();
 

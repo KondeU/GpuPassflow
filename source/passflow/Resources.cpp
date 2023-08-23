@@ -53,11 +53,19 @@ DeviceHolder::~DeviceHolder()
 
 void DeviceHolder::CheckSize(unsigned int& size)
 {
-    if (size > 0) {
-        return; // Check pass.
-    }
-    size = 1;
-    GP_LOG_W(TAG, "Resource size check failed(size=0)! fallback to using 1.");
+    if (size == 0) {
+        size = 1;
+        GP_LOG_RET_W(TAG, "Resource size check failed(size=0)! fallback to using 1.");
+    } // else check pass.
+}
+
+void DeviceHolder::CheckSize(unsigned int& size, unsigned int limit)
+{
+    if (size > limit) {
+        size = 1;
+        GP_LOG_RET_E(TAG, "Resource size check failed(size>limit)! fallback to using 1.");
+    } // else check pass, and goto next check.
+    CheckSize(size);
 }
 
 void DeviceHolder::ConfigureAvoidInfight(bool infight)

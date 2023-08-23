@@ -243,11 +243,11 @@ inline void Texture<D>::ConfigureTextureWritable(bool writable)
 
 template <unsigned int D>
 inline void Texture<D>::SetupTexture(rhi::BasicFormat format,
-    uint32_t width, uint32_t height, uint8_t arrays)
+    unsigned int width, unsigned int height, unsigned int arrays)
 {
-    CheckSize(width);
-    CheckSize(height);
-    CheckSize(arrays);
+    CheckSize(width, std::numeric_limits<decltype(description.width)>::max());
+    CheckSize(height, std::numeric_limits<decltype(description.height)>::max());
+    CheckSize(arrays, std::numeric_limits<decltype(description.arrays)>::max());
 
     if constexpr (D >= 1) {
         elementArray[0] = width;
@@ -270,7 +270,7 @@ inline void Texture<D>::SetupTexture(rhi::BasicFormat format,
 
 template <unsigned int D>
 inline void Texture<D>::ResizeTexture(
-    uint32_t width, uint32_t height, uint8_t arrays)
+    unsigned int width, unsigned int height, unsigned int arrays)
 {
     CloseGPU();
     SetupTexture(description.format, width, height, arrays);
