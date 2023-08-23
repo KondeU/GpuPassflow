@@ -1,0 +1,20 @@
+name: windows
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ilammy/msvc-dev-cmd@v1
+    - name: build GpuPassflow on windows
+      shell: bash
+      run: ./build.sh -b Release
+    - uses: actions/upload-artifact@v3
+      with:
+        name: GpuPassflow
+        path: ./output
