@@ -11,7 +11,7 @@ using Resource = std::shared_ptr<T>;
 // otherwise device in the DeviceHolder will be nullptr!
 class DeviceHolder {
 public:
-    void ConfigureAvoidInfight(bool infight);
+    void ConfigureAvoidInfight(bool avoid);
 
 protected:
     DeviceHolder() = default;

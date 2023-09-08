@@ -99,11 +99,13 @@ template <typename T>
 inline void StructuredBuffer<T>::UpdateStructuredBuffer(
     const std::vector<T>& value, unsigned int offset)
 {
-    SafeCopyMemory(
-        AcquireStructuredBuffer().data() + offset,
-        (AcquireStructuredBuffer().size() - offset) * sizeof(T),
-        value.data(),
-        value.size() * sizeof(T));
+    if (offset < AcquireStructuredBuffer().size()) {
+        SafeCopyMemory(
+            AcquireStructuredBuffer().data() + offset,
+            (AcquireStructuredBuffer().size() - offset) * sizeof(T),
+            value.data(),
+            value.size() * sizeof(T));
+    }
 }
 
 template <typename T>
@@ -150,11 +152,13 @@ inline std::vector<T>& IndexBuffer<T>::AcquireIndexBuffer()
 template <typename T>
 void IndexBuffer<T>::UpdateIndexBuffer(const std::vector<T>& value, unsigned int offset)
 {
-    SafeCopyMemory(
-        AcquireIndexBuffer().data() + offset,
-        (AcquireIndexBuffer().size() - offset) * sizeof(T),
-        value.data(),
-        value.size() * sizeof(T));
+    if (offset < AcquireIndexBuffer().size()) {
+        SafeCopyMemory(
+            AcquireIndexBuffer().data() + offset,
+            (AcquireIndexBuffer().size() - offset) * sizeof(T),
+            value.data(),
+            value.size() * sizeof(T));
+    }
 }
 
 template <typename T>
@@ -201,11 +205,13 @@ inline std::vector<T>& VertexBuffer<T>::AcquireVertexBuffer()
 template <typename T>
 inline void VertexBuffer<T>::UpdateVertexBuffer(const std::vector<T>& value, unsigned int offset)
 {
-    SafeCopyMemory(
-        AcquireVertexBuffer().data() + offset,
-        (AcquireVertexBuffer().size() - offset) * sizeof(T),
-        value.data(),
-        value.size() * sizeof(T));
+    if (offset < AcquireVertexBuffer().size()) {
+        SafeCopyMemory(
+            AcquireVertexBuffer().data() + offset,
+            (AcquireVertexBuffer().size() - offset) * sizeof(T),
+            value.data(),
+            value.size() * sizeof(T));
+    }
 }
 
 template <typename T>

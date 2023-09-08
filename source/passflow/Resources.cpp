@@ -68,9 +68,9 @@ void DeviceHolder::CheckSize(unsigned int& size, unsigned int limit)
     CheckSize(size);
 }
 
-void DeviceHolder::ConfigureAvoidInfight(bool infight)
+void DeviceHolder::ConfigureAvoidInfight(bool avoid)
 {
-    avoidInfight = infight;
+    avoidInfight = avoid;
 }
 
 //////////////////////////////////////////////////
