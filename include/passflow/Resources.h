@@ -25,6 +25,8 @@ protected:
     rhi::Device* device = nullptr; // Not owned!
     unsigned int multipleBufferingCount = 0;
 
+    std::vector<bool> dirty; // size is multipleBufferingCount.
+
 private:
     friend class Passflow;
     DeviceHolder(const DeviceHolder&) = delete;
