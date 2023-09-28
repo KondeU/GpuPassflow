@@ -161,8 +161,9 @@ void BaseStructuredBuffer::UploadStructuredBuffer(unsigned int index)
     } else if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(buffer, RawCpuPtr(), description.elementBytesSize, description.elementsCount);
     } else {
-        GP_LOG_W(TAG, "Upload structured buffer failed, this buffer is in the readback heap.");
+        GP_LOG_RET_W(TAG, "Upload structured buffer failed, this buffer is in the readback heap.");
     }
+    dirty[index] = false;
 }
 
 void BaseStructuredBuffer::UploadStructuredBuffers()
