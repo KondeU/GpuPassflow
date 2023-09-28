@@ -48,6 +48,8 @@ public:
     virtual void Resize(unsigned int width, unsigned int height) = 0;
     virtual void Present() = 0;
 
+    static constexpr unsigned int MaxBufferCountLimit = 4;
+
 protected:
     Swapchain() = default;
     virtual ~Swapchain() = default;

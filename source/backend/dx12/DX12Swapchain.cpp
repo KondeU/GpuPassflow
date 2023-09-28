@@ -30,7 +30,7 @@ void DX12Swapchain::Setup(Description description)
     swapchainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
     swapchainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
     swapchainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    swapchainDesc.BufferCount = description.bufferCount;
+    swapchainDesc.BufferCount = std::min(description.bufferCount, MaxBufferCountLimit);
     swapchainDesc.SampleDesc.Count = 1;
     swapchainDesc.SampleDesc.Quality = 0;
     swapchainDesc.OutputWindow = (HWND)(description.window);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <bitset>
 #include "backend/BackendContext.h"
 
 namespace au::gp {
@@ -25,7 +26,8 @@ protected:
     rhi::Device* device = nullptr; // Not owned!
     unsigned int multipleBufferingCount = 0;
 
-    std::vector<bool> dirty; // size is multipleBufferingCount.
+    // Dirty used bits size is multipleBufferingCount.
+    std::bitset<rhi::Swapchain::MaxBufferCountLimit> dirty;
 
 private:
     friend class Passflow;

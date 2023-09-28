@@ -49,9 +49,8 @@ public:
     Resource<T> MakeResource(Args&& ...args)
     {
         auto resource = std::make_shared<T>(std::forward(args)...);
-        resource->device = bkDevice;
         resource->multipleBufferingCount = multipleBufferingCount;
-        resource->dirty.resize(multipleBufferingCount);
+        resource->device = bkDevice;
         return resource;
     }
 
