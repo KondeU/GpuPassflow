@@ -14,6 +14,61 @@ BasePass::InputProperties::MakeDefaultPositionVertexAttribute()
     return { rhi::VertexFormat::FLOAT32x3, "POSITION", 0, 0 };
 }
 
+unsigned int& BasePass::DescriptorCounters::ObjectShaderResourcesCount()
+{
+    return generalResourcesCounts[ShaderResourceProperties::ResourceSpace::PerObject];
+}
+
+unsigned int& BasePass::DescriptorCounters::ViewShaderResourcesCount()
+{
+    return generalResourcesCounts[ShaderResourceProperties::ResourceSpace::PerView];
+}
+
+unsigned int& BasePass::DescriptorCounters::SceneShaderResourcesCount()
+{
+    return generalResourcesCounts[ShaderResourceProperties::ResourceSpace::PerScene];
+}
+
+unsigned int& BasePass::DescriptorCounters::PassShaderResourcesCount()
+{
+    return generalResourcesCounts[ShaderResourceProperties::ResourceSpace::PerPass];
+}
+
+unsigned int& BasePass::DescriptorCounters::ObjectImageSamplersCount()
+{
+    return imageSamplersCounts[ShaderResourceProperties::ResourceSpace::PerObject];
+}
+
+unsigned int& BasePass::DescriptorCounters::ViewImageSamplersCount()
+{
+    return imageSamplersCounts[ShaderResourceProperties::ResourceSpace::PerView];
+}
+
+unsigned int& BasePass::DescriptorCounters::SceneImageSamplersCount()
+{
+    return imageSamplersCounts[ShaderResourceProperties::ResourceSpace::PerScene];
+}
+
+unsigned int& BasePass::DescriptorCounters::PassImageSamplersCount()
+{
+    return imageSamplersCounts[ShaderResourceProperties::ResourceSpace::PerPass];
+}
+
+unsigned int& BasePass::DescriptorCounters::ObjectsReservedCount()
+{
+    return reservedCounts[ShaderResourceProperties::ResourceSpace::PerObject];
+}
+
+unsigned int& BasePass::DescriptorCounters::ViewsReservedCount()
+{
+    return reservedCounts[ShaderResourceProperties::ResourceSpace::PerView];
+}
+
+unsigned int& BasePass::DescriptorCounters::ScenesReservedCount()
+{
+    return reservedCounts[ShaderResourceProperties::ResourceSpace::PerScene];
+}
+
 BasePass::DynamicDescriptorManager::DynamicDescriptorManager(
     rhi::Device* device, rhi::DescriptorType type) : device(device)
 {

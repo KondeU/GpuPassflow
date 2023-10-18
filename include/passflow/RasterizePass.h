@@ -80,12 +80,38 @@ private:
 
     struct RasterizePipelineCounters final {
         bool allowMultiObjects = false;
+
         unsigned int colorOutputCount = 0;
         unsigned int depthStencilOutputCount = 0;
-        unsigned int reservedObjectsCount = 1;
-        unsigned int objectShaderResourcesCount = 0;
-        unsigned int shaderResourcesCount = 0;
-        unsigned int imageSamplersCount = 0;
+
+        using CounterContainer = std::unordered_map<
+            ShaderResourceProperties::ResourceSpace, unsigned int>;
+
+        CounterContainer generalResourcesCounts; // shader resource
+        CounterContainer imageSamplersCounts;    // image sampler
+
+        CounterContainer reservedCounts = {
+            { ShaderResourceProperties::ResourceSpace::PerObject, 1 },
+            { ShaderResourceProperties::ResourceSpace::PerView,   1 },
+            { ShaderResourceProperties::ResourceSpace::PerScene,  1 },
+            { ShaderResourceProperties::ResourceSpace::PerPass,   1 }
+        };
+
+        unsigned int& ObjectShaderResourcesCount();
+        unsigned int& ViewShaderResourcesCount();
+        unsigned int& SceneShaderResourcesCount();
+        unsigned int& PassShaderResourcesCount();
+
+        unsigned int& ObjectImageSamplersCount();
+        unsigned int& ViewImageSamplersCount();
+        unsigned int& SceneImageSamplersCount();
+        unsigned int& PassImageSamplersCount();
+
+        unsigned int& ObjectsReservedCount();
+        unsigned int& ViewsReservedCount();
+        unsigned int& ScenesReservedCount();
+        // There should be only one Pass normally, so do
+        // not define the PassReservedCount() function.
     } rasterizePipelineCounters;
 
     std::vector<FrameResources> frameResources;
