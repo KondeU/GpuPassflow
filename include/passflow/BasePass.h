@@ -111,6 +111,9 @@ protected:
         unsigned int& ScenesReservedCount();
         // There should be only one Pass normally, so do
         // not define the PassReservedCount() function.
+
+        unsigned int CalculateShaderResourcesCount();
+        unsigned int CalculateImageSamplersCount();
     };
 
     class DynamicDescriptorManager final {

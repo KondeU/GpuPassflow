@@ -60,15 +60,10 @@ private:
 
     std::map<uint8_t, rhi::DescriptorGroup*> descriptorGroups;
 
+    DescriptorCounters descriptorCounters;
+
     std::vector<DynamicDescriptorManager> shaderResourceDescriptorHeaps;
     std::vector<DynamicDescriptorManager> imageSamplerDescriptorHeaps;
-
-    struct ComputePipelineCounters final {
-        unsigned int reservedObjectsCount = 1;
-        unsigned int objectShaderResourcesCount = 0;
-        unsigned int shaderResourcesCount = 0;
-        unsigned int imageSamplersCount = 0;
-    } computePipelineCounters;
 
     std::vector<FrameResources> frameResources;
 };

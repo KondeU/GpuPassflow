@@ -69,6 +69,24 @@ unsigned int& BasePass::DescriptorCounters::ScenesReservedCount()
     return reservedCounts[ShaderResourceProperties::ResourceSpace::PerScene];
 }
 
+unsigned int BasePass::DescriptorCounters::CalculateShaderResourcesCount()
+{
+    unsigned int total = 0;
+    for (const auto& [space, count] : generalResourcesCounts) {
+        total += count * reservedCounts[space];
+    }
+    return total;
+}
+
+unsigned int BasePass::DescriptorCounters::CalculateImageSamplersCount()
+{
+    unsigned int total = 0;
+    for (const auto& [space, count] : imageSamplersCounts) {
+        total += count * reservedCounts[space];
+    }
+    return total;
+}
+
 BasePass::DynamicDescriptorManager::DynamicDescriptorManager(
     rhi::Device* device, rhi::DescriptorType type) : device(device)
 {

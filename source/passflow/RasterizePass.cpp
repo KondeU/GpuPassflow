@@ -85,28 +85,28 @@ void RasterizePass::DeclareInput(const InputProperties& properties)
     inputIndexAttribute = device->CreateInputIndexAttribute();
     inputIndexAttribute->SetAttribute(properties.indexAttribute);
 
-    rasterizePipelineCounters.allowMultiObjects = properties.multipleObjects;
-    if (rasterizePipelineCounters.allowMultiObjects) {
+    descriptorCounters.allowMultiObjects = properties.multipleObjects;
+    if (descriptorCounters.allowMultiObjects) {
         // The number of objects reserved initially.
         // If the number of objects added by calling AddDrawItem exceeds it, it will
         // be doubled when the reserved descriptors in descriptor heap is not enough.
-        rasterizePipelineCounters.reservedObjectsCount = 16;
+        descriptorCounters.ObjectsReservedCount() = (1 << 4); // 16
     }
 }
 
 void RasterizePass::DeclareOutput(const OutputProperties& properties)
 {
-    rasterizePipelineCounters.colorOutputCount = 0;
-    rasterizePipelineCounters.depthStencilOutputCount = 0;
+    descriptorCounters.colorOutputCount = 0;
+    descriptorCounters.depthStencilOutputCount = 0;
 
     for (const auto& [outputSlot, outputAttribute] : properties.targets) {
         if (outputSlot == OutputProperties::OutputSlot::DS) {
             pipelineState->SetDepthStencilOutputFormat(outputAttribute.imagePixelFormat);
-            rasterizePipelineCounters.depthStencilOutputCount = 1;
+            descriptorCounters.depthStencilOutputCount = 1;
         } else { // Color: C0,...,C7
             pipelineState->SetColorOutputFormat(
                 EnumCast(outputSlot), outputAttribute.imagePixelFormat);
-            rasterizePipelineCounters.colorOutputCount++;
+            descriptorCounters.colorOutputCount++;
         }
     }
 }
@@ -127,9 +127,8 @@ void RasterizePass::DeclareProgram(const ProgramProperties& properties)
 
 void RasterizePass::DeclareResource(const ShaderResourceProperties& properties)
 {
-    rasterizePipelineCounters.objectShaderResourcesCount = 0;
-    rasterizePipelineCounters.shaderResourcesCount = 0;
-    rasterizePipelineCounters.imageSamplersCount = 0;
+    descriptorCounters.generalResourcesCounts.clear();
+    descriptorCounters.imageSamplersCounts.clear();
 
     pipelineLayout = device->CreatePipelineLayout({});
     for (const auto& [resourceSpace, resourceAttributes] : properties.resources) {
@@ -139,7 +138,7 @@ void RasterizePass::DeclareResource(const ShaderResourceProperties& properties)
             if (resourceSpace == ShaderResourceProperties::ResourceSpace::PerObject) {
                 if (EnumCast(attribute.resourceType) &
                     EnumCast(rhi::DescriptorType::ShaderResource)) {
-                    rasterizePipelineCounters.objectShaderResourcesCount +=
+                    descriptorCounters.objectShaderResourcesCount +=
                         attribute.bindingPointCount;
                 } else {
                     GP_LOG_F(TAG, "PerObject only can have the resource type of ShaderResource.");
@@ -150,9 +149,9 @@ void RasterizePass::DeclareResource(const ShaderResourceProperties& properties)
             } else {
                 if (EnumCast(attribute.resourceType) &
                     EnumCast(rhi::DescriptorType::ShaderResource)) {
-                    rasterizePipelineCounters.shaderResourcesCount += attribute.bindingPointCount;
+                    descriptorCounters.shaderResourcesCount += attribute.bindingPointCount;
                 } else if (attribute.resourceType == rhi::DescriptorType::ImageSampler) {
-                    rasterizePipelineCounters.imageSamplersCount += attribute.bindingPointCount;
+                    descriptorCounters.imageSamplersCount += attribute.bindingPointCount;
                 } else {
                     GP_LOG_F(TAG, "Resource only can be the type of ShaderResource/ImageSampler.");
                     continue; // NB: Ditto.
@@ -257,7 +256,7 @@ void RasterizePass::CleanPipeline()
         device = nullptr;
 
         // Reset recorded counters variable to default values.
-        rasterizePipelineCounters = RasterizePipelineCounters();
+        descriptorCounters = descriptorCounters();
     }
 }
 
@@ -279,20 +278,18 @@ rhi::InputVertexAttributes* RasterizePass::AcquireVertexAttributes()
 void RasterizePass::ReserveEnoughShaderResourceDescriptors(unsigned int bufferingIndex)
 {
     do {
-        if (rasterizePipelineCounters.reservedObjectsCount >=
+        if (descriptorCounters.reservedObjectsCount >=
             AcquireStagingFrameResource().drawItems.size()) {
             break;
         }
-    } while (rasterizePipelineCounters.reservedObjectsCount <<= 1);
+    } while (descriptorCounters.reservedObjectsCount <<= 1);
 
-    if (rasterizePipelineCounters.reservedObjectsCount == 0) {
+    if (descriptorCounters.reservedObjectsCount == 0) {
         GP_LOG_F(TAG, "Draw items count overflow and no enough descriptors!");
     }
 
     shaderResourceDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
-        rasterizePipelineCounters.shaderResourcesCount +
-        rasterizePipelineCounters.reservedObjectsCount *
-        rasterizePipelineCounters.objectShaderResourcesCount);
+        descriptorCounters.CalculateShaderResourcesCount());
 }
 
 void RasterizePass::ReserveEnoughAllTypesDescriptors(unsigned int bufferingIndex)
@@ -300,13 +297,13 @@ void RasterizePass::ReserveEnoughAllTypesDescriptors(unsigned int bufferingIndex
     ReserveEnoughShaderResourceDescriptors(bufferingIndex);
 
     imageSamplerDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
-        rasterizePipelineCounters.imageSamplersCount);
+        descriptorCounters.CalculateImageSamplersCount());
 
     renderTargetDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
-        rasterizePipelineCounters.colorOutputCount);
+        descriptorCounters.colorOutputCount);
 
     depthStencilDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
-        rasterizePipelineCounters.depthStencilOutputCount);
+        descriptorCounters.depthStencilOutputCount);
 }
 
 BasePass::DynamicDescriptorManager& RasterizePass::AcquireDescriptorManager(

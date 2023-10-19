@@ -75,9 +75,8 @@ void ComputePass::DeclareProgram(const ProgramProperties& properties)
 
 void ComputePass::DeclareResource(const ShaderResourceProperties& properties)
 {
-    computePipelineCounters.objectShaderResourcesCount = 0;
-    computePipelineCounters.shaderResourcesCount = 0;
-    computePipelineCounters.imageSamplersCount = 0;
+    descriptorCounters.generalResourcesCounts.clear();
+    descriptorCounters.imageSamplersCounts.clear();
 
     pipelineLayout = device->CreatePipelineLayout({});
     for (const auto& [resourceSpace, resourceAttributes] : properties.resources) {
@@ -87,7 +86,7 @@ void ComputePass::DeclareResource(const ShaderResourceProperties& properties)
             if (resourceSpace == ShaderResourceProperties::ResourceSpace::PerObject) {
                 if (EnumCast(attribute.resourceType) &
                     EnumCast(rhi::DescriptorType::ShaderResource)) {
-                    computePipelineCounters.objectShaderResourcesCount +=
+                    descriptorCounters.objectShaderResourcesCount +=
                         attribute.bindingPointCount;
                 } else {
                     GP_LOG_F(TAG, "PerObject only can have the resource type of ShaderResource.");
@@ -98,9 +97,9 @@ void ComputePass::DeclareResource(const ShaderResourceProperties& properties)
             } else {
                 if (EnumCast(attribute.resourceType) &
                     EnumCast(rhi::DescriptorType::ShaderResource)) {
-                    computePipelineCounters.shaderResourcesCount += attribute.bindingPointCount;
+                    descriptorCounters.shaderResourcesCount += attribute.bindingPointCount;
                 } else if (attribute.resourceType == rhi::DescriptorType::ImageSampler) {
-                    computePipelineCounters.imageSamplersCount += attribute.bindingPointCount;
+                    descriptorCounters.imageSamplersCount += attribute.bindingPointCount;
                 } else {
                     GP_LOG_F(TAG, "Resource only can be the type of ShaderResource/ImageSampler.");
                     continue; // NB: Ditto.
@@ -185,7 +184,7 @@ void ComputePass::CleanPipeline()
         device = nullptr;
 
         // Reset recorded counters variable to default values.
-        computePipelineCounters = ComputePipelineCounters();
+        descriptorCounters = DescriptorCounters();
     }
 }
 
@@ -197,20 +196,18 @@ rhi::PipelineState* ComputePass::AcquirePipelineState()
 void ComputePass::ReserveEnoughShaderResourceDescriptors(unsigned int bufferingIndex)
 {
     do {
-        if (computePipelineCounters.reservedObjectsCount >=
+        if (descriptorCounters.reservedObjectsCount >=
             AcquireStagingFrameResource().dispatchItems.size()) {
             break;
         }
-    } while (computePipelineCounters.reservedObjectsCount <<= 1);
+    } while (descriptorCounters.reservedObjectsCount <<= 1);
 
-    if (computePipelineCounters.reservedObjectsCount == 0) {
+    if (descriptorCounters.reservedObjectsCount == 0) {
         GP_LOG_F(TAG, "Dispatch items count overflow and no enough descriptors!");
     }
 
     shaderResourceDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
-        computePipelineCounters.shaderResourcesCount +
-        computePipelineCounters.reservedObjectsCount *
-        computePipelineCounters.objectShaderResourcesCount);
+        descriptorCounters.CalculateShaderResourcesCount());
 }
 
 void ComputePass::ReserveEnoughAllTypesDescriptors(unsigned int bufferingIndex)
@@ -218,7 +215,7 @@ void ComputePass::ReserveEnoughAllTypesDescriptors(unsigned int bufferingIndex)
     ReserveEnoughShaderResourceDescriptors(bufferingIndex);
 
     imageSamplerDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
-        computePipelineCounters.imageSamplersCount);
+        descriptorCounters.CalculateImageSamplersCount());
 }
 
 BasePass::DynamicDescriptorManager&
