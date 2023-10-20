@@ -135,27 +135,18 @@ void RasterizePass::DeclareResource(const ShaderResourceProperties& properties)
         auto space = EnumCast(resourceSpace);
         auto group = descriptorGroups[space] = device->CreateDescriptorGroup({ space });
         for (const auto& attribute : resourceAttributes) {
-            if (resourceSpace == ShaderResourceProperties::ResourceSpace::PerObject) {
-                if (EnumCast(attribute.resourceType) &
-                    EnumCast(rhi::DescriptorType::ShaderResource)) {
-                    descriptorCounters.objectShaderResourcesCount +=
-                        attribute.bindingPointCount;
-                } else {
-                    GP_LOG_F(TAG, "PerObject only can have the resource type of ShaderResource.");
-                    // Note that continue will cause the descriptor group to be out of order,
-                    // but there is no way to solve it, so use LOG_F to print fatal error.
-                    continue;
-                }
+            if (EnumCast(attribute.resourceType) &
+                EnumCast(rhi::DescriptorType::ShaderResource)) {
+                descriptorCounters.generalResourcesCounts
+                    [resourceSpace] += attribute.bindingPointCount;
+            } else if (attribute.resourceType == rhi::DescriptorType::ImageSampler) {
+                descriptorCounters.imageSamplersCounts
+                    [resourceSpace] += attribute.bindingPointCount;
             } else {
-                if (EnumCast(attribute.resourceType) &
-                    EnumCast(rhi::DescriptorType::ShaderResource)) {
-                    descriptorCounters.shaderResourcesCount += attribute.bindingPointCount;
-                } else if (attribute.resourceType == rhi::DescriptorType::ImageSampler) {
-                    descriptorCounters.imageSamplersCount += attribute.bindingPointCount;
-                } else {
-                    GP_LOG_F(TAG, "Resource only can be the type of ShaderResource/ImageSampler.");
-                    continue; // NB: Ditto.
-                }
+                GP_LOG_F(TAG, "Resource only can be the type of ShaderResource or ImageSampler.");
+                // Note that continue will cause the descriptor group to be out of order,
+                // but there is no way to solve it, so use LOG_F to print fatal error.
+                continue;
             }
 
             if (attribute.bindingPointCount == 1) {
@@ -256,7 +247,7 @@ void RasterizePass::CleanPipeline()
         device = nullptr;
 
         // Reset recorded counters variable to default values.
-        descriptorCounters = descriptorCounters();
+        descriptorCounters = DescriptorCounters();
     }
 }
 
@@ -309,17 +300,23 @@ void RasterizePass::ReserveEnoughAllTypesDescriptors(unsigned int bufferingIndex
 BasePass::DynamicDescriptorManager& RasterizePass::AcquireDescriptorManager(
     unsigned int bufferingIndex, rhi::DescriptorType descriptorType)
 {
-    const std::unordered_map<rhi::DescriptorType, std::vector<DynamicDescriptorManager>*> map = {
-        { rhi::DescriptorType::ShaderResource, &shaderResourceDescriptorHeaps },
-        { rhi::DescriptorType::ImageSampler,   &imageSamplerDescriptorHeaps   },
-        { rhi::DescriptorType::ColorOutput,    &renderTargetDescriptorHeaps   },
-        { rhi::DescriptorType::DepthStencil,   &depthStencilDescriptorHeaps   }
-    };
     if (EnumCast(descriptorType) &
         EnumCast(rhi::DescriptorType::ShaderResource)) {
-        descriptorType = rhi::DescriptorType::ShaderResource;
+        return shaderResourceDescriptorHeaps[bufferingIndex];
     }
-    return map.at(descriptorType)->at(bufferingIndex);
+    if (descriptorType == rhi::DescriptorType::ImageSampler) {
+        return imageSamplerDescriptorHeaps[bufferingIndex];
+    }
+    if (descriptorType == rhi::DescriptorType::ColorOutput) {
+        return renderTargetDescriptorHeaps[bufferingIndex];
+    }
+    if (descriptorType == rhi::DescriptorType::DepthStencil) {
+        return depthStencilDescriptorHeaps[bufferingIndex];
+    }
+    // The program can not and should not run to here!
+    GP_LOG_F(TAG, "No found suitable descriptor manager, internal logic error!");
+    // Returning shaderResourceDescriptorHeaps only to avoid compile warning.
+    return shaderResourceDescriptorHeaps[bufferingIndex];
 }
 
 void RasterizePass::UpdateDrawItems(unsigned int bufferingIndex)

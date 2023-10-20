@@ -83,27 +83,18 @@ void ComputePass::DeclareResource(const ShaderResourceProperties& properties)
         auto space = EnumCast(resourceSpace);
         auto group = descriptorGroups[space] = device->CreateDescriptorGroup({ space });
         for (const auto& attribute : resourceAttributes) {
-            if (resourceSpace == ShaderResourceProperties::ResourceSpace::PerObject) {
-                if (EnumCast(attribute.resourceType) &
-                    EnumCast(rhi::DescriptorType::ShaderResource)) {
-                    descriptorCounters.objectShaderResourcesCount +=
-                        attribute.bindingPointCount;
-                } else {
-                    GP_LOG_F(TAG, "PerObject only can have the resource type of ShaderResource.");
-                    // Note that continue will cause the descriptor group to be out of order,
-                    // but there is no way to solve it, so use LOG_F to print fatal error.
-                    continue;
-                }
+            if (EnumCast(attribute.resourceType) &
+                EnumCast(rhi::DescriptorType::ShaderResource)) {
+                descriptorCounters.generalResourcesCounts
+                    [resourceSpace] += attribute.bindingPointCount;
+            } else if (attribute.resourceType == rhi::DescriptorType::ImageSampler) {
+                descriptorCounters.imageSamplersCounts
+                    [resourceSpace] += attribute.bindingPointCount;
             } else {
-                if (EnumCast(attribute.resourceType) &
-                    EnumCast(rhi::DescriptorType::ShaderResource)) {
-                    descriptorCounters.shaderResourcesCount += attribute.bindingPointCount;
-                } else if (attribute.resourceType == rhi::DescriptorType::ImageSampler) {
-                    descriptorCounters.imageSamplersCount += attribute.bindingPointCount;
-                } else {
-                    GP_LOG_F(TAG, "Resource only can be the type of ShaderResource/ImageSampler.");
-                    continue; // NB: Ditto.
-                }
+                GP_LOG_F(TAG, "Resource only can be the type of ShaderResource or ImageSampler.");
+                // Note that continue will cause the descriptor group to be out of order,
+                // but there is no way to solve it, so use LOG_F to print fatal error.
+                continue;
             }
 
             if (attribute.bindingPointCount == 1) {
