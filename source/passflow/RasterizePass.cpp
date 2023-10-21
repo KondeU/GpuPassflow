@@ -195,15 +195,14 @@ bool RasterizePass::BuildPipeline()
     }
     pipelineState->BuildState();
 
-    unsigned int mbc = multipleBufferingCount;
-    shaderResourceDescriptorHeaps.resize(mbc, { device, rhi::DescriptorType::ShaderResource });
-    imageSamplerDescriptorHeaps.resize(mbc, { device, rhi::DescriptorType::ImageSampler });
-    renderTargetDescriptorHeaps.resize(mbc, { device, rhi::DescriptorType::ColorOutput });
-    depthStencilDescriptorHeaps.resize(mbc, { device, rhi::DescriptorType::DepthStencil });
-    for (unsigned int index = 0; index < mbc; index++) {
-        ReserveEnoughAllTypesDescriptors(index);
-    }
-
+    shaderResourceDescriptorHeaps.resize(multipleBufferingCount,
+        { device, rhi::DescriptorType::ShaderResource });
+    imageSamplerDescriptorHeaps.resize(multipleBufferingCount,
+        { device, rhi::DescriptorType::ImageSampler });
+    renderTargetDescriptorHeaps.resize(multipleBufferingCount,
+        { device, rhi::DescriptorType::ColorOutput });
+    depthStencilDescriptorHeaps.resize(multipleBufferingCount,
+        { device, rhi::DescriptorType::DepthStencil });
     return true;
 }
 
@@ -266,26 +265,25 @@ rhi::InputVertexAttributes* RasterizePass::AcquireVertexAttributes()
     return inputVertexAttributes;
 }
 
-void RasterizePass::ReserveEnoughShaderResourceDescriptors(unsigned int bufferingIndex)
+void RasterizePass::ReserveEnoughDescriptors(
+    unsigned int bufferingIndex, unsigned int viewsCount, unsigned int scenesCount)
 {
     do {
-        if (descriptorCounters.reservedObjectsCount >=
+        if (descriptorCounters.ObjectsReservedCount() >=
             AcquireStagingFrameResource().drawItems.size()) {
             break;
         }
-    } while (descriptorCounters.reservedObjectsCount <<= 1);
+    } while (descriptorCounters.ObjectsReservedCount() <<= 1);
 
-    if (descriptorCounters.reservedObjectsCount == 0) {
+    if (descriptorCounters.ObjectsReservedCount() == 0) {
         GP_LOG_F(TAG, "Draw items count overflow and no enough descriptors!");
     }
 
+    descriptorCounters.ViewsReservedCount() = viewsCount;
+    descriptorCounters.ScenesReservedCount() = scenesCount;
+
     shaderResourceDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
         descriptorCounters.CalculateShaderResourcesCount());
-}
-
-void RasterizePass::ReserveEnoughAllTypesDescriptors(unsigned int bufferingIndex)
-{
-    ReserveEnoughShaderResourceDescriptors(bufferingIndex);
 
     imageSamplerDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
         descriptorCounters.CalculateImageSamplersCount());

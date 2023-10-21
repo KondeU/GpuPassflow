@@ -136,13 +136,10 @@ bool ComputePass::BuildPipeline()
     pipelineState->SetShader(rhi::ShaderStage::Compute, computeShader);
     pipelineState->BuildState();
 
-    unsigned int mbc = multipleBufferingCount;
-    shaderResourceDescriptorHeaps.resize(mbc, { device, rhi::DescriptorType::ShaderResource });
-    imageSamplerDescriptorHeaps.resize(mbc, { device, rhi::DescriptorType::ImageSampler });
-    for (unsigned int index = 0; index < mbc; index++) {
-        ReserveEnoughAllTypesDescriptors(index);
-    }
-
+    shaderResourceDescriptorHeaps.resize(multipleBufferingCount,
+        { device, rhi::DescriptorType::ShaderResource });
+    imageSamplerDescriptorHeaps.resize(multipleBufferingCount,
+        { device, rhi::DescriptorType::ImageSampler });
     return true;
 }
 
@@ -184,26 +181,25 @@ rhi::PipelineState* ComputePass::AcquirePipelineState()
     return pipelineState;
 }
 
-void ComputePass::ReserveEnoughShaderResourceDescriptors(unsigned int bufferingIndex)
+void ComputePass::ReserveEnoughDescriptors(
+    unsigned int bufferingIndex, unsigned int viewsCount, unsigned int scenesCount)
 {
     do {
-        if (descriptorCounters.reservedObjectsCount >=
+        if (descriptorCounters.ObjectsReservedCount() >=
             AcquireStagingFrameResource().dispatchItems.size()) {
             break;
         }
-    } while (descriptorCounters.reservedObjectsCount <<= 1);
+    } while (descriptorCounters.ObjectsReservedCount() <<= 1);
 
-    if (descriptorCounters.reservedObjectsCount == 0) {
+    if (descriptorCounters.ObjectsReservedCount() == 0) {
         GP_LOG_F(TAG, "Dispatch items count overflow and no enough descriptors!");
     }
 
+    descriptorCounters.ViewsReservedCount() = viewsCount;
+    descriptorCounters.ScenesReservedCount() = scenesCount;
+
     shaderResourceDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
         descriptorCounters.CalculateShaderResourcesCount());
-}
-
-void ComputePass::ReserveEnoughAllTypesDescriptors(unsigned int bufferingIndex)
-{
-    ReserveEnoughShaderResourceDescriptors(bufferingIndex);
 
     imageSamplerDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
         descriptorCounters.CalculateImageSamplersCount());

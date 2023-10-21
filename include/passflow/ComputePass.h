@@ -36,8 +36,8 @@ protected:
     // classes can use it in the OnExecutePass function when dispatching.
     rhi::PipelineState* AcquirePipelineState();
 
-    void ReserveEnoughShaderResourceDescriptors(unsigned int bufferingIndex);
-    void ReserveEnoughAllTypesDescriptors(unsigned int bufferingIndex);
+    void ReserveEnoughDescriptors(
+        unsigned int bufferingIndex, unsigned int viewsCount, unsigned int scenesCount);
 
     DynamicDescriptorManager& AcquireShaderResourceDescriptorManager(unsigned int bufferingIndex);
     DynamicDescriptorManager& AcquireImageSamplerDescriptorManager(unsigned int bufferingIndex);
