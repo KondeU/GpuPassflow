@@ -29,7 +29,7 @@ constexpr auto SP = R"(
 [numthreads(8, 8, 1)]
 void FDBR_Main(uint3 dispatchThreadID : SV_DispatchThreadID)
 {
-	uint2 pixel = dispatchThreadID.xy;
+    uint2 pixel = dispatchThreadID.xy;
     if ((pixel.x < uint(width)) && (pixel.y < uint(height))) {
         // Custom defined: FDBR_Process(inout float4 fragColor, in uint2 fragCoord);
         FDBR_Process(outputColor[pixel], pixel);
@@ -150,7 +150,7 @@ void FunctionDrivenBackgroundRenderPass::OnPreparePass(au::rhi::Device* device)
 void FunctionDrivenBackgroundRenderPass::OnBeforePass(unsigned int currentBufferingIndex)
 {
     this->currentBufferingIndex = currentBufferingIndex;
-    ReserveEnoughShaderResourceDescriptors(currentBufferingIndex);
+    ReserveEnoughDescriptors(currentBufferingIndex, 1u, 1u);
     UpdateDispatchItems(currentBufferingIndex);
     UpdateFrameResources(currentBufferingIndex);
 }
@@ -349,25 +349,25 @@ void PassflowCP::Setup()
 
     fdbrPass->SetFunctionShader(R"(
     // Refer from: https://www.shadertoy.com/view/XsXXDn
-    float mod(float x, float y) { return (x - y * floor(x/y)); }
+    float2 mod(float2 x, float y) { return (x - y * floor(x/y)); }
     void FDBR_Process(inout float4 fragColor, in uint2 fragCoord)
     {
         float t = time / 1000.;
         float2 r = float2(width, height);
         //==============================
-    	float3 c;
-    	float l, z=t;
-    	for(int i=0; i<3; i++) {
-    		float2 uv, p=fragCoord.xy/r;
-    		uv=p;
-    		p-=.5;
-    		p.x*=r.x/r.y;
-    		z+=.07;
-    		l=length(p);
-    		uv+=p/l*(sin(z)+1.)*abs(sin(l*9.-z-z));
-    		c[i]=.01/length(mod(uv,1.)-.5);
-    	}
-    	fragColor=float4(c/l,t);
+        float3 c;
+        float l, z=t;
+        [unroll]for(int i=0; i<3; i++) {
+            float2 uv, p=fragCoord.xy/r;
+            uv=p;
+            p-=.5;
+            p.x*=r.x/r.y;
+            z+=.07;
+            l=length(p);
+            uv+=p/l*(sin(z)+1.)*abs(sin(l*9.-z-z));
+            c[i]=.01/length(mod(uv,1.)-.5);
+        }
+        fragColor=float4(c/l,t);
     })");
 }
 

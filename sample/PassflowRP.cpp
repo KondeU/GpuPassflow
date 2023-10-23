@@ -226,7 +226,7 @@ void DrawPass::OnPreparePass(au::rhi::Device* device)
 void DrawPass::OnBeforePass(unsigned int currentBufferingIndex)
 {
     this->currentBufferingIndex = currentBufferingIndex;
-    ReserveEnoughShaderResourceDescriptors(currentBufferingIndex);
+    ReserveEnoughDescriptors(currentBufferingIndex, 1u, 1u);
     UpdateDrawItems(currentBufferingIndex);
     UpdateFrameResources(currentBufferingIndex);
 }
