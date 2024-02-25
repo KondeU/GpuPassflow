@@ -23,9 +23,9 @@ public:
         rhi::ResourceState before, rhi::ResourceState after) override;
     void RcBarrier(rhi::InputIndex* const resource,
         rhi::ResourceState before, rhi::ResourceState after) override;
-    void RcBarrier(rhi::ResourceBuffer* const resource,
+    void RcBarrier(rhi::ResourceConstantBuffer* const resource,
         rhi::ResourceState before, rhi::ResourceState after) override;
-    void RcBarrier(rhi::ResourceBufferEx* const resource,
+    void RcBarrier(rhi::ResourceStorageBuffer* const resource,
         rhi::ResourceState before, rhi::ResourceState after) override;
     void RcBarrier(rhi::ResourceImage* const resource,
         rhi::ResourceState before, rhi::ResourceState after) override;
@@ -37,9 +37,11 @@ public:
     void RcUpload(const void* const data, size_t size,
         rhi::InputIndex* const destination, rhi::InputIndex* const staging) override;
     void RcUpload(const void* const data, size_t size,
-        rhi::ResourceBuffer* const destination, rhi::ResourceBuffer* const staging) override;
+        rhi::ResourceConstantBuffer* const destination,
+        rhi::ResourceConstantBuffer* const staging) override;
     void RcUpload(const void* const data, size_t size,
-        rhi::ResourceBufferEx* const destination, rhi::ResourceBufferEx* const staging) override;
+        rhi::ResourceStorageBuffer* const destination,
+        rhi::ResourceStorageBuffer* const staging) override;
     void RcUpload(const void* const data, size_t size,
         rhi::ResourceImage* const destination, rhi::ResourceImage* const staging) override;
 
@@ -47,10 +49,10 @@ public:
         rhi::InputVertex* const source) override;
     void RcCopy(rhi::InputIndex* const destination,
         rhi::InputIndex* const source) override;
-    void RcCopy(rhi::ResourceBuffer* const destination,
-        rhi::ResourceBuffer* const source) override;
-    void RcCopy(rhi::ResourceBufferEx* const destination,
-        rhi::ResourceBufferEx* const source) override;
+    void RcCopy(rhi::ResourceConstantBuffer* const destination,
+        rhi::ResourceConstantBuffer* const source) override;
+    void RcCopy(rhi::ResourceStorageBuffer* const destination,
+        rhi::ResourceStorageBuffer* const source) override;
     void RcCopy(rhi::ResourceImage* const destination,
         rhi::ResourceImage* const source) override;
     void RcCopy(rhi::Swapchain* const destination,

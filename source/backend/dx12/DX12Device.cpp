@@ -52,7 +52,7 @@ void DX12Device::Shutdown()
     inputIndices.resize(0);
     inputIndexAttributes.resize(0);
     resourceConstantBuffers.resize(0);
-    resourceArrayBuffers.resize(0);
+    resourceStorageBuffers.resize(0);
     resourceImages.resize(0);
     imageSamplers.resize(0);
     descriptorHeaps.resize(0);
@@ -142,26 +142,28 @@ bool DX12Device::DestroyInputIndexAttribute(rhi::InputIndexAttribute* instance)
     return DestroyInstance(inputIndexAttributes, instance);
 }
 
-rhi::ResourceBuffer*
-DX12Device::CreateResourceBuffer(rhi::ResourceBuffer::Description description)
+rhi::ResourceConstantBuffer*
+DX12Device::CreateResourceBuffer(rhi::ResourceConstantBuffer::Description description)
 {
-    return CreateInstance<rhi::ResourceBuffer>(resourceConstantBuffers, description, *this);
+    return CreateInstance<rhi::ResourceConstantBuffer>(
+        resourceConstantBuffers, description, *this);
 }
 
-bool DX12Device::DestroyResourceBuffer(rhi::ResourceBuffer* instance)
+bool DX12Device::DestroyResourceBuffer(rhi::ResourceConstantBuffer* instance)
 {
     return DestroyInstance(resourceConstantBuffers, instance);
 }
 
-rhi::ResourceBufferEx*
-DX12Device::CreateResourceBuffer(rhi::ResourceBufferEx::Description description)
+rhi::ResourceStorageBuffer*
+DX12Device::CreateResourceBuffer(rhi::ResourceStorageBuffer::Description description)
 {
-    return CreateInstance<rhi::ResourceBufferEx>(resourceArrayBuffers, description, *this);
+    return CreateInstance<rhi::ResourceStorageBuffer>(
+        resourceStorageBuffers, description, *this);
 }
 
-bool DX12Device::DestroyResourceBuffer(rhi::ResourceBufferEx* instance)
+bool DX12Device::DestroyResourceBuffer(rhi::ResourceStorageBuffer* instance)
 {
-    return DestroyInstance(resourceArrayBuffers, instance);
+    return DestroyInstance(resourceStorageBuffers, instance);
 }
 
 rhi::ResourceImage*

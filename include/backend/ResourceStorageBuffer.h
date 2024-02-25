@@ -4,29 +4,9 @@
 
 namespace au::rhi {
 
-class ResourceBuffer {
-public:
-    struct Description {
-        unsigned int bufferBytesSize;
-        TransferDirection memoryType;
-
-        Description(
-            unsigned int bufferBytesSize,
-            TransferDirection memoryType = TransferDirection::CPU_TO_GPU)
-            : bufferBytesSize(bufferBytesSize)
-            , memoryType(memoryType)
-        {}
-    };
-
-    virtual void* Map() = 0;
-    virtual void Unmap() = 0;
-
-protected:
-    ResourceBuffer() = default;
-    virtual ~ResourceBuffer() = default;
-};
-
-class ResourceBufferEx {
+// Storage buffer object (SBO) in Vulkan
+// Structured buffer object in DX12
+class ResourceStorageBuffer {
 public:
     struct Description {
         unsigned int elementsCount;
@@ -50,8 +30,8 @@ public:
     virtual void Unmap() = 0;
 
 protected:
-    ResourceBufferEx() = default;
-    virtual ~ResourceBufferEx() = default;
+    ResourceStorageBuffer() = default;
+    virtual ~ResourceStorageBuffer() = default;
 };
 
 }

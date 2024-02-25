@@ -9,8 +9,8 @@ class InputVertex;
 class InputIndex;
 class InputVertexAttributes;
 class InputIndexAttribute;
-class ResourceBuffer;
-class ResourceBufferEx;
+class ResourceConstantBuffer;
+class ResourceStorageBuffer;
 class ResourceImage;
 class Descriptor;
 class DescriptorHeap;
@@ -37,9 +37,9 @@ public:
         ResourceState before, ResourceState after) = 0;
     virtual void RcBarrier(InputIndex* const resource,
         ResourceState before, ResourceState after) = 0;
-    virtual void RcBarrier(ResourceBuffer* const resource,
+    virtual void RcBarrier(ResourceConstantBuffer* const resource,
         ResourceState before, ResourceState after) = 0;
-    virtual void RcBarrier(ResourceBufferEx* const resource,
+    virtual void RcBarrier(ResourceStorageBuffer* const resource,
         ResourceState before, ResourceState after) = 0;
     virtual void RcBarrier(ResourceImage* const resource,
         ResourceState before, ResourceState after) = 0;
@@ -51,18 +51,18 @@ public:
     virtual void RcUpload(const void* const data, size_t size,
         InputIndex* const destination, InputIndex* const staging) = 0;
     virtual void RcUpload(const void* const data, size_t size,
-        ResourceBuffer* const destination, ResourceBuffer* const staging) = 0;
+        ResourceConstantBuffer* const destination, ResourceConstantBuffer* const staging) = 0;
     virtual void RcUpload(const void* const data, size_t size,
-        ResourceBufferEx* const destination, ResourceBufferEx* const staging) = 0;
+        ResourceStorageBuffer* const destination, ResourceStorageBuffer* const staging) = 0;
     virtual void RcUpload(const void* const data, size_t size,
         ResourceImage* const destination, ResourceImage* const staging) = 0;
 
-    virtual void RcCopy(InputVertex* const destination, InputVertex* const source) = 0;
-    virtual void RcCopy(InputIndex* const destination, InputIndex* const source) = 0;
-    virtual void RcCopy(ResourceBuffer* const destination, ResourceBuffer* const source) = 0;
-    virtual void RcCopy(ResourceBufferEx* const destination, ResourceBufferEx* const source) = 0;
-    virtual void RcCopy(ResourceImage* const destination, ResourceImage* const source) = 0;
-    virtual void RcCopy(Swapchain* const destination, ResourceImage* const source) = 0;
+    virtual void RcCopy(InputVertex* const dst, InputVertex* const src) = 0;
+    virtual void RcCopy(InputIndex* const dst, InputIndex* const src) = 0;
+    virtual void RcCopy(ResourceConstantBuffer* const dst, ResourceConstantBuffer* const src) = 0;
+    virtual void RcCopy(ResourceStorageBuffer* const dst, ResourceStorageBuffer* const src) = 0;
+    virtual void RcCopy(ResourceImage* const dst, ResourceImage* const src) = 0;
+    virtual void RcCopy(Swapchain* const dst, ResourceImage* const src) = 0;
 
     virtual void RcSetViewports(const std::vector<Viewport>& viewports) = 0;
     virtual void RcSetScissors(const std::vector<Scissor>& scissors) = 0;

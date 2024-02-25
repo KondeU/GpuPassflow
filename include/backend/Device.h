@@ -7,7 +7,8 @@
 #include "InputVertexAttributes.h"
 #include "InputIndex.h"
 #include "InputIndexAttribute.h"
-#include "ResourceBuffer.h"
+#include "ResourceConstantBuffer.h"
+#include "ResourceStorageBuffer.h"
 #include "ResourceImage.h"
 #include "ImageSampler.h"
 #include "DescriptorHeap.h"
@@ -45,11 +46,13 @@ public:
     virtual InputIndexAttribute* CreateInputIndexAttribute() = 0;
     virtual bool DestroyInputIndexAttribute(InputIndexAttribute* instance) = 0;
 
-    virtual ResourceBuffer* CreateResourceBuffer(ResourceBuffer::Description description) = 0;
-    virtual bool DestroyResourceBuffer(ResourceBuffer* instance) = 0;
+    virtual ResourceConstantBuffer* CreateResourceBuffer(
+        ResourceConstantBuffer::Description description) = 0;
+    virtual bool DestroyResourceBuffer(ResourceConstantBuffer* instance) = 0;
 
-    virtual ResourceBufferEx* CreateResourceBuffer(ResourceBufferEx::Description description) = 0;
-    virtual bool DestroyResourceBuffer(ResourceBufferEx* instance) = 0;
+    virtual ResourceStorageBuffer* CreateResourceBuffer(
+        ResourceStorageBuffer::Description description) = 0;
+    virtual bool DestroyResourceBuffer(ResourceStorageBuffer* instance) = 0;
 
     virtual ResourceImage* CreateResourceImage(ResourceImage::Description description) = 0;
     virtual bool DestroyResourceImage(ResourceImage* instance) = 0;

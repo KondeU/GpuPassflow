@@ -8,8 +8,8 @@ namespace au::backend {
 
 class DX12Device;
 class DX12DescriptorHeap;
-class DX12ResourceBuffer;
-class DX12ResourceBufferEx;
+class DX12ResourceConstantBuffer;
+class DX12ResourceStorageBuffer;
 class DX12ResourceImage;
 class DX12ImageSampler;
 
@@ -22,8 +22,8 @@ public:
     void Setup(Description description);
     void Shutdown();
 
-    void BuildDescriptor(rhi::ResourceBuffer* resource) override;
-    void BuildDescriptor(rhi::ResourceBufferEx* resource, bool write) override;
+    void BuildDescriptor(rhi::ResourceConstantBuffer* resource) override;
+    void BuildDescriptor(rhi::ResourceStorageBuffer* resource, bool write) override;
     void BuildDescriptor(rhi::ResourceImage* resource, bool write) override;
     void BuildDescriptor(rhi::ImageSampler* sampler) override;
 
@@ -32,8 +32,8 @@ public:
     D3D12_GPU_DESCRIPTOR_HANDLE NativeGpuDescriptor() const; // CBV/SRV/UAV/Sampler
     bool IsNativeDescriptorsContinuous(const std::vector<D3D12_CPU_DESCRIPTOR_HANDLE>& handles);
 
-    DX12ResourceBuffer* BindedResourceBuffer() const;
-    DX12ResourceBufferEx* BindedResourceBufferEx() const;
+    DX12ResourceConstantBuffer* BindedResourceConstantBuffer() const;
+    DX12ResourceStorageBuffer* BindedResourceStorageBuffer() const;
     DX12ResourceImage* BindedResourceImage() const;
     DX12ImageSampler* BindedImageSampler() const;
 
@@ -57,8 +57,8 @@ private:
     D3D12_GPU_DESCRIPTOR_HANDLE hGpuDescriptor;
 
     std::variant<void*,
-        DX12ResourceBuffer*,
-        DX12ResourceBufferEx*,
+        DX12ResourceConstantBuffer*,
+        DX12ResourceStorageBuffer*,
         DX12ResourceImage*,
         DX12ImageSampler*
     > pResource;

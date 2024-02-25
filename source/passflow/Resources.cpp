@@ -120,7 +120,7 @@ void BaseConstantBuffer::UploadConstantBuffers()
     }
 }
 
-rhi::ResourceBuffer* BaseConstantBuffer::RawGpuInst(unsigned int index)
+rhi::ResourceConstantBuffer* BaseConstantBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= buffers.size()) {
         GP_LOG_RETN_W(TAG, "Acquire constant buffer backend instance failed, index out of range.");
@@ -202,7 +202,7 @@ void BaseStructuredBuffer::UploadStructuredBuffers()
     }
 }
 
-rhi::ResourceBufferEx* BaseStructuredBuffer::RawGpuInst(unsigned int index)
+rhi::ResourceStorageBuffer* BaseStructuredBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= buffers.size()) {
         GP_LOG_RETN_W(TAG,
