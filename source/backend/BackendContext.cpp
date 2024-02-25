@@ -6,8 +6,9 @@ namespace {
 static std::unordered_map<au::rhi::BackendContext::Backend,
     std::pair<au::backend::DllWrapper, au::rhi::BackendContext*>> g_storages;
 
-static std::unordered_map<au::gp::ErrorHandler::Instance,
-    au::gp::ErrorHandler::Callback> g_loggers;
+static std::vector<au::gp::ErrorHandler::Callback> g_loggers;
+
+GP_LOG_TAG("BackendContext");
 
 }
 
@@ -21,18 +22,23 @@ BackendContext* BackendContext::CreateBackend(Backend type)
         { Backend::SoftRaster, "backend_cpu"    }
     };
 
+    GP_LOG_I(TAG, "Create backend: %d", gp::EnumCast(type));
+
     if (g_storages.find(type) != g_storages.end()) {
+        GP_LOG_F(TAG, "Create backend failed, it is already in the backend storage.");
         return nullptr;
     }
 
     auto library = libraries.find(type);
     if (library == libraries.end()) {
+        GP_LOG_F(TAG, "Create backend failed, no matching dynamic library.");
         return nullptr;
     }
 
     auto& instance = g_storages[type]; // backend instance(library wrapper and context pointer)
 
     if (!instance.first.Load(library->second)) {
+        GP_LOG_F(TAG, "Create backend failed, load dynamic library failed.");
         return nullptr;
     }
 
@@ -42,15 +48,20 @@ BackendContext* BackendContext::CreateBackend(Backend type)
 
 void BackendContext::DestroyBackend(Backend type)
 {
+    GP_LOG_I(TAG, "Destroy backend: %d", gp::EnumCast(type));
+
     auto backend = g_storages.find(type);
     if (backend == g_storages.end()) {
+        GP_LOG_E(TAG, "Destroy backend failed, not found in the backend storage.");
         return;
     }
 
     auto& instance = backend->second;
 
     instance.first.ExecuteFunction<void(BackendContext*)>("DestroyBackend", instance.second);
-    instance.first.Unload();
+    if (!instance.first.Unload()) {
+        GP_LOG_W(TAG, "Destroy backend but unload dynamic library failed.");
+    }
 
     g_storages.erase(backend);
 }
@@ -61,12 +72,21 @@ namespace au::gp {
 
 ErrorHandler::Instance ErrorHandler::RegisterHandler(Callback callback)
 {
-    return (g_loggers[callback] = callback);
+    ErrorHandler::Instance instance = g_loggers.emplace_back(callback);
+    GP_LOG_I(TAG, "Register error handler: %p", instance);
+    return instance;
 }
 
 bool ErrorHandler::UnregisterHandler(Instance instance)
 {
-    return (g_loggers.erase(instance) > 0);
+    GP_LOG_I(TAG, "Unregister error handler: %p", instance);
+    auto iter = std::find(g_loggers.begin(), g_loggers.end(), instance);
+    if (iter == g_loggers.end()) {
+        GP_LOG_W(TAG, "Unregister error handler failed, instance not found.");
+        return false;
+    }
+    g_loggers.erase(iter);
+    return true;
 }
 
 void ErrorHandler::Logging(const char* level, const char* tag, const char* format, ...)
@@ -88,7 +108,7 @@ void ErrorHandler::Logging(const char* level, const char* tag, const char* forma
     }
 
     const char* CallbackParams[3] = { level, tag, content };
-    for (const auto& [instance, callback] : g_loggers) {
+    for (const auto& callback : g_loggers) {
         if (callback(CallbackParams) != 0) {
             break;
         }
