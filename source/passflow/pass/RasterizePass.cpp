@@ -1,4 +1,3 @@
-#include "passflow/RasterizePass.h"
 #include "passflow/Passflow.h"
 
 namespace au::gp {
@@ -155,12 +154,12 @@ void RasterizePass::DeclareResource(const ShaderResourceProperties& properties)
                     attribute.baseBindingPoint,
                     attribute.resourceVisibility);
             } else if (attribute.bindingPointCount > 1) {
-                unsigned int begBp = attribute.baseBindingPoint;
-                unsigned int endBp = attribute.baseBindingPoint +
+                unsigned int begBP = attribute.baseBindingPoint;
+                unsigned int endBP = attribute.baseBindingPoint +
                                      attribute.bindingPointCount - 1;
                 group->AddDescriptors(
                     attribute.resourceType,
-                    std::make_pair(begBp, endBp),
+                    std::make_pair(begBP, endBP),
                     attribute.resourceVisibility);
             }
         }

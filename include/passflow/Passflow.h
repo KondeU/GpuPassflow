@@ -1,8 +1,8 @@
 #pragma once
 
 #include <unordered_map>
-#include "RasterizePass.h"
-#include "ComputePass.h"
+#include "pass/RasterizePass.h"
+#include "pass/ComputePass.h"
 
 namespace au::gp {
 

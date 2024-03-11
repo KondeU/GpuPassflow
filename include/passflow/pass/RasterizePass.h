@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BasePass.h"
-#include "FrameResources.h"
+#include "resource/FrameResources.h"
 
 namespace au::gp {
 

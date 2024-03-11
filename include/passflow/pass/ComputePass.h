@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BasePass.h"
-#include "FrameResources.h"
+#include "resource/FrameResources.h"
 
 namespace au::gp {
 
@@ -13,9 +13,9 @@ public:
     virtual bool VerifyDispatchItemIndex(unsigned int index);
 
     virtual void ImportFrameResource(
-        const std::string& name, Resource<BaseConstantBuffer> buffer);
+        const gp::FRsKey& name, Resource<BaseConstantBuffer> buffer);
     virtual void ImportFrameResource(
-        const std::string& name, Resource<BaseStructuredBuffer> buffer);
+        const gp::FRsKey& name, Resource<BaseStructuredBuffer> buffer);
     virtual void ImportFrameResource(
         const std::string& name, Resource<BaseTexture> texture);
     virtual void ImportFrameResource(

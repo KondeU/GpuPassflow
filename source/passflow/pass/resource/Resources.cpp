@@ -1,4 +1,4 @@
-#include "passflow/Resources.h"
+#include "passflow/pass/resource/Resources.h"
 
 namespace {
 
