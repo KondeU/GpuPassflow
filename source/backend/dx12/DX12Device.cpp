@@ -4,7 +4,6 @@ namespace au::backend {
 
 DX12Device::DX12Device(Microsoft::WRL::ComPtr<IDXGIFactory4> dxgi) : dxgi(dxgi)
 {
-    EnumAdapters();
 }
 
 DX12Device::~DX12Device()
@@ -16,9 +15,20 @@ void DX12Device::Setup(Description description)
 {
     this->description = description;
 
+    if (!description.device.empty()) {
+        for (UINT i = 0; dxgi->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND; i++) {
+            DXGI_ADAPTER_DESC desc;
+            adapter->GetDesc(&desc);
+            if (description.device == std::to_string(desc.Description)) {
+                break;
+            }
+            ReleaseCOM(adapter);
+        }
+    }
+
     bool createHardwareDeviceSuccess = false;
     LogOutIfFailedI(D3D12CreateDevice(
-        NULL, // use default adapter
+        adapter,
         D3D_FEATURE_LEVEL_12_0,
         IID_PPV_ARGS(&device))
         , createHardwareDeviceSuccess);
@@ -63,6 +73,7 @@ void DX12Device::Shutdown()
     queues.clear();
     fences.clear();
     device.Reset();
+    ReleaseCOM(adapter);
 }
 
 rhi::Shader*
@@ -303,67 +314,4 @@ DX12Device::CommandAllocator(const std::string& name)
     return allocator;
 }
 
-void DX12Device::EnumAdapters()
-{
-    GP_LOG_D(TAG, "Enum adapters...");
-    std::vector<IDXGIAdapter*> adapters;
-
-    GP_LOG_D(TAG, "Adapters:");
-    IDXGIAdapter* adapter = nullptr;
-    for (UINT i = 0; dxgi->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND; i++) {
-        DXGI_ADAPTER_DESC desc;
-        adapter->GetDesc(&desc);
-        GP_LOG_D(TAG, "> %d : %s", i, std::to_string(desc.Description).c_str());
-        adapters.emplace_back(adapter);
-    }
-
-    GP_LOG_D(TAG, "Enum each adapter outputs...");
-    for (size_t n = 0; n < adapters.size(); n++) {
-        GP_LOG_D(TAG, "Adapter %d Outputs:", n);
-
-        // Adaptor output: usually is a displayer(monitor).
-        size_t outputsCount = 0;
-        IDXGIOutput* output = nullptr;
-        for (UINT i = 0; adapters[n]->EnumOutputs(i, &output) != DXGI_ERROR_NOT_FOUND; i++) {
-            DXGI_OUTPUT_DESC desc;
-            output->GetDesc(&desc);
-            GP_LOG_D(TAG, "> %d : %s", i, std::to_string(desc.DeviceName).c_str());
-
-            GP_LOG_D(TAG, "  - OutputDisplayModes");
-            {
-                // Using default back buffer format to get display mode list.
-                constexpr DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
-                constexpr UINT flags = 0;
-
-                UINT count = 0;
-                output->GetDisplayModeList(format, flags, &count, NULL);
-
-                std::vector<DXGI_MODE_DESC> modes(count);
-                output->GetDisplayModeList(format, flags, &count, &modes[0]);
-
-                for (const auto& mode : modes) {
-                    UINT n = mode.RefreshRate.Numerator;
-                    UINT d = mode.RefreshRate.Denominator;
-                    std::string text =
-                        "Width = " + std::to_string(mode.Width) + ", " +
-                        "Height = " + std::to_string(mode.Height) + ", " +
-                        "Refresh = " + std::to_string(n) + "/" + std::to_string(d) +
-                        "=" + std::to_string(static_cast<float>(n) / static_cast<float>(d));
-                    GP_LOG_D(TAG, "    %s", text.c_str());
-                }
-            }
-
-            outputsCount++;
-            ReleaseCOM(output);
-        }
-
-        if (outputsCount == 0) {
-            GP_LOG_D(TAG, "Adapter %d has no output.", n);
-        }
-    }
-
-    for (auto adapter : adapters) {
-        ReleaseCOM(adapter);
-    }
-}
 }

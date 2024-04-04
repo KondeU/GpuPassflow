@@ -51,7 +51,6 @@ enum class IndexStripCutValue {
     NONE_OR_DISABLE,
     UINT16_MAX_VALUE,
     UINT32_MAX_VALUE
-
 };
 
 enum class PrimitiveTopology {

@@ -95,17 +95,11 @@ public:
     Microsoft::WRL::ComPtr<ID3D12CommandQueue> CommandQueue(rhi::CommandType type);
     Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CommandAllocator(const std::string& name);
 
-protected:
-    // TODO:  Support select a adapter by custom.
-    //        Currently only the default adapter is used.
-    // FIXME: Adapters should not be placed in the DX12Device.
-    //        Move it to DX12Context and add CreateAdapter function in DX12Context.
-    void EnumAdapters();
-
 private:
     Microsoft::WRL::ComPtr<IDXGIFactory4> dxgi;
 
     Description description;
+    IDXGIAdapter* adapter = NULL;
     Microsoft::WRL::ComPtr<ID3D12Device> device;
 
     // TODO:  CommandQueue has not been abstracted into a separate class yet.
