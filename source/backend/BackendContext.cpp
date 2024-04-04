@@ -25,24 +25,25 @@ BackendContext* BackendContext::CreateBackend(Backend type)
     GP_LOG_I(TAG, "Create backend: %d", gp::EnumCast(type));
 
     if (g_storages.find(type) != g_storages.end()) {
-        GP_LOG_F(TAG, "Create backend failed, it is already in the backend storage.");
-        return nullptr;
+        GP_LOG_RETN_F(TAG, "Create backend failed, it is already in the backend storage.");
     }
 
     auto library = libraries.find(type);
     if (library == libraries.end()) {
-        GP_LOG_F(TAG, "Create backend failed, no matching dynamic library.");
-        return nullptr;
+        GP_LOG_RETN_F(TAG, "Create backend failed, no matching dynamic library.");
     }
 
     auto& instance = g_storages[type]; // backend instance(library wrapper and context pointer)
 
     if (!instance.first.Load(library->second)) {
-        GP_LOG_F(TAG, "Create backend failed, load dynamic library failed.");
-        return nullptr;
+        GP_LOG_RETN_F(TAG, "Create backend failed, load dynamic library failed.");
     }
 
-    instance.second = instance.first.ExecuteFunction<BackendContext*()>("CreateBackend");
+    try {
+        instance.second = instance.first.ExecuteFunction<BackendContext* ()>("CreateBackend");
+    } catch (...) {
+        GP_LOG_RETN_F(TAG, "Create backend failed, this library does not have create function.");
+    }
     return instance.second;
 }
 
@@ -52,13 +53,16 @@ void BackendContext::DestroyBackend(Backend type)
 
     auto backend = g_storages.find(type);
     if (backend == g_storages.end()) {
-        GP_LOG_E(TAG, "Destroy backend failed, not found in the backend storage.");
-        return;
+        GP_LOG_RET_E(TAG, "Destroy backend failed, not found in the backend storage.");
     }
 
     auto& instance = backend->second;
 
-    instance.first.ExecuteFunction<void(BackendContext*)>("DestroyBackend", instance.second);
+    try {
+        instance.first.ExecuteFunction<void(BackendContext*)>("DestroyBackend", instance.second);
+    } catch (...) {
+        GP_LOG_E(TAG, "Destroy backend failed, this library does not have destroy function.");
+    }
     if (!instance.first.Unload()) {
         GP_LOG_W(TAG, "Destroy backend but unload dynamic library failed.");
     }
@@ -82,8 +86,7 @@ bool ErrorHandler::UnregisterHandler(Instance instance)
     GP_LOG_I(TAG, "Unregister error handler: %p", instance);
     auto iter = std::find(g_loggers.begin(), g_loggers.end(), instance);
     if (iter == g_loggers.end()) {
-        GP_LOG_W(TAG, "Unregister error handler failed, instance not found.");
-        return false;
+        GP_LOG_RETF_W(TAG, "Unregister error handler failed, instance not found.");
     }
     g_loggers.erase(iter);
     return true;
