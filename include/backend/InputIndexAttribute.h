@@ -6,11 +6,11 @@ namespace au::rhi {
 
 class InputIndexAttribute {
 public:
-    struct Description {
-        unsigned int reserved = 1; // Unused yet
+    struct Description final {
+        unsigned int reserved = 1;
     };
 
-    struct Attribute {
+    struct Attribute final {
         IndexFormat format;
         PrimitiveTopology topology;
         IndexStripCutValue stripValue;

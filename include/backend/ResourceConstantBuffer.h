@@ -8,7 +8,7 @@ namespace au::rhi {
 // Constant buffer object (CBO) in DX12
 class ResourceConstantBuffer {
 public:
-    struct Description {
+    struct Description final {
         unsigned int bufferBytesSize;
         TransferDirection memoryType;
 

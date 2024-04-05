@@ -24,7 +24,7 @@ enum class BasicFormat {
     R32G32B32_FLOAT,
     R32G32B32A32_FLOAT,
     D24_UNORM_S8_UINT,
-    // ...
+    // TODO...
     V32_FLOAT,
     V32V32_FLOAT,
     V32V32V32_FLOAT,
@@ -39,7 +39,7 @@ enum class IndexFormat {
 enum class VertexFormat {
     FLOAT32x3,
     FLOAT32x4
-    // ...
+    // TODO...
 };
 
 enum class VertexInputRate {

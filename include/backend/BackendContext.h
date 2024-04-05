@@ -55,7 +55,6 @@ public:
 
 private:
     ErrorHandler() = delete;
-    ~ErrorHandler() = delete;
 };
 
 }

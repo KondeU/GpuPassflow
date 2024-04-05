@@ -8,7 +8,7 @@ namespace au::rhi {
 // Structured buffer object in DX12
 class ResourceStorageBuffer {
 public:
-    struct Description {
+    struct Description final {
         unsigned int elementsCount;
         unsigned int elementBytesSize;
         bool writableResourceInShader;

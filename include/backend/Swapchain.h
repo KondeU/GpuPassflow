@@ -6,7 +6,7 @@ namespace au::rhi {
 
 class Swapchain {
 public:
-    struct Description {
+    struct Description final {
         void* window;
         unsigned int width;
         unsigned int height;

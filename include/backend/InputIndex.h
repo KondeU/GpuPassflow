@@ -6,7 +6,7 @@ namespace au::rhi {
 
 class InputIndex {
 public:
-    struct Description {
+    struct Description final {
         unsigned int indicesCount;
         unsigned int indexByteSize;
         TransferDirection memoryType;

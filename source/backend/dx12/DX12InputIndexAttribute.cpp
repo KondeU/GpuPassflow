@@ -14,7 +14,10 @@ DX12InputIndexAttribute::~DX12InputIndexAttribute()
 
 void DX12InputIndexAttribute::Setup(Description description)
 {
-    informations.resize(1, { DXGI_FORMAT_UNKNOWN });
+    if (description.reserved != 1) {
+        description.reserved = 1;
+    }
+    informations.resize(description.reserved, { DXGI_FORMAT_UNKNOWN });
 }
 
 void DX12InputIndexAttribute::Shutdown()
