@@ -28,8 +28,8 @@ public:
         {}
     };
 
-    virtual void AddGroup(DescriptorGroup* group) = 0;
-    virtual void BuildLayout() = 0;
+    virtual bool AddGroup(DescriptorGroup* group) = 0;
+    virtual bool BuildLayout() = 0;
 
     virtual bool IsValid() const = 0;
 

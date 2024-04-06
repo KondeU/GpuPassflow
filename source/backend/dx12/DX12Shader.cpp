@@ -105,15 +105,14 @@ void DX12Shader::ProcessSource(bool fromFile)
 
 void DX12Shader::ProcessBytecode(bool fromFile)
 {
-    std::string binary = description.source;
     if (fromFile) {
-        binary = gp::ReadFile(description.source);
+        LogIfFailedE(D3DReadFileToBlob(
+            std::to_wstring(description.source).c_str(), &bytecode));
+    } else {
+        size_t bytecodeSize = description.source.size();
+        LogIfFailedE(D3DCreateBlob(bytecodeSize, &bytecode));
+        CopyMemory(bytecode->GetBufferPointer(), description.source.data(), bytecodeSize);
     }
-    if (binary.empty()) {
-        GP_LOG_W(TAG, "Load shader bytecode failed!");
-    }
-    LogIfFailedW(D3DCreateBlob(binary.size(), &bytecode));
-    CopyMemory(bytecode->GetBufferPointer(), binary.data(), binary.size());
 }
 
 }
