@@ -21,7 +21,7 @@ namespace au::rhi {
 class Device {
 public:
     struct Description {
-        std::string device;
+        std::string adaptor;
     };
 
     //----------------------------------------//

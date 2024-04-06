@@ -32,7 +32,7 @@ public:
     virtual Device* CreateDevice(Device::Description description) = 0;
     virtual bool DestroyDevice(Device* device) = 0;
 
-    virtual std::vector<std::string> GetAvailableDevices() const = 0;
+    virtual std::vector<std::string> GetAvailableAdaptors() const = 0;
 
 protected:
     BackendContext() = default;

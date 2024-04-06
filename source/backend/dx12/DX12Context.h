@@ -14,7 +14,7 @@ public:
     rhi::Device* CreateDevice(rhi::Device::Description description) override;
     bool DestroyDevice(rhi::Device* device) override;
 
-    std::vector<std::string> GetAvailableDevices() const override;
+    std::vector<std::string> GetAvailableAdaptors() const override;
 
 private:
     Microsoft::WRL::ComPtr<IDXGIFactory4> dxgi;

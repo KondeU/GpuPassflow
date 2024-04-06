@@ -15,11 +15,11 @@ void DX12Device::Setup(Description description)
 {
     this->description = description;
 
-    if (!description.device.empty()) {
+    if (!description.adaptor.empty()) {
         for (UINT i = 0; dxgi->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND; i++) {
             DXGI_ADAPTER_DESC desc;
             adapter->GetDesc(&desc);
-            if (description.device == std::to_string(desc.Description)) {
+            if (description.adaptor == std::to_string(desc.Description)) {
                 break;
             }
             ReleaseCOM(adapter);

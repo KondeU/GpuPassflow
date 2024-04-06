@@ -67,9 +67,10 @@ public:
     virtual void RcSetViewports(const std::vector<Viewport>& viewports) = 0;
     virtual void RcSetScissors(const std::vector<Scissor>& scissors) = 0;
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // Global Driven Mode
-    // TODO: Move these to DX12CommandRecorder, only export and use the Pass Driven
+    //----------------------------------------//
+    //           Global Driven Mode           //
+    //----------------------------------------//
+
     virtual void RcClearColorAttachment(Swapchain* const swapchain) = 0;
     virtual void RcClearDepthStencilAttachment(Swapchain* const swapchain) = 0;
     virtual void RcClearColorAttachment(Descriptor* const descriptor) = 0;
@@ -80,14 +81,18 @@ public:
         const std::vector<Descriptor*>& depthStencilAttachments,
         bool descriptorsContinuous = false) = 0;
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // Pass Driven Mode
+    //----------------------------------------//
+    //            Pass Driven Mode            //
+    //----------------------------------------//
+
     virtual void RcBeginPass(
         Swapchain* const swapchain,
         const std::vector<std::tuple<Descriptor*, PassAction, PassAction>>& colorOutputs,
         const std::vector<std::tuple<Descriptor*, PassAction, PassAction>>& depthStencil,
         bool writeBufferOrTextureResource = false) = 0;
     virtual void RcEndPass() = 0;
+
+    //----------------------------------------//
 
     virtual void RcSetPipeline(PipelineState* const pipelineState) = 0;
 

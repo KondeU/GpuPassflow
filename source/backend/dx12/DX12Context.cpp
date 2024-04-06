@@ -50,9 +50,9 @@ bool DX12Context::DestroyDevice(rhi::Device* device)
     return DestroyInstance(devices, device);
 }
 
-std::vector<std::string> DX12Context::GetAvailableDevices() const
+std::vector<std::string> DX12Context::GetAvailableAdaptors() const
 {
-    std::vector<std::string> devices;
+    std::vector<std::string> adaptorsList;
 
     GP_LOG_D(TAG, "Enum adapters...");
     std::vector<IDXGIAdapter*> adapters;
@@ -63,7 +63,7 @@ std::vector<std::string> DX12Context::GetAvailableDevices() const
         DXGI_ADAPTER_DESC desc;
         adapter->GetDesc(&desc);
         GP_LOG_D(TAG, "> %d : %s", i, std::to_string(desc.Description).c_str());
-        devices.emplace_back(std::to_string(desc.Description).c_str());
+        adaptorsList.emplace_back(std::to_string(desc.Description).c_str());
         adapters.emplace_back(adapter);
     }
 
@@ -116,7 +116,7 @@ std::vector<std::string> DX12Context::GetAvailableDevices() const
         ReleaseCOM(adapter);
     }
 
-    return devices;
+    return adaptorsList;
 }
 
 }
