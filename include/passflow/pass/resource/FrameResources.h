@@ -37,15 +37,12 @@ struct DispatchItem final {
 };
 
 struct FrameResources final {
-    // Different views, scenes, passes generally have different frame outputs.
-    OutputContainer frameOutputs;
-    // These containers contain PerObject resources.
-    std::vector<Resource<DrawItem>> drawItems;
-    std::vector<Resource<DispatchItem>> dispatchItems;
-    // These containers contain PerView, PerScene, PerPass resources.
-    ResourceContainer perViewResources;
-    ResourceContainer perSceneResources;
-    ResourceContainer perPassResources;
+    std::unordered_map<FRsKey, OutputContainer> viewsFrameOutputs;
+    std::unordered_map<FRsKey, std::vector<Resource<DrawItem>>> scenesDrawItems;
+    std::unordered_map<FRsKey, std::vector<Resource<DispatchItem>>> scenesDispatchItems;
+    std::unordered_map<FRsKey, ResourceContainer> viewsResources;
+    std::unordered_map<FRsKey, ResourceContainer> scenesResources;
+    ResourceContainer passResources;
 };
 
 }

@@ -9,7 +9,7 @@ class RasterizePass : public BasePass {
 public:
     ~RasterizePass() override;
 
-    virtual unsigned int AddDrawItem(std::weak_ptr<DrawItem> item);
+    virtual unsigned int AddDrawItem(const FRsKey& scene, std::shared_ptr<DrawItem> item);
     virtual bool VerifyDrawItemIndex(unsigned int index);
 
     virtual void ImportFrameResource(
