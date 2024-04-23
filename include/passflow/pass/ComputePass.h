@@ -9,17 +9,30 @@ class ComputePass : public BasePass {
 public:
     ~ComputePass() override;
 
-    virtual unsigned int AddDispatchItem(std::weak_ptr<DispatchItem> item);
-    virtual bool VerifyDispatchItemIndex(unsigned int index);
+    virtual void AddDispatchItem(const FRsKey& scene, std::shared_ptr<DispatchItem> item);
 
-    virtual void ImportFrameResource(
-        const gp::FRsKey& name, Resource<BaseConstantBuffer> buffer);
-    virtual void ImportFrameResource(
-        const gp::FRsKey& name, Resource<BaseStructuredBuffer> buffer);
-    virtual void ImportFrameResource(
-        const std::string& name, Resource<BaseTexture> texture);
-    virtual void ImportFrameResource(
-        const std::string& name, Resource<Sampler> sampler);
+    virtual void AddPassResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
+    virtual void AddPassResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
+    virtual void AddPassResource(const FRsKey& name, Resource<BaseTexture> buffer);
+    virtual void AddPassResource(const FRsKey& name, Resource<Sampler> sampler);
+
+    virtual void AddSceneResource(const FRsKey& scene,
+        const FRsKey& name, Resource<BaseConstantBuffer> buffer);
+    virtual void AddSceneResource(const FRsKey& scene,
+        const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
+    virtual void AddSceneResource(const FRsKey& scene,
+        const FRsKey& name, Resource<BaseTexture> buffer);
+    virtual void AddSceneResource(const FRsKey& scene,
+        const FRsKey& name, Resource<Sampler> sampler);
+
+    virtual void AddViewResource(const FRsKey& view,
+        const FRsKey& name, Resource<BaseConstantBuffer> buffer);
+    virtual void AddViewResource(const FRsKey& view,
+        const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
+    virtual void AddViewResource(const FRsKey& view,
+        const FRsKey& name, Resource<BaseTexture> buffer);
+    virtual void AddViewResource(const FRsKey& view,
+        const FRsKey& name, Resource<Sampler> sampler);
 
     void ClearFrameResources();
 
