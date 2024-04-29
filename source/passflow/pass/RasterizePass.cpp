@@ -12,6 +12,11 @@ RasterizePass::~RasterizePass()
     CleanPipeline();
 }
 
+void RasterizePass::AddDrawItem(const FRsKey& scene, std::shared_ptr<DrawItem> item)
+{
+    AcquireStagingFrameResource().scenesResources.drawItems[scene].emplace_back(item);
+}
+
 unsigned int RasterizePass::AddDrawItem(std::weak_ptr<DrawItem> item)
 {
     if (auto lockedItem = item.lock()) {
@@ -358,25 +363,28 @@ void RasterizePass::UpdateFrameResources(unsigned int bufferingIndex)
              staging.frameOutputs.displayPresentOutputs);
 }
 
-FrameResources& RasterizePass::AcquireFrameResource(unsigned int bufferingIndex)
+FrameResources& RasterizePass::AcquireFrameResources(unsigned int bufferingIndex)
 {
     if (bufferingIndex < (frameResources.size() - 1)) {
-        return frameResources[bufferingIndex];
+        return *(frameResources[bufferingIndex]);
     }
     GP_LOG_F(TAG, "Acquire frame resource out of range! "
                   "Return the staging frame resource instead.");
-    return frameResources.back();
+    return *(frameResources.back());
 }
 
-FrameResources& RasterizePass::AcquireStagingFrameResource()
+FrameResources& RasterizePass::AcquireStagingFrameResources()
 {
-    return frameResources.back();
+    return *(frameResources.back());
 }
 
 void RasterizePass::ClearFrameResources()
 {
     frameResources.clear(); // Clear all contents in order to release all shared pointer first.
     frameResources.resize(static_cast<size_t>(multipleBufferingCount) + 1);
+    for (auto& each : frameResources) {
+        each = std::make_shared<FrameResources>();
+    }
 }
 
 }

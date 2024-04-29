@@ -28,21 +28,29 @@ struct OutputContainer final {
 struct DrawItem final {
     Resource<BaseIndexBuffer> indexBuffer;
     Resource<BaseVertexBuffer> vertexBuffer;
-    ResourceContainer perObjectResources;
+    ResourceContainer objectResources;
 };
 
 struct DispatchItem final {
     unsigned int threadGroups[3] = { 1u, 1u, 1u };
-    ResourceContainer perObjectResources;
+    ResourceContainer objectResources;
+};
+
+struct ViewResources final {
+    OutputContainer viewOutputs;
+    ResourceContainer viewResources;
+};
+
+struct SceneResources final {
+    ResourceContainer sceneResources;
+    std::vector<std::shared_ptr<DrawItem>> drawItems;
+    std::vector<std::shared_ptr<DispatchItem>> dispatchItems;
+    std::unordered_map<FRsKey, ViewResources> viewsResources;
 };
 
 struct FrameResources final {
-    std::unordered_map<FRsKey, OutputContainer> viewsFrameOutputs;
-    std::unordered_map<FRsKey, std::vector<Resource<DrawItem>>> scenesDrawItems;
-    std::unordered_map<FRsKey, std::vector<Resource<DispatchItem>>> scenesDispatchItems;
-    std::unordered_map<FRsKey, ResourceContainer> viewsResources;
-    std::unordered_map<FRsKey, ResourceContainer> scenesResources;
     ResourceContainer passResources;
+    std::unordered_map<FRsKey, SceneResources> scenesResources;
 };
 
 }

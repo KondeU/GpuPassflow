@@ -9,37 +9,34 @@ class RasterizePass : public BasePass {
 public:
     ~RasterizePass() override;
 
-    virtual void AddDrawItem(const FRsKey& scene, std::shared_ptr<DrawItem> item);
+    // Set current Scene and View.
+    virtual void MakeCurrent(const FRsKey& scene, const FRsKey& view);
 
+    // Frame(Pass) -> Scene -> DrawItem
+    virtual void AddDrawItem(std::shared_ptr<DrawItem> item);
+
+    // Frame(Pass) -> Resource
     virtual void AddPassResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
     virtual void AddPassResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
     virtual void AddPassResource(const FRsKey& name, Resource<BaseTexture> buffer);
     virtual void AddPassResource(const FRsKey& name, Resource<Sampler> sampler);
 
-    virtual void AddSceneResource(const FRsKey& scene,
-        const FRsKey& name, Resource<BaseConstantBuffer> buffer);
-    virtual void AddSceneResource(const FRsKey& scene,
-        const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
-    virtual void AddSceneResource(const FRsKey& scene,
-        const FRsKey& name, Resource<BaseTexture> buffer);
-    virtual void AddSceneResource(const FRsKey& scene,
-        const FRsKey& name, Resource<Sampler> sampler);
+    // Frame(Pass) -> Scene -> Resource
+    virtual void AddSceneResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
+    virtual void AddSceneResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
+    virtual void AddSceneResource(const FRsKey& name, Resource<BaseTexture> buffer);
+    virtual void AddSceneResource(const FRsKey& name, Resource<Sampler> sampler);
 
-    virtual void AddViewResource(const FRsKey& view,
-        const FRsKey& name, Resource<BaseConstantBuffer> buffer);
-    virtual void AddViewResource(const FRsKey& view,
-        const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
-    virtual void AddViewResource(const FRsKey& view,
-        const FRsKey& name, Resource<BaseTexture> buffer);
-    virtual void AddViewResource(const FRsKey& view,
-        const FRsKey& name, Resource<Sampler> sampler);
+    // Frame(Pass) -> Scene -> View -> Resource
+    virtual void AddViewResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
+    virtual void AddViewResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
+    virtual void AddViewResource(const FRsKey& name, Resource<BaseTexture> buffer);
+    virtual void AddViewResource(const FRsKey& name, Resource<Sampler> sampler);
 
-    virtual void AddOutput(const FRsKey& view,
-        const FRsKey& name, Resource<ColorOutput> output);
-    virtual void AddOutput(const FRsKey& view,
-        const FRsKey& name, Resource<DepthStencilOutput> output);
-    virtual void AddOutput(const FRsKey& view,
-        const FRsKey& name, Resource<DisplayPresentOutput> output);
+    // Frame(Pass) -> Scene -> View -> Output
+    virtual void AddOutput(const FRsKey& name, Resource<ColorOutput> output);
+    virtual void AddOutput(const FRsKey& name, Resource<DepthStencilOutput> output);
+    virtual void AddOutput(const FRsKey& name, Resource<DisplayPresentOutput> output);
 
     void ClearFrameResources();
 
@@ -69,8 +66,8 @@ protected:
     void UpdateDrawItems(unsigned int bufferingIndex);
     void UpdateFrameResources(unsigned int bufferingIndex);
 
-    FrameResources& AcquireFrameResource(unsigned int bufferingIndex);
-    FrameResources& AcquireStagingFrameResource();
+    FrameResources& AcquireFrameResources(unsigned int bufferingIndex);
+    FrameResources& AcquireStagingFrameResources();
 
 private:
     GP_LOG_TAG(RasterizePass);
@@ -93,7 +90,7 @@ private:
     std::vector<DynamicDescriptorManager> renderTargetDescriptorHeaps;
     std::vector<DynamicDescriptorManager> depthStencilDescriptorHeaps;
 
-    std::vector<FrameResources> frameResources;
+    std::vector<std::shared_ptr<FrameResources>> frameResources;
 };
 
 }
