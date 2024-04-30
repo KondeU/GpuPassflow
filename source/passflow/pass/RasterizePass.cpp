@@ -1,4 +1,5 @@
 #include "passflow/Passflow.h"
+#include <cassert>
 
 namespace au::gp {
 
@@ -12,66 +13,107 @@ RasterizePass::~RasterizePass()
     CleanPipeline();
 }
 
-void RasterizePass::AddDrawItem(const FRsKey& scene, std::shared_ptr<DrawItem> item)
+void RasterizePass::MakeCurrent(const FRsKey& scene, const FRsKey& view)
 {
-    AcquireStagingFrameResource().scenesResources.drawItems[scene].emplace_back(item);
+    currentResources.frame = frameResources.back().get();
+    currentResources.scene = &(currentResources.frame->scenesResources[scene]);
+    currentResources.view = &(currentResources.scene->viewsResources[view]);
 }
 
-unsigned int RasterizePass::AddDrawItem(std::weak_ptr<DrawItem> item)
+void RasterizePass::AddDrawItem(std::shared_ptr<DrawItem> item)
 {
-    if (auto lockedItem = item.lock()) {
-        AcquireStagingFrameResource().drawItems.emplace_back(lockedItem);
-        return static_cast<unsigned int>(AcquireStagingFrameResource().drawItems.size() - 1);
-    }
-    GP_LOG_W(TAG, "Draw item has been released and cannot be added to pass for rendering.");
-    return std::numeric_limits<unsigned int>::max();
+    assert(currentResources.scene != nullptr);
+    currentResources.scene->drawItems.emplace_back(item);
 }
 
-bool RasterizePass::VerifyDrawItemIndex(unsigned int index)
+void RasterizePass::AddPassResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
 {
-    return (index < AcquireStagingFrameResource().drawItems.size()) ? true : false;
+    assert(currentResources.frame != nullptr);
+    currentResources.frame->passResources.constantBuffers[name] = buffer;
 }
 
-void RasterizePass::ImportFrameResource(
-    const std::string& name, Resource<BaseConstantBuffer> buffer)
+void RasterizePass::AddPassResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer)
 {
-    AcquireStagingFrameResource().frameResources.constantBuffers[name] = buffer;
+    assert(currentResources.frame != nullptr);
+    currentResources.frame->passResources.structuredBuffers[name] = buffer;
 }
 
-void RasterizePass::ImportFrameResource(
-    const std::string& name, Resource<BaseStructuredBuffer> buffer)
+void RasterizePass::AddPassResource(const FRsKey& name, Resource<BaseTexture> texture)
 {
-    AcquireStagingFrameResource().frameResources.structuredBuffers[name] = buffer;
+    assert(currentResources.frame != nullptr);
+    currentResources.frame->passResources.textures[name] = texture;
 }
 
-void RasterizePass::ImportFrameResource(
-    const std::string& name, Resource<BaseTexture> texture)
+void RasterizePass::AddPassResource(const FRsKey& name, Resource<Sampler> sampler)
 {
-    AcquireStagingFrameResource().frameResources.textures[name] = texture;
+    assert(currentResources.frame != nullptr);
+    currentResources.frame->passResources.samplers[name] = sampler;
 }
 
-void RasterizePass::ImportFrameResource(
-    const std::string& name, Resource<Sampler> sampler)
+void RasterizePass::AddSceneResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
 {
-    AcquireStagingFrameResource().frameResources.samplers[name] = sampler;
+    assert(currentResources.scene != nullptr);
+    currentResources.scene->sceneResources.constantBuffers[name] = buffer;
 }
 
-void RasterizePass::ImportFrameOutput(
-    const std::string& name, Resource<ColorOutput> output)
+void RasterizePass::AddSceneResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer)
 {
-    AcquireStagingFrameResource().frameOutputs.colorOutputs[name] = output;
+    assert(currentResources.scene != nullptr);
+    currentResources.scene->sceneResources.structuredBuffers[name] = buffer;
 }
 
-void RasterizePass::ImportFrameOutput(
-    const std::string& name, Resource<DepthStencilOutput> output)
+void RasterizePass::AddSceneResource(const FRsKey& name, Resource<BaseTexture> texture)
 {
-    AcquireStagingFrameResource().frameOutputs.depthStencilOutputs[name] = output;
+    assert(currentResources.scene != nullptr);
+    currentResources.scene->sceneResources.textures[name] = texture;
 }
 
-void RasterizePass::ImportFrameOutput(
-    const std::string& name, Resource<DisplayPresentOutput> output)
+void RasterizePass::AddSceneResource(const FRsKey& name, Resource<Sampler> sampler)
 {
-    AcquireStagingFrameResource().frameOutputs.displayPresentOutputs[name] = output;
+    assert(currentResources.scene != nullptr);
+    currentResources.scene->sceneResources.samplers[name] = sampler;
+}
+
+void RasterizePass::AddViewResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
+{
+    assert(currentResources.view != nullptr);
+    currentResources.view->viewResources.constantBuffers[name] = buffer;
+}
+
+void RasterizePass::AddViewResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer)
+{
+    assert(currentResources.view != nullptr);
+    currentResources.view->viewResources.structuredBuffers[name] = buffer;
+}
+
+void RasterizePass::AddViewResource(const FRsKey& name, Resource<BaseTexture> texture)
+{
+    assert(currentResources.view != nullptr);
+    currentResources.view->viewResources.textures[name] = texture;
+}
+
+void RasterizePass::AddViewResource(const FRsKey& name, Resource<Sampler> sampler)
+{
+    assert(currentResources.view != nullptr);
+    currentResources.view->viewResources.samplers[name] = sampler;
+}
+
+void RasterizePass::AddOutput(const FRsKey& name, Resource<ColorOutput> output)
+{
+    assert(currentResources.view != nullptr);
+    currentResources.view->viewOutputs.colorOutputs[name] = output;
+}
+
+void RasterizePass::AddOutput(const FRsKey& name, Resource<DepthStencilOutput> output)
+{
+    assert(currentResources.view != nullptr);
+    currentResources.view->viewOutputs.depthStencilOutputs[name] = output;
+}
+
+void RasterizePass::AddOutput(const FRsKey& name, Resource<DisplayPresentOutput> output)
+{
+    assert(currentResources.view != nullptr);
+    currentResources.view->viewOutputs.displayPresentOutputs[name] = output;
 }
 
 void RasterizePass::InitializePipeline(rhi::Device* device)
@@ -385,6 +427,7 @@ void RasterizePass::ClearFrameResources()
     for (auto& each : frameResources) {
         each = std::make_shared<FrameResources>();
     }
+    currentResources = {};
 }
 
 }

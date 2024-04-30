@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include "BasePass.h"
 #include "resource/FrameResources.h"
 
@@ -18,19 +19,19 @@ public:
     // Frame(Pass) -> Resource
     virtual void AddPassResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
     virtual void AddPassResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
-    virtual void AddPassResource(const FRsKey& name, Resource<BaseTexture> buffer);
+    virtual void AddPassResource(const FRsKey& name, Resource<BaseTexture> texture);
     virtual void AddPassResource(const FRsKey& name, Resource<Sampler> sampler);
 
     // Frame(Pass) -> Scene -> Resource
     virtual void AddSceneResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
     virtual void AddSceneResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
-    virtual void AddSceneResource(const FRsKey& name, Resource<BaseTexture> buffer);
+    virtual void AddSceneResource(const FRsKey& name, Resource<BaseTexture> texture);
     virtual void AddSceneResource(const FRsKey& name, Resource<Sampler> sampler);
 
     // Frame(Pass) -> Scene -> View -> Resource
     virtual void AddViewResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
     virtual void AddViewResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
-    virtual void AddViewResource(const FRsKey& name, Resource<BaseTexture> buffer);
+    virtual void AddViewResource(const FRsKey& name, Resource<BaseTexture> texture);
     virtual void AddViewResource(const FRsKey& name, Resource<Sampler> sampler);
 
     // Frame(Pass) -> Scene -> View -> Output
@@ -63,9 +64,7 @@ protected:
     DynamicDescriptorManager& AcquireDescriptorManager(
         unsigned int bufferingIndex, rhi::DescriptorType descriptorType);
 
-    void UpdateDrawItems(unsigned int bufferingIndex);
     void UpdateFrameResources(unsigned int bufferingIndex);
-
     FrameResources& AcquireFrameResources(unsigned int bufferingIndex);
     FrameResources& AcquireStagingFrameResources();
 
@@ -91,6 +90,11 @@ private:
     std::vector<DynamicDescriptorManager> depthStencilDescriptorHeaps;
 
     std::vector<std::shared_ptr<FrameResources>> frameResources;
+    struct CurrentSceneViewFrameResources final {
+        FrameResources* frame = nullptr; // pass
+        SceneResources* scene = nullptr;
+        ViewResources* view = nullptr;
+    } currentResources;
 };
 
 }

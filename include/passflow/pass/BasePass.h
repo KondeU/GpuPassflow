@@ -25,7 +25,6 @@ protected:
         static rhi::InputVertexAttributes::Attribute MakeDefaultPositionVertexAttribute();
         std::vector<rhi::InputVertexAttributes::Attribute> vertexAttributes;
         rhi::InputIndexAttribute::Attribute indexAttribute;
-        bool multipleObjects = true;
     };
 
     struct OutputProperties final {
