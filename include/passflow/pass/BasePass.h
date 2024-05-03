@@ -1,5 +1,7 @@
 #pragma once
 
+#include "backend/BackendContext.h"
+
 namespace au::gp {
 
 class Passflow;
