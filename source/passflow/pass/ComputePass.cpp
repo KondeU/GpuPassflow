@@ -12,43 +12,138 @@ ComputePass::~ComputePass()
     CleanPipeline();
 }
 
-unsigned int ComputePass::AddDispatchItem(std::weak_ptr<DispatchItem> item)
+void ComputePass::MakeCurrent(const FRsKey& scene, const FRsKey& view)
 {
-    if (auto lockedItem = item.lock()) {
-        AcquireStagingFrameResource().dispatchItems.emplace_back(lockedItem);
-        return static_cast<unsigned int>(AcquireStagingFrameResource().dispatchItems.size() - 1);
+    currentResources.frame = &AcquireStagingFrameResources();
+    currentResources.scene = &(currentResources.frame->scenesResources[scene]);
+    currentResources.view = &(currentResources.scene->viewsResources[view]);
+}
+
+bool ComputePass::AddDispatchItem(std::shared_ptr<DispatchItem> item)
+{
+    if (currentResources.scene == nullptr) {
+        GP_LOG_RETF_W(TAG, "Cannot AddDrawItem, please MakeCurrent first!");
     }
-    GP_LOG_W(TAG, "Dispatch item has been released and cannot be added to pass for computing.");
-    return std::numeric_limits<unsigned int>::max();
+    currentResources.scene->dispatchItems.emplace_back(item);
+    return true;
 }
 
-bool ComputePass::VerifyDispatchItemIndex(unsigned int index)
+bool ComputePass::AddPassResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
 {
-    return (index < AcquireStagingFrameResource().dispatchItems.size()) ? true : false;
+    if (currentResources.frame == nullptr) {
+        GP_LOG_RETF_W(TAG, "Cannot AddPassResource(ConstantBuffer), please MakeCurrent first!");
+    }
+    currentResources.frame->passResources.constantBuffers[name] = buffer;
+    return true;
 }
 
-void ComputePass::ImportFrameResource(
-    const std::string& name, Resource<BaseConstantBuffer> buffer)
+bool ComputePass::AddPassResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer)
 {
-    AcquireStagingFrameResource().frameResources.constantBuffers[name] = buffer;
+    if (currentResources.frame == nullptr) {
+        GP_LOG_RETF_W(TAG, "Cannot AddPassResource(StructuredBuffer), please MakeCurrent first!");
+    }
+    currentResources.frame->passResources.structuredBuffers[name] = buffer;
+    return true;
 }
 
-void ComputePass::ImportFrameResource(
-    const std::string& name, Resource<BaseStructuredBuffer> buffer)
+bool ComputePass::AddPassResource(const FRsKey& name, Resource<BaseTexture> texture)
 {
-    AcquireStagingFrameResource().frameResources.structuredBuffers[name] = buffer;
+    if (currentResources.frame == nullptr) {
+        GP_LOG_RETF_W(TAG, "Cannot AddPassResource(Texture), please MakeCurrent first!");
+    }
+    currentResources.frame->passResources.textures[name] = texture;
+    return true;
 }
 
-void ComputePass::ImportFrameResource(
-    const std::string& name, Resource<BaseTexture> texture)
+bool ComputePass::AddPassResource(const FRsKey& name, Resource<Sampler> sampler)
 {
-    AcquireStagingFrameResource().frameResources.textures[name] = texture;
+    if (currentResources.frame == nullptr) {
+        GP_LOG_RETF_W(TAG, "Cannot AddPassResource(Sampler), please MakeCurrent first!");
+    }
+    currentResources.frame->passResources.samplers[name] = sampler;
+    return true;
 }
 
-void ComputePass::ImportFrameResource(
-    const std::string& name, Resource<Sampler> sampler)
+bool ComputePass::AddSceneResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
 {
-    AcquireStagingFrameResource().frameResources.samplers[name] = sampler;
+    if (currentResources.scene == nullptr) {
+        GP_LOG_RETF_W(TAG, "Cannot AddSceneResource(ConstantBuffer), please MakeCurrent first!");
+    }
+    currentResources.scene->sceneResources.constantBuffers[name] = buffer;
+    return true;
+}
+
+bool ComputePass::AddSceneResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer)
+{
+    if (currentResources.scene == nullptr) {
+        GP_LOG_RETF_W(TAG, "Cannot AddSceneResource(StructuredBuffer), please MakeCurrent first!");
+    }
+    currentResources.scene->sceneResources.structuredBuffers[name] = buffer;
+    return true;
+}
+
+bool ComputePass::AddSceneResource(const FRsKey& name, Resource<BaseTexture> texture)
+{
+    if (currentResources.scene == nullptr) {
+        GP_LOG_RETF_W(TAG, "Cannot AddSceneResource(Texture), please MakeCurrent first!");
+    }
+    currentResources.scene->sceneResources.textures[name] = texture;
+    return true;
+}
+
+bool ComputePass::AddSceneResource(const FRsKey& name, Resource<Sampler> sampler)
+{
+    if (currentResources.scene == nullptr) {
+        GP_LOG_RETF_W(TAG, "Cannot AddSceneResource(Sampler), please MakeCurrent first!");
+    }
+    currentResources.scene->sceneResources.samplers[name] = sampler;
+    return true;
+}
+
+bool ComputePass::AddViewResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
+{
+    if (currentResources.view == nullptr) {
+        GP_LOG_RETF_W(TAG, "Cannot AddViewResource(ConstantBuffer), please MakeCurrent first!");
+    }
+    currentResources.view->viewResources.constantBuffers[name] = buffer;
+    return true;
+}
+
+bool ComputePass::AddViewResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer)
+{
+    if (currentResources.view == nullptr) {
+        GP_LOG_RETF_W(TAG, "Cannot AddViewResource(StructuredBuffer), please MakeCurrent first!");
+    }
+    currentResources.view->viewResources.structuredBuffers[name] = buffer;
+    return true;
+}
+
+bool ComputePass::AddViewResource(const FRsKey& name, Resource<BaseTexture> texture)
+{
+    if (currentResources.view == nullptr) {
+        GP_LOG_RETF_W(TAG, "Cannot AddViewResource(Texture), please MakeCurrent first!");
+    }
+    currentResources.view->viewResources.textures[name] = texture;
+    return true;
+}
+
+bool ComputePass::AddViewResource(const FRsKey& name, Resource<Sampler> sampler)
+{
+    if (currentResources.view == nullptr) {
+        GP_LOG_RETF_W(TAG, "Cannot AddViewResource(Sampler), please MakeCurrent first!");
+    }
+    currentResources.view->viewResources.samplers[name] = sampler;
+    return true;
+}
+
+void ComputePass::ClearFrameResources()
+{
+    frameResources.clear(); // Clear all contents in order to release all shared pointer first.
+    frameResources.resize(static_cast<size_t>(passflow.GetMultipleBufferingCount()) + 1);
+    for (auto& each : frameResources) {
+        each = std::make_shared<FrameResources>();
+    }
+    currentResources = {};
 }
 
 void ComputePass::InitializePipeline(rhi::Device* device)
@@ -74,8 +169,7 @@ void ComputePass::DeclareProgram(const ProgramProperties& properties)
 
 void ComputePass::DeclareResource(const ShaderResourceProperties& properties)
 {
-    descriptorCounters.generalResourcesCounts.clear();
-    descriptorCounters.imageSamplersCounts.clear();
+    descriptorCounter.ClearResourcesAndSamplersCount();
 
     pipelineLayout = device->CreatePipelineLayout({});
     for (const auto& [resourceSpace, resourceAttributes] : properties.resources) {
@@ -84,11 +178,9 @@ void ComputePass::DeclareResource(const ShaderResourceProperties& properties)
         for (const auto& attribute : resourceAttributes) {
             if (EnumCast(attribute.resourceType) &
                 EnumCast(rhi::DescriptorType::ShaderResource)) {
-                descriptorCounters.generalResourcesCounts
-                    [resourceSpace] += attribute.bindingPointCount;
+                descriptorCounter.generalResourcesCount[space] += attribute.bindingPointCount;
             } else if (attribute.resourceType == rhi::DescriptorType::ImageSampler) {
-                descriptorCounters.imageSamplersCounts
-                    [resourceSpace] += attribute.bindingPointCount;
+                descriptorCounter.imageSamplersCount[space] += attribute.bindingPointCount;
             } else {
                 GP_LOG_F(TAG, "Resource only can be the type of ShaderResource or ImageSampler.");
                 // Note that continue will cause the descriptor group to be out of order,
@@ -135,9 +227,11 @@ bool ComputePass::BuildPipeline()
     pipelineState->SetShader(rhi::ShaderStage::Compute, computeShader);
     pipelineState->BuildState();
 
-    shaderResourceDescriptorHeaps.resize(multipleBufferingCount,
+    shaderResourceDescriptorHeaps.resize(
+        passflow.GetMultipleBufferingCount(),
         { device, rhi::DescriptorType::ShaderResource });
-    imageSamplerDescriptorHeaps.resize(multipleBufferingCount,
+    imageSamplerDescriptorHeaps.resize(
+        passflow.GetMultipleBufferingCount(),
         { device, rhi::DescriptorType::ImageSampler });
     return true;
 }
@@ -171,7 +265,7 @@ void ComputePass::CleanPipeline()
         device = nullptr;
 
         // Reset recorded counters variable to default values.
-        descriptorCounters = DescriptorCounters();
+        descriptorCounter.ClearAllCount();
     }
 }
 
@@ -180,96 +274,58 @@ rhi::PipelineState* ComputePass::AcquirePipelineState()
     return pipelineState;
 }
 
-void ComputePass::ReserveEnoughDescriptors(
-    unsigned int bufferingIndex, unsigned int viewsCount, unsigned int scenesCount)
-{
-    do {
-        if (descriptorCounters.ObjectsReservedCount() >=
-            AcquireStagingFrameResource().dispatchItems.size()) {
-            break;
-        }
-    } while (descriptorCounters.ObjectsReservedCount() <<= 1);
-
-    if (descriptorCounters.ObjectsReservedCount() == 0) {
-        GP_LOG_F(TAG, "Dispatch items count overflow and no enough descriptors!");
-    }
-
-    descriptorCounters.ViewsReservedCount() = viewsCount;
-    descriptorCounters.ScenesReservedCount() = scenesCount;
-
-    shaderResourceDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
-        descriptorCounters.CalculateShaderResourcesCount());
-
-    imageSamplerDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
-        descriptorCounters.CalculateImageSamplersCount());
-}
-
-BasePass::DynamicDescriptorManager&
+DynamicDescriptorManager&
 ComputePass::AcquireShaderResourceDescriptorManager(unsigned int bufferingIndex)
 {
     return shaderResourceDescriptorHeaps[bufferingIndex];
 }
 
-BasePass::DynamicDescriptorManager&
+DynamicDescriptorManager&
 ComputePass::AcquireImageSamplerDescriptorManager(unsigned int bufferingIndex)
 {
     return imageSamplerDescriptorHeaps[bufferingIndex];
 }
 
-void ComputePass::UpdateDispatchItems(unsigned int bufferingIndex)
-{
-    FrameResources& updating = AcquireFrameResource(bufferingIndex);
-    FrameResources& staging = AcquireStagingFrameResource();
-
-    auto Updater = [](auto& updating, auto& staging) {
-        updating.clear();
-        updating.swap(staging);
-    };
-
-    Updater(updating.dispatchItems, staging.dispatchItems);
-}
-
 void ComputePass::UpdateFrameResources(unsigned int bufferingIndex)
 {
-    FrameResources& updating = AcquireFrameResource(bufferingIndex);
-    FrameResources& staging = AcquireStagingFrameResource();
-
-    auto Updater = [](auto& updating, auto& staging) {
-        for (const auto& [name, resource] : staging) {
-            updating[name] = resource;
-        }
-        staging.clear();
-    };
-
-    Updater(updating.frameResources.textures,
-             staging.frameResources.textures);
-    Updater(updating.frameResources.constantBuffers,
-             staging.frameResources.constantBuffers);
-    Updater(updating.frameResources.structuredBuffers,
-             staging.frameResources.structuredBuffers);
-    Updater(updating.frameResources.samplers,
-             staging.frameResources.samplers);
+    if (bufferingIndex >= (frameResources.size() - 1)) {
+        GP_LOG_RET_E(TAG, "Cannot staging frame resources, target buffering index out of range!");
+    }
+    frameResources[bufferingIndex] = frameResources.back();
+    frameResources.back() = std::make_shared<FrameResources>();
 }
 
-FrameResources& ComputePass::AcquireFrameResource(unsigned int bufferingIndex)
+FrameResources& ComputePass::AcquireFrameResources(unsigned int bufferingIndex)
 {
     if (bufferingIndex < (frameResources.size() - 1)) {
-        return frameResources[bufferingIndex];
+        return *(frameResources[bufferingIndex]);
     }
     GP_LOG_F(TAG, "Acquire frame resource out of range! "
                   "Return the staging frame resource instead.");
-    return frameResources.back();
+    return *(frameResources.back());
 }
 
-FrameResources& ComputePass::AcquireStagingFrameResource()
+FrameResources& ComputePass::AcquireStagingFrameResources()
 {
-    return frameResources.back();
+    return *(frameResources.back());
 }
 
-void ComputePass::ClearFrameResources()
+void ComputePass::ReserveEnoughDescriptors(unsigned int bufferingIndex)
 {
-    frameResources.clear(); // Clear all contents in order to release all shared pointer first.
-    frameResources.resize(static_cast<size_t>(multipleBufferingCount) + 1);
+    const auto& scenesResources = AcquireStagingFrameResources().scenesResources;
+    unsigned int sceneCount = scenesResources.size();
+    unsigned int totalViewCount = 0, totalObjectCount = 0;
+    for (const auto& [key, sceneResources] : scenesResources) {
+        totalViewCount += sceneResources.viewsResources.size();
+        totalObjectCount += sceneResources.drawItems.size();
+    }
+
+    shaderResourceDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
+        descriptorCounter.CalculateShaderResourcesCount(
+            sceneCount, totalViewCount, totalObjectCount));
+    imageSamplerDescriptorHeaps[bufferingIndex].ReallocateDescriptorHeap(
+        descriptorCounter.CalculateImageSamplersCount(
+            sceneCount, totalViewCount, totalObjectCount));
 }
 
 }

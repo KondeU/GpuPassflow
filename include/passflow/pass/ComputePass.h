@@ -9,30 +9,29 @@ class ComputePass : public BasePass {
 public:
     ~ComputePass() override;
 
-    virtual void AddDispatchItem(const FRsKey& scene, std::shared_ptr<DispatchItem> item);
+    // Set current Scene and View.
+    virtual void MakeCurrent(const FRsKey& scene, const FRsKey& view);
 
-    virtual void AddPassResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
-    virtual void AddPassResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
-    virtual void AddPassResource(const FRsKey& name, Resource<BaseTexture> buffer);
-    virtual void AddPassResource(const FRsKey& name, Resource<Sampler> sampler);
+    // [Dispatch] - Frame(Pass) -> Scene -> DispatchItem
+    virtual bool AddDispatchItem(std::shared_ptr<DispatchItem> item);
 
-    virtual void AddSceneResource(const FRsKey& scene,
-        const FRsKey& name, Resource<BaseConstantBuffer> buffer);
-    virtual void AddSceneResource(const FRsKey& scene,
-        const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
-    virtual void AddSceneResource(const FRsKey& scene,
-        const FRsKey& name, Resource<BaseTexture> buffer);
-    virtual void AddSceneResource(const FRsKey& scene,
-        const FRsKey& name, Resource<Sampler> sampler);
+    // Frame(Pass) -> Resource
+    virtual bool AddPassResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
+    virtual bool AddPassResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
+    virtual bool AddPassResource(const FRsKey& name, Resource<BaseTexture> texture);
+    virtual bool AddPassResource(const FRsKey& name, Resource<Sampler> sampler);
 
-    virtual void AddViewResource(const FRsKey& view,
-        const FRsKey& name, Resource<BaseConstantBuffer> buffer);
-    virtual void AddViewResource(const FRsKey& view,
-        const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
-    virtual void AddViewResource(const FRsKey& view,
-        const FRsKey& name, Resource<BaseTexture> buffer);
-    virtual void AddViewResource(const FRsKey& view,
-        const FRsKey& name, Resource<Sampler> sampler);
+    // Frame(Pass) -> Scene -> Resource
+    virtual bool AddSceneResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
+    virtual bool AddSceneResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
+    virtual bool AddSceneResource(const FRsKey& name, Resource<BaseTexture> texture);
+    virtual bool AddSceneResource(const FRsKey& name, Resource<Sampler> sampler);
+
+    // Frame(Pass) -> Scene -> View -> Resource
+    virtual bool AddViewResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
+    virtual bool AddViewResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
+    virtual bool AddViewResource(const FRsKey& name, Resource<BaseTexture> texture);
+    virtual bool AddViewResource(const FRsKey& name, Resource<Sampler> sampler);
 
     void ClearFrameResources();
 
@@ -49,17 +48,14 @@ protected:
     // classes can use it in the OnExecutePass function when dispatching.
     rhi::PipelineState* AcquirePipelineState();
 
-    void ReserveEnoughDescriptors(
-        unsigned int bufferingIndex, unsigned int viewsCount, unsigned int scenesCount);
-
     DynamicDescriptorManager& AcquireShaderResourceDescriptorManager(unsigned int bufferingIndex);
     DynamicDescriptorManager& AcquireImageSamplerDescriptorManager(unsigned int bufferingIndex);
 
-    void UpdateDispatchItems(unsigned int bufferingIndex);
     void UpdateFrameResources(unsigned int bufferingIndex);
+    FrameResources& AcquireFrameResources(unsigned int bufferingIndex);
+    FrameResources& AcquireStagingFrameResources();
 
-    FrameResources& AcquireFrameResource(unsigned int bufferingIndex);
-    FrameResources& AcquireStagingFrameResource();
+    void ReserveEnoughDescriptors(unsigned int bufferingIndex);
 
 private:
     GP_LOG_TAG(ComputePass);
@@ -73,12 +69,17 @@ private:
 
     std::map<uint8_t, rhi::DescriptorGroup*> descriptorGroups;
 
-    DescriptorCounters descriptorCounters;
+    DescriptorCounter descriptorCounter;
 
     std::vector<DynamicDescriptorManager> shaderResourceDescriptorHeaps;
     std::vector<DynamicDescriptorManager> imageSamplerDescriptorHeaps;
 
-    std::vector<FrameResources> frameResources;
+    std::vector<std::shared_ptr<FrameResources>> frameResources;
+    struct CurrentSceneViewFrameResources final {
+        FrameResources* frame = nullptr; // pass
+        SceneResources* scene = nullptr;
+        ViewResources* view = nullptr;
+    } currentResources;
 };
 
 }

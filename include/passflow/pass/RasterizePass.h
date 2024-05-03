@@ -1,8 +1,8 @@
 #pragma once
 
-#include <array>
 #include "BasePass.h"
 #include "resource/FrameResources.h"
+#include "resource/DescriptorManager.h"
 
 namespace au::gp {
 
@@ -13,31 +13,31 @@ public:
     // Set current Scene and View.
     virtual void MakeCurrent(const FRsKey& scene, const FRsKey& view);
 
-    // Frame(Pass) -> Scene -> DrawItem
-    virtual void AddDrawItem(std::shared_ptr<DrawItem> item);
+    // [DrawCall] - Frame(Pass) -> Scene -> DrawItem
+    virtual bool AddDrawItem(std::shared_ptr<DrawItem> item);
 
     // Frame(Pass) -> Resource
-    virtual void AddPassResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
-    virtual void AddPassResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
-    virtual void AddPassResource(const FRsKey& name, Resource<BaseTexture> texture);
-    virtual void AddPassResource(const FRsKey& name, Resource<Sampler> sampler);
+    virtual bool AddPassResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
+    virtual bool AddPassResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
+    virtual bool AddPassResource(const FRsKey& name, Resource<BaseTexture> texture);
+    virtual bool AddPassResource(const FRsKey& name, Resource<Sampler> sampler);
 
     // Frame(Pass) -> Scene -> Resource
-    virtual void AddSceneResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
-    virtual void AddSceneResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
-    virtual void AddSceneResource(const FRsKey& name, Resource<BaseTexture> texture);
-    virtual void AddSceneResource(const FRsKey& name, Resource<Sampler> sampler);
+    virtual bool AddSceneResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
+    virtual bool AddSceneResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
+    virtual bool AddSceneResource(const FRsKey& name, Resource<BaseTexture> texture);
+    virtual bool AddSceneResource(const FRsKey& name, Resource<Sampler> sampler);
 
     // Frame(Pass) -> Scene -> View -> Resource
-    virtual void AddViewResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
-    virtual void AddViewResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
-    virtual void AddViewResource(const FRsKey& name, Resource<BaseTexture> texture);
-    virtual void AddViewResource(const FRsKey& name, Resource<Sampler> sampler);
+    virtual bool AddViewResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer);
+    virtual bool AddViewResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer);
+    virtual bool AddViewResource(const FRsKey& name, Resource<BaseTexture> texture);
+    virtual bool AddViewResource(const FRsKey& name, Resource<Sampler> sampler);
 
     // Frame(Pass) -> Scene -> View -> Output
-    virtual void AddOutput(const FRsKey& name, Resource<ColorOutput> output);
-    virtual void AddOutput(const FRsKey& name, Resource<DepthStencilOutput> output);
-    virtual void AddOutput(const FRsKey& name, Resource<DisplayPresentOutput> output);
+    virtual bool AddOutput(const FRsKey& name, Resource<ColorOutput> output);
+    virtual bool AddOutput(const FRsKey& name, Resource<DepthStencilOutput> output);
+    virtual bool AddOutput(const FRsKey& name, Resource<DisplayPresentOutput> output);
 
     void ClearFrameResources();
 
@@ -58,15 +58,14 @@ protected:
     rhi::InputIndexAttribute* AcquireIndexAttribute();
     rhi::InputVertexAttributes* AcquireVertexAttributes();
 
-    void ReserveEnoughDescriptors(
-        unsigned int bufferingIndex, unsigned int viewsCount, unsigned int scenesCount);
-
     DynamicDescriptorManager& AcquireDescriptorManager(
         unsigned int bufferingIndex, rhi::DescriptorType descriptorType);
 
     void UpdateFrameResources(unsigned int bufferingIndex);
     FrameResources& AcquireFrameResources(unsigned int bufferingIndex);
     FrameResources& AcquireStagingFrameResources();
+
+    void ReserveEnoughDescriptors(unsigned int bufferingIndex);
 
 private:
     GP_LOG_TAG(RasterizePass);
@@ -82,7 +81,7 @@ private:
     std::map<rhi::ShaderStage, rhi::Shader*> programShaders;
     std::map<uint8_t, rhi::DescriptorGroup*> descriptorGroups;
 
-    DescriptorCounters descriptorCounters;
+    DescriptorCounter descriptorCounter;
 
     std::vector<DynamicDescriptorManager> shaderResourceDescriptorHeaps;
     std::vector<DynamicDescriptorManager> imageSamplerDescriptorHeaps;
