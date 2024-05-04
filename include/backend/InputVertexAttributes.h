@@ -7,11 +7,11 @@ namespace au::rhi {
 
 class InputVertexAttributes {
 public:
-    struct Description {
-        unsigned int reserved = 8; // Unused yet
+    struct Description final {
+        unsigned int reserved = 4; // Usually, these are position/color/normal/tangent, uv...
     };
 
-    struct Attribute {
+    struct Attribute final {
         VertexFormat format;
         std::string semantic;
         unsigned int location;

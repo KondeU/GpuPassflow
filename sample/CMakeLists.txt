@@ -11,7 +11,7 @@ file(GLOB_RECURSE SRC *.h *.cpp)
 add_executable(${PROJECT_NAME} ${SRC} ${GPU_PASSFLOW_HEADERS})
 target_use_gpu_passflow(${PROJECT_NAME})
 
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/.. FILES ${SRC} ${INC})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/.. FILES ${SRC} ${GPU_PASSFLOW_HEADERS})
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../output/runtime/ DESTINATION .)

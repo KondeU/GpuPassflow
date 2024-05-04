@@ -151,14 +151,4 @@ unsigned int Passflow::ExecuteWorkflow()
     return currentBufferingIndex; // Return next frame index.
 }
 
-unsigned int Passflow::GetCurrentBufferingIndex() const noexcept
-{
-    return currentBufferingIndex;
-}
-
-unsigned int Passflow::GetMultipleBufferingCount() const noexcept
-{
-    return multipleBufferingCount;
-}
-
 }

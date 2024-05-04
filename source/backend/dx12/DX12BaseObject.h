@@ -47,9 +47,6 @@ protected:
             typeid(Object).name(), ObjectID(), this);
         #endif
     }
-
-    //static_assert(std::is_base_of<DX12Object<Object>, Object>::value,
-    //    "Input template type Object must derived from DX12Object!");
 };
 
 }

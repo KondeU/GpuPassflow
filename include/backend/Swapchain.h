@@ -6,7 +6,7 @@ namespace au::rhi {
 
 class Swapchain {
 public:
-    struct Description {
+    struct Description final {
         void* window;
         unsigned int width;
         unsigned int height;
@@ -47,6 +47,8 @@ public:
 
     virtual void Resize(unsigned int width, unsigned int height) = 0;
     virtual void Present() = 0;
+
+    static constexpr unsigned int MaxBufferCountLimit = 4;
 
 protected:
     Swapchain() = default;

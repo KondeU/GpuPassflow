@@ -24,7 +24,7 @@ enum class BasicFormat {
     R32G32B32_FLOAT,
     R32G32B32A32_FLOAT,
     D24_UNORM_S8_UINT,
-    // ...
+    // TODO...
     V32_FLOAT,
     V32V32_FLOAT,
     V32V32V32_FLOAT,
@@ -39,7 +39,7 @@ enum class IndexFormat {
 enum class VertexFormat {
     FLOAT32x3,
     FLOAT32x4
-    // ...
+    // TODO...
 };
 
 enum class VertexInputRate {
@@ -51,7 +51,6 @@ enum class IndexStripCutValue {
     NONE_OR_DISABLE,
     UINT16_MAX_VALUE,
     UINT32_MAX_VALUE
-
 };
 
 enum class PrimitiveTopology {
@@ -122,7 +121,7 @@ enum class DescriptorType : uint8_t {
     DepthStencil   = (1 << 7)  // descriptor for depth stencil
 };
 
-enum class Stage : uint32_t {
+enum class PipelineStage : uint32_t {
     // Sort them by their order in the graphics pipeline:
     InputAssembler = (1 <<  0), // Standard stage: input vertex and index.
     VertexShader   = (1 <<  2), // Standard stage: vertex process.
@@ -148,12 +147,12 @@ enum class Stage : uint32_t {
 };
 
 enum class ShaderStage : uint32_t {
-    Vertex   = gp::EnumCast(Stage::VertexShader),
-    Hull     = gp::EnumCast(Stage::HullShader),
-    Domain   = gp::EnumCast(Stage::DomainShader),
-    Geometry = gp::EnumCast(Stage::GeometryShader),
-    Pixel    = gp::EnumCast(Stage::PixelShader),
-    Compute  = gp::EnumCast(Stage::ComputeShader),
+    Vertex   = gp::EnumCast(PipelineStage::VertexShader),
+    Hull     = gp::EnumCast(PipelineStage::HullShader),
+    Domain   = gp::EnumCast(PipelineStage::DomainShader),
+    Geometry = gp::EnumCast(PipelineStage::GeometryShader),
+    Pixel    = gp::EnumCast(PipelineStage::PixelShader),
+    Compute  = gp::EnumCast(PipelineStage::ComputeShader),
     Graphics = Vertex | Hull | Domain | Geometry | Pixel
 };
 

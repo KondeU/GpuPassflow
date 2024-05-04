@@ -6,7 +6,7 @@ namespace au::rhi {
 
 class ResourceImage {
 public:
-    struct Description {
+    struct Description final {
         BasicFormat format;
         uint32_t width;  // 1st dimension
         uint32_t height; // 2nd dimension

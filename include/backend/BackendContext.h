@@ -32,6 +32,8 @@ public:
     virtual Device* CreateDevice(Device::Description description) = 0;
     virtual bool DestroyDevice(Device* device) = 0;
 
+    virtual std::vector<std::string> GetAvailableAdaptors() const = 0;
+
 protected:
     BackendContext() = default;
     virtual ~BackendContext() = default;
@@ -43,7 +45,7 @@ namespace au::gp {
 
 class ErrorHandler final {
 public:
-    using Instance = void*; // value is equal to callback.
+    using Instance = void*; // value is equal to callback yet.
     using Callback = int(*)(const char* [3]); // level, tag, content.
 
     BackendApi static Instance RegisterHandler(Callback callback);
@@ -53,7 +55,6 @@ public:
 
 private:
     ErrorHandler() = delete;
-    ~ErrorHandler() = delete;
 };
 
 }

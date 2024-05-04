@@ -7,7 +7,7 @@ namespace au::rhi {
 
 class Shader {
 public:
-    struct Description {
+    struct Description final {
         ShaderStage stage;
         std::string source;
         std::string entryName;
@@ -34,7 +34,9 @@ public:
 
     struct Reflection {
         unsigned int descriptorsCount = 0;
+        // TODO...
     };
+    // TODO
     virtual Reflection Reflect() const = 0;
 
     virtual std::string DumpBytecode() const = 0;

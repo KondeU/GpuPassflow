@@ -1,4 +1,4 @@
-#include "passflow/Resources.h"
+#include "passflow/pass/resource/Resources.h"
 
 namespace {
 
@@ -68,9 +68,9 @@ void DeviceHolder::CheckSize(unsigned int& size, unsigned int limit)
     CheckSize(size);
 }
 
-void DeviceHolder::ConfigureAvoidInfight(bool infight)
+void DeviceHolder::ConfigureAvoidInfight(bool avoid)
 {
-    avoidInfight = infight;
+    avoidInfight = avoid;
 }
 
 //////////////////////////////////////////////////
@@ -81,7 +81,7 @@ BaseConstantBuffer::~BaseConstantBuffer()
     CloseGPU();
 }
 
-void BaseConstantBuffer::UploadConstantBuffer(unsigned int index)
+void BaseConstantBuffer::ForceUploadConstantBuffer(unsigned int index)
 {
     if (index >= buffers.size()) {
         GP_LOG_RET_W(TAG, "Upload constant buffer failed, index out of range.");
@@ -94,7 +94,22 @@ void BaseConstantBuffer::UploadConstantBuffer(unsigned int index)
         UploadRemote(device, buffer, staging, RawCpuPtr(), description.bufferBytesSize);
         device->DestroyResourceBuffer(staging);
     } else {
-        GP_LOG_W(TAG, "Upload constant buffer failed, this buffer is in the readback heap.");
+        GP_LOG_RET_W(TAG, "Upload constant buffer failed, this buffer is in the readback heap.");
+    }
+    dirty.reset(index);
+}
+
+void BaseConstantBuffer::ForceUploadConstantBuffers()
+{
+    for (unsigned int index = 0; index < buffers.size(); index++) {
+        ForceUploadConstantBuffer(index);
+    }
+}
+
+void BaseConstantBuffer::UploadConstantBuffer(unsigned int index)
+{
+    if (dirty.test(index)) {
+        ForceUploadConstantBuffer(index);
     }
 }
 
@@ -105,7 +120,7 @@ void BaseConstantBuffer::UploadConstantBuffers()
     }
 }
 
-rhi::ResourceBuffer* BaseConstantBuffer::RawGpuInst(unsigned int index)
+rhi::ResourceConstantBuffer* BaseConstantBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= buffers.size()) {
         GP_LOG_RETN_W(TAG, "Acquire constant buffer backend instance failed, index out of range.");
@@ -146,7 +161,7 @@ BaseStructuredBuffer::~BaseStructuredBuffer()
     CloseGPU();
 }
 
-void BaseStructuredBuffer::UploadStructuredBuffer(unsigned int index)
+void BaseStructuredBuffer::ForceUploadStructuredBuffer(unsigned int index)
 {
     if (index >= buffers.size()) {
         GP_LOG_RET_W(TAG, "Upload structured buffer failed, index out of range.");
@@ -161,7 +176,22 @@ void BaseStructuredBuffer::UploadStructuredBuffer(unsigned int index)
     } else if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(buffer, RawCpuPtr(), description.elementBytesSize, description.elementsCount);
     } else {
-        GP_LOG_W(TAG, "Upload structured buffer failed, this buffer is in the readback heap.");
+        GP_LOG_RET_W(TAG, "Upload structured buffer failed, this buffer is in the readback heap.");
+    }
+    dirty.reset(index);
+}
+
+void BaseStructuredBuffer::ForceUploadStructuredBuffers()
+{
+    for (unsigned int index = 0; index < buffers.size(); index++) {
+        ForceUploadStructuredBuffer(index);
+    }
+}
+
+void BaseStructuredBuffer::UploadStructuredBuffer(unsigned int index)
+{
+    if (dirty.test(index)) {
+        ForceUploadStructuredBuffer(index);
     }
 }
 
@@ -172,7 +202,7 @@ void BaseStructuredBuffer::UploadStructuredBuffers()
     }
 }
 
-rhi::ResourceBufferEx* BaseStructuredBuffer::RawGpuInst(unsigned int index)
+rhi::ResourceStorageBuffer* BaseStructuredBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= buffers.size()) {
         GP_LOG_RETN_W(TAG,
@@ -214,7 +244,7 @@ BaseIndexBuffer::~BaseIndexBuffer()
     CloseGPU();
 }
 
-void BaseIndexBuffer::UploadIndexBuffer(unsigned int index)
+void BaseIndexBuffer::ForceUploadIndexBuffer(unsigned int index)
 {
     if (index >= indices.size()) {
         GP_LOG_RET_W(TAG, "Upload index buffer failed, index out of range.");
@@ -229,7 +259,22 @@ void BaseIndexBuffer::UploadIndexBuffer(unsigned int index)
     } else if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(indexBuffer, RawCpuPtr(), description.indexByteSize, description.indicesCount);
     } else {
-        GP_LOG_W(TAG, "Upload index buffer failed, this buffer is in the readback heap.");
+        GP_LOG_RET_W(TAG, "Upload index buffer failed, this buffer is in the readback heap.");
+    }
+    dirty.reset(index);
+}
+
+void BaseIndexBuffer::ForceUploadIndexBuffers()
+{
+    for (unsigned int index = 0; index < indices.size(); index++) {
+        ForceUploadIndexBuffer(index);
+    }
+}
+
+void BaseIndexBuffer::UploadIndexBuffer(unsigned int index)
+{
+    if (dirty.test(index)) {
+        ForceUploadIndexBuffer(index);
     }
 }
 
@@ -281,7 +326,7 @@ BaseVertexBuffer::~BaseVertexBuffer()
     CloseGPU();
 }
 
-void BaseVertexBuffer::UploadVertexBuffer(unsigned int index)
+void BaseVertexBuffer::ForceUploadVertexBuffer(unsigned int index)
 {
     if (index >= vertices.size()) {
         GP_LOG_RET_W(TAG, "Upload vertex buffer failed, index out of range.");
@@ -297,7 +342,22 @@ void BaseVertexBuffer::UploadVertexBuffer(unsigned int index)
         UploadHost(vertexBuffer, RawCpuPtr(),
             description.attributesByteSize, description.verticesCount);
     } else {
-        GP_LOG_W(TAG, "Upload vertex buffer failed, this buffer is in the readback heap.");
+        GP_LOG_RET_W(TAG, "Upload vertex buffer failed, this buffer is in the readback heap.");
+    }
+    dirty.reset(index);
+}
+
+void BaseVertexBuffer::ForceUploadVertexBuffers()
+{
+    for (unsigned int index = 0; index < vertices.size(); index++) {
+        ForceUploadVertexBuffer(index);
+    }
+}
+
+void BaseVertexBuffer::UploadVertexBuffer(unsigned int index)
+{
+    if (dirty.test(index)) {
+        ForceUploadVertexBuffer(index);
     }
 }
 
@@ -349,7 +409,7 @@ BaseTexture::~BaseTexture()
     CloseGPU();
 }
 
-void BaseTexture::UploadTextureBuffer(unsigned int index)
+void BaseTexture::ForceUploadTextureBuffer(unsigned int index)
 {
     if (index >= images.size()) {
         GP_LOG_RET_W(TAG, "Upload texture buffer failed, index out of range.");
@@ -368,7 +428,22 @@ void BaseTexture::UploadTextureBuffer(unsigned int index)
     } else if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(image, RawCpuPtr(), bytes);
     } else {
-        GP_LOG_W(TAG, "Upload texture buffer failed, this buffer is in the readback heap.");
+        GP_LOG_RET_W(TAG, "Upload texture buffer failed, this buffer is in the readback heap.");
+    }
+    dirty.reset(index);
+}
+
+void BaseTexture::ForceUploadTextureBuffers()
+{
+    for (unsigned int index = 0; index < images.size(); index++) {
+        ForceUploadTextureBuffer(index);
+    }
+}
+
+void BaseTexture::UploadTextureBuffer(unsigned int index)
+{
+    if (dirty.test(index)) {
+        ForceUploadTextureBuffer(index);
     }
 }
 

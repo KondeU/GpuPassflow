@@ -1,8 +1,8 @@
 #pragma once
 
 #include <unordered_map>
-#include "RasterizePass.h"
-#include "ComputePass.h"
+#include "pass/RasterizePass.h"
+#include "pass/ComputePass.h"
 
 namespace au::gp {
 
@@ -42,8 +42,15 @@ public:
 
     unsigned int ExecuteWorkflow();
 
-    unsigned int GetCurrentBufferingIndex() const noexcept;
-    unsigned int GetMultipleBufferingCount() const noexcept;
+    unsigned int GetMultipleBufferingCount() const noexcept
+    {
+        return multipleBufferingCount;
+    }
+
+    unsigned int GetCurrentBufferingIndex() const noexcept
+    {
+        return currentBufferingIndex;
+    }
 
     template <typename T, class ...Args>
     Resource<T> MakeResource(Args&& ...args)
@@ -52,12 +59,6 @@ public:
         resource->multipleBufferingCount = multipleBufferingCount;
         resource->device = bkDevice;
         return resource;
-    }
-
-    template <typename T>
-    void CleanResource(Resource<T>& resource)
-    {
-        resource.reset();
     }
 
 private:

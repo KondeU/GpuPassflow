@@ -48,7 +48,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvHeap;
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvHeap;
 
-    int currentBufferIndex = 0;
+    unsigned int currentBufferIndex = 0;
     std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> renderTargetHandlesInHeap; // render target views
     std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> depthStencilHandlesInHeap; // depth stencil views
     std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> renderTargetBuffer; // render target

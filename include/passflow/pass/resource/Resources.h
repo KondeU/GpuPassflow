@@ -1,5 +1,6 @@
 #pragma once
 
+#include <bitset>
 #include "backend/BackendContext.h"
 
 namespace au::gp {
@@ -11,7 +12,7 @@ using Resource = std::shared_ptr<T>;
 // otherwise device in the DeviceHolder will be nullptr!
 class DeviceHolder {
 public:
-    void ConfigureAvoidInfight(bool infight);
+    void ConfigureAvoidInfight(bool avoid);
 
 protected:
     DeviceHolder() = default;
@@ -24,6 +25,9 @@ protected:
 
     rhi::Device* device = nullptr; // Not owned!
     unsigned int multipleBufferingCount = 0;
+
+    // Dirty used bits size is multipleBufferingCount.
+    std::bitset<rhi::Swapchain::MaxBufferCountLimit> dirty;
 
 private:
     friend class Passflow;
@@ -38,11 +42,14 @@ public:
     BaseConstantBuffer() = default;
     ~BaseConstantBuffer() override;
 
+    void ForceUploadConstantBuffer(unsigned int index);
+    void ForceUploadConstantBuffers();
+
     void UploadConstantBuffer(unsigned int index);
     void UploadConstantBuffers();
 
     virtual void* RawCpuPtr() = 0;
-    rhi::ResourceBuffer* RawGpuInst(unsigned int index);
+    rhi::ResourceConstantBuffer* RawGpuInst(unsigned int index);
 
     Resource<BaseConstantBuffer> Clone() const;
 
@@ -50,20 +57,23 @@ protected:
     void SetupGPU();
     void CloseGPU();
 
-    rhi::ResourceBuffer::Description description{ 0 }; // Default memory type: CPU_TO_GPU
-    std::vector<rhi::ResourceBuffer*> buffers;
+    rhi::ResourceConstantBuffer::Description description{ 0 }; // Default memory type: CPU_TO_GPU
+    std::vector<rhi::ResourceConstantBuffer*> buffers;
 };
 
-class BaseStructuredBuffer : public DeviceHolder {
+class BaseStructuredBuffer : public DeviceHolder { // TODO: change to ArrayBuffer
 public:
     BaseStructuredBuffer() = default;
     ~BaseStructuredBuffer() override;
+
+    void ForceUploadStructuredBuffer(unsigned int index);
+    void ForceUploadStructuredBuffers();
 
     void UploadStructuredBuffer(unsigned int index);
     void UploadStructuredBuffers();
 
     virtual void* RawCpuPtr() = 0;
-    rhi::ResourceBufferEx* RawGpuInst(unsigned int index);
+    rhi::ResourceStorageBuffer* RawGpuInst(unsigned int index);
 
     Resource<BaseStructuredBuffer> Clone() const;
 
@@ -71,14 +81,17 @@ protected:
     void SetupGPU();
     void CloseGPU();
 
-    rhi::ResourceBufferEx::Description description{ 0, 0 }; // Default memory type: GPU_ONLY
-    std::vector<rhi::ResourceBufferEx*> buffers;
+    rhi::ResourceStorageBuffer::Description description{ 0, 0 }; // Default memory type: GPU_ONLY
+    std::vector<rhi::ResourceStorageBuffer*> buffers;
 };
 
 class BaseIndexBuffer : public DeviceHolder {
 public:
     BaseIndexBuffer() = default;
     ~BaseIndexBuffer() override;
+
+    void ForceUploadIndexBuffer(unsigned int index);
+    void ForceUploadIndexBuffers();
 
     void UploadIndexBuffer(unsigned int index);
     void UploadIndexBuffers();
@@ -101,6 +114,9 @@ public:
     BaseVertexBuffer() = default;
     ~BaseVertexBuffer() override;
 
+    void ForceUploadVertexBuffer(unsigned int index);
+    void ForceUploadVertexBuffers();
+
     void UploadVertexBuffer(unsigned int index);
     void UploadVertexBuffers();
 
@@ -121,6 +137,9 @@ class BaseTexture : public DeviceHolder {
 public:
     BaseTexture() = default;
     ~BaseTexture() override;
+
+    void ForceUploadTextureBuffer(unsigned int index);
+    void ForceUploadTextureBuffers();
 
     void UploadTextureBuffer(unsigned int index);
     void UploadTextureBuffers();
@@ -156,7 +175,7 @@ public:
 
     void SetupConstantBuffer();
 
-    T& AcquireConstantBuffer();
+    T& AcquireConstantBuffer(bool update = true);
     void UpdateConstantBuffer(const T& value);
 
     void ReleaseConstantBuffer(); // Free the host memory.
@@ -180,7 +199,7 @@ public:
     void SetupStructuredBuffer(unsigned int elementsCount);
     void ResizeStructuredBuffer(unsigned int elementsCount);
 
-    std::vector<T>& AcquireStructuredBuffer();
+    std::vector<T>& AcquireStructuredBuffer(bool update = true);
     void UpdateStructuredBuffer(const std::vector<T>& value, unsigned int offset);
 
     void ReleaseStructuredBuffer(); // Free the host memory.
@@ -201,7 +220,7 @@ public:
     void SetupIndexBuffer(unsigned int indicesCount);
     void ResizeIndexBuffer(unsigned int indicesCount);
 
-    std::vector<T>& AcquireIndexBuffer();
+    std::vector<T>& AcquireIndexBuffer(bool update = true);
     void UpdateIndexBuffer(const std::vector<T>& value, unsigned int offset);
 
     void ReleaseIndexBuffer(); // Free the host memory.
@@ -222,7 +241,7 @@ public:
     void SetupVertexBuffer(unsigned int verticesCount);
     void ResizeVertexBuffer(unsigned int verticesCount);
 
-    std::vector<T>& AcquireVertexBuffer();
+    std::vector<T>& AcquireVertexBuffer(bool update = true);
     void UpdateVertexBuffer(const std::vector<T>& value, unsigned int offset);
 
     void ReleaseVertexBuffer(); // Free the host memory.
@@ -249,7 +268,7 @@ public:
     void ResizeTexture(
         unsigned int width, unsigned int height = 1, unsigned int arrays = 1);
 
-    std::vector<uint8_t>& AcquireTextureBuffer();
+    std::vector<uint8_t>& AcquireTextureBuffer(bool update = true);
 
     void ReleaseTextureBuffer(); // Free the host memory.
 

@@ -8,7 +8,8 @@
 #include "DX12InputVertexAttributes.h"
 #include "DX12InputIndex.h"
 #include "DX12InputIndexAttribute.h"
-#include "DX12ResourceBuffer.h"
+#include "DX12ResourceConstantBuffer.h"
+#include "DX12ResourceStorageBuffer.h"
 #include "DX12ResourceImage.h"
 #include "DX12ImageSampler.h"
 #include "DX12DescriptorHeap.h"
@@ -53,13 +54,13 @@ public:
     rhi::InputIndexAttribute* CreateInputIndexAttribute() override;
     bool DestroyInputIndexAttribute(rhi::InputIndexAttribute* instance) override;
 
-    rhi::ResourceBuffer* CreateResourceBuffer(
-        rhi::ResourceBuffer::Description description) override;
-    bool DestroyResourceBuffer(rhi::ResourceBuffer* instance) override;
+    rhi::ResourceConstantBuffer* CreateResourceBuffer(
+        rhi::ResourceConstantBuffer::Description description) override;
+    bool DestroyResourceBuffer(rhi::ResourceConstantBuffer* instance) override;
 
-    rhi::ResourceBufferEx* CreateResourceBuffer(
-        rhi::ResourceBufferEx::Description description) override;
-    bool DestroyResourceBuffer(rhi::ResourceBufferEx* instance) override;
+    rhi::ResourceStorageBuffer* CreateResourceBuffer(
+        rhi::ResourceStorageBuffer::Description description) override;
+    bool DestroyResourceBuffer(rhi::ResourceStorageBuffer* instance) override;
 
     rhi::ResourceImage* CreateResourceImage(
         rhi::ResourceImage::Description description) override;
@@ -94,17 +95,11 @@ public:
     Microsoft::WRL::ComPtr<ID3D12CommandQueue> CommandQueue(rhi::CommandType type);
     Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CommandAllocator(const std::string& name);
 
-protected:
-    // TODO:  Support select a adapter by custom.
-    //        Currently only the default adapter is used.
-    // FIXME: Adapters should not be placed in the DX12Device.
-    //        Move it to DX12Context and add CreateAdapter function in DX12Context.
-    void EnumAdapters();
-
 private:
     Microsoft::WRL::ComPtr<IDXGIFactory4> dxgi;
 
     Description description;
+    IDXGIAdapter* adapter = NULL;
     Microsoft::WRL::ComPtr<ID3D12Device> device;
 
     // TODO:  CommandQueue has not been abstracted into a separate class yet.
@@ -121,8 +116,8 @@ private:
     std::vector<std::unique_ptr<DX12InputVertexAttributes>> inputVertexAttributes;
     std::vector<std::unique_ptr<DX12InputIndex>> inputIndices;
     std::vector<std::unique_ptr<DX12InputIndexAttribute>> inputIndexAttributes;
-    std::vector<std::unique_ptr<DX12ResourceBuffer>> resourceConstantBuffers;
-    std::vector<std::unique_ptr<DX12ResourceBufferEx>> resourceArrayBuffers;
+    std::vector<std::unique_ptr<DX12ResourceConstantBuffer>> resourceConstantBuffers;
+    std::vector<std::unique_ptr<DX12ResourceStorageBuffer>> resourceStorageBuffers;
     std::vector<std::unique_ptr<DX12ResourceImage>> resourceImages;
     std::vector<std::unique_ptr<DX12ImageSampler>> imageSamplers;
     std::vector<std::unique_ptr<DX12DescriptorHeap>> descriptorHeaps;

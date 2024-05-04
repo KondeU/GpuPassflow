@@ -28,8 +28,11 @@ inline void ConstantBuffer<T>::SetupConstantBuffer()
 }
 
 template <typename T>
-inline T& ConstantBuffer<T>::AcquireConstantBuffer()
+inline T& ConstantBuffer<T>::AcquireConstantBuffer(bool update)
 {
+    if (update) {
+        dirty.set();
+    }
     if (!constantBufferData) {
         constantBufferData = std::make_unique<T>();
     }
@@ -39,7 +42,7 @@ inline T& ConstantBuffer<T>::AcquireConstantBuffer()
 template <typename T>
 inline void ConstantBuffer<T>::UpdateConstantBuffer(const T& value)
 {
-    SafeCopyMemory(&AcquireConstantBuffer(), sizeof(T), &value, sizeof(value));
+    SafeCopyMemory(&AcquireConstantBuffer(true), sizeof(T), &value, sizeof(value));
 }
 
 template <typename T>
@@ -51,7 +54,7 @@ inline void ConstantBuffer<T>::ReleaseConstantBuffer()
 template <typename T>
 inline void* ConstantBuffer<T>::RawCpuPtr()
 {
-    return &AcquireConstantBuffer();
+    return &AcquireConstantBuffer(false);
 }
 
 //////////////////////////////////////////////////
@@ -87,8 +90,11 @@ inline void StructuredBuffer<T>::ResizeStructuredBuffer(unsigned int elementsCou
 }
 
 template <typename T>
-inline std::vector<T>& StructuredBuffer<T>::AcquireStructuredBuffer()
+inline std::vector<T>& StructuredBuffer<T>::AcquireStructuredBuffer(bool update)
 {
+    if (update) {
+        dirty.set();
+    }
     if (structuredBufferData.empty()) {
         structuredBufferData.resize(description.elementsCount);
     }
@@ -99,11 +105,14 @@ template <typename T>
 inline void StructuredBuffer<T>::UpdateStructuredBuffer(
     const std::vector<T>& value, unsigned int offset)
 {
-    SafeCopyMemory(
-        AcquireStructuredBuffer().data() + offset,
-        (AcquireStructuredBuffer().size() - offset) * sizeof(T),
-        value.data(),
-        value.size() * sizeof(T));
+    auto& buffer = AcquireStructuredBuffer(true);
+    if (offset < buffer.size()) {
+        SafeCopyMemory(
+            buffer.data() + offset,
+            (buffer.size() - offset) * sizeof(T),
+            value.data(),
+            value.size() * sizeof(T));
+    }
 }
 
 template <typename T>
@@ -115,7 +124,7 @@ inline void StructuredBuffer<T>::ReleaseStructuredBuffer()
 template <typename T>
 inline void* StructuredBuffer<T>::RawCpuPtr()
 {
-    return AcquireStructuredBuffer().data();
+    return AcquireStructuredBuffer(false).data();
 }
 
 //////////////////////////////////////////////////
@@ -139,8 +148,11 @@ inline void IndexBuffer<T>::ResizeIndexBuffer(unsigned int indicesCount)
 }
 
 template <typename T>
-inline std::vector<T>& IndexBuffer<T>::AcquireIndexBuffer()
+inline std::vector<T>& IndexBuffer<T>::AcquireIndexBuffer(bool update)
 {
+    if (update) {
+        dirty.set();
+    }
     if (indexBufferData.empty()) {
         indexBufferData.resize(description.indicesCount);
     }
@@ -150,11 +162,14 @@ inline std::vector<T>& IndexBuffer<T>::AcquireIndexBuffer()
 template <typename T>
 void IndexBuffer<T>::UpdateIndexBuffer(const std::vector<T>& value, unsigned int offset)
 {
-    SafeCopyMemory(
-        AcquireIndexBuffer().data() + offset,
-        (AcquireIndexBuffer().size() - offset) * sizeof(T),
-        value.data(),
-        value.size() * sizeof(T));
+    auto& buffer = AcquireIndexBuffer(true);
+    if (offset < buffer.size()) {
+        SafeCopyMemory(
+            buffer.data() + offset,
+            (buffer.size() - offset) * sizeof(T),
+            value.data(),
+            value.size() * sizeof(T));
+    }
 }
 
 template <typename T>
@@ -166,7 +181,7 @@ inline void IndexBuffer<T>::ReleaseIndexBuffer()
 template <typename T>
 inline void* IndexBuffer<T>::RawCpuPtr()
 {
-    return AcquireIndexBuffer().data();
+    return AcquireIndexBuffer(false).data();
 }
 
 //////////////////////////////////////////////////
@@ -190,8 +205,11 @@ inline void VertexBuffer<T>::ResizeVertexBuffer(unsigned int verticesCount)
 }
 
 template <typename T>
-inline std::vector<T>& VertexBuffer<T>::AcquireVertexBuffer()
+inline std::vector<T>& VertexBuffer<T>::AcquireVertexBuffer(bool update)
 {
+    if (update) {
+        dirty.set();
+    }
     if (vertexBufferData.empty()) {
         vertexBufferData.resize(description.verticesCount);
     }
@@ -201,11 +219,14 @@ inline std::vector<T>& VertexBuffer<T>::AcquireVertexBuffer()
 template <typename T>
 inline void VertexBuffer<T>::UpdateVertexBuffer(const std::vector<T>& value, unsigned int offset)
 {
-    SafeCopyMemory(
-        AcquireVertexBuffer().data() + offset,
-        (AcquireVertexBuffer().size() - offset) * sizeof(T),
-        value.data(),
-        value.size() * sizeof(T));
+    auto& buffer = AcquireVertexBuffer(true);
+    if (offset < buffer.size()) {
+        SafeCopyMemory(
+            buffer.data() + offset,
+            (buffer.size() - offset) * sizeof(T),
+            value.data(),
+            value.size() * sizeof(T));
+    }
 }
 
 template <typename T>
@@ -217,7 +238,7 @@ inline void VertexBuffer<T>::ReleaseVertexBuffer()
 template <typename T>
 inline void* VertexBuffer<T>::RawCpuPtr()
 {
-    return AcquireVertexBuffer().data();
+    return AcquireVertexBuffer(false).data();
 }
 
 //////////////////////////////////////////////////
@@ -277,8 +298,11 @@ inline void Texture<D>::ResizeTexture(
 }
 
 template <unsigned int D>
-inline std::vector<uint8_t>& Texture<D>::AcquireTextureBuffer()
+inline std::vector<uint8_t>& Texture<D>::AcquireTextureBuffer(bool update)
 {
+    if (update) {
+        dirty.set();
+    }
     if (pixelsBufferBytesData.empty()) {
         pixelsBufferBytesData.resize(static_cast<size_t>(elementSize)
             * elementArray[0] * elementArray[1] * elementArray[2]);
@@ -301,7 +325,7 @@ inline unsigned int Texture<D>::GetDimensions() const
 template <unsigned int D>
 inline void* Texture<D>::RawCpuPtr()
 {
-    return AcquireTextureBuffer().data();
+    return AcquireTextureBuffer(false).data();
 }
 
 }

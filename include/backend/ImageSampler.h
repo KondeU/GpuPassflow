@@ -6,7 +6,7 @@ namespace au::rhi {
 
 class ImageSampler {
 public:
-    struct Description {
+    struct Description final {
         SamplerState state;
 
         Description(SamplerState::Filter filterForAll, AddressMode addressModeForAll)

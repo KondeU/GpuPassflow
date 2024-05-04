@@ -6,7 +6,7 @@ namespace au::rhi {
 
 class InputVertex {
 public:
-    struct Description {
+    struct Description final {
         unsigned int verticesCount;
         unsigned int attributesByteSize;
         TransferDirection memoryType;
