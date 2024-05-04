@@ -64,8 +64,8 @@ private:
 
     unsigned int currentBufferingIndex = 0;
     au::rhi::Device* backendDevice = nullptr;
-    std::unique_ptr<ProgramProperties> programProperties;
-    std::unique_ptr<ShaderResourceProperties> resourceProperties;
+    std::unique_ptr<au::gp::ProgramProperties> programProperties;
+    std::unique_ptr<au::gp::ShaderResourceProperties> resourceProperties;
 };
 
 FunctionDrivenBackgroundRenderPass::FunctionDrivenBackgroundRenderPass(au::gp::Passflow& passflow)
@@ -88,12 +88,12 @@ void FunctionDrivenBackgroundRenderPass::SetFunctionShader(std::string shader)
     CleanPipeline();
     InitializePipeline(backendDevice);
 
-    programProperties = std::make_unique<ProgramProperties>();
+    programProperties = std::make_unique<au::gp::ProgramProperties>();
     programProperties->shaders[au::rhi::ShaderStage::Compute] = { SR + shader + SP, "FDBR_Main" };
     DeclareProgram(*programProperties);
 
-    resourceProperties = std::make_unique<ShaderResourceProperties>();
-    resourceProperties->resources[ShaderResourceProperties::ResourceSpace::PerScene] = {
+    resourceProperties = std::make_unique<au::gp::ShaderResourceProperties>();
+    resourceProperties->resources[au::gp::ShaderResourceProperties::ResourceSpace::PerScene] = {
         { // inputProps
             0,                                          // baseBindingPoint
             1,                                          // bindingPointCount
@@ -122,7 +122,7 @@ void FunctionDrivenBackgroundRenderPass::SetFunctionShader(std::string shader)
             au::rhi::ResourceState::GENERAL_READ        // afterState
         }
     };
-    resourceProperties->resources[ShaderResourceProperties::ResourceSpace::PerPass] = {
+    resourceProperties->resources[au::gp::ShaderResourceProperties::ResourceSpace::PerPass] = {
         { // simpleSampler
             0,                                          // baseBindingPoint
             1,                                          // bindingPointCount
@@ -150,79 +150,85 @@ void FunctionDrivenBackgroundRenderPass::OnPreparePass(au::rhi::Device* device)
 void FunctionDrivenBackgroundRenderPass::OnBeforePass(unsigned int currentBufferingIndex)
 {
     this->currentBufferingIndex = currentBufferingIndex;
-    ReserveEnoughDescriptors(currentBufferingIndex, 1u, 1u);
-    UpdateDispatchItems(currentBufferingIndex);
+    ReserveEnoughDescriptors(currentBufferingIndex);
     UpdateFrameResources(currentBufferingIndex);
 }
 
 void FunctionDrivenBackgroundRenderPass::OnExecutePass(au::rhi::CommandRecorder* recorder)
 {
-    auto& resources = AcquireFrameResource(currentBufferingIndex);
-
-    auto& inputProps = resources.frameResources.constantBuffers.find("inputProps");
-    if (inputProps == resources.frameResources.constantBuffers.end()) {
-        GP_LOG_RET_E(TAG, "Not found inputProps!");
-    }
-    auto& inputTex2Ds = resources.frameResources.textures.find("inputTex2Ds");
-    if (inputTex2Ds == resources.frameResources.textures.end()) {
-        GP_LOG_RET_E(TAG, "Not found inputTex2Ds!");
-    }
-    auto& outputColor = resources.frameResources.textures.find("outputColor");
-    if (outputColor == resources.frameResources.textures.end()) {
-        GP_LOG_RET_E(TAG, "Not found outputColor!");
-    }
-
-    auto& simpleSampler = resources.frameResources.samplers.find("simpleSampler");
-    if (simpleSampler == resources.frameResources.samplers.end()) {
-        GP_LOG_RET_E(TAG, "Not found simpleSampler!");
-    }
-
-    inputProps->second->UploadConstantBuffer(currentBufferingIndex);
+    auto& frameResources = AcquireFrameResources(currentBufferingIndex);
 
     auto& shaderResourceDM = AcquireShaderResourceDescriptorManager(currentBufferingIndex);
-    auto inputPropsD = shaderResourceDM.AcquireDescriptor(0);
-    auto inputTex2DsD = shaderResourceDM.AcquireDescriptor(1);
-    auto outputColorD = shaderResourceDM.AcquireDescriptor(2);
-    inputPropsD->BuildDescriptor(inputProps->second->RawGpuInst(currentBufferingIndex));
-    inputTex2DsD->BuildDescriptor(inputTex2Ds->second->RawGpuInst(currentBufferingIndex), false);
-    outputColorD->BuildDescriptor(outputColor->second->RawGpuInst(currentBufferingIndex), true);
-
     auto& imageSamplerDM = AcquireImageSamplerDescriptorManager(currentBufferingIndex);
-    auto simpleSamplerD = imageSamplerDM.AcquireDescriptor(0);
+    unsigned int shaderResourceDC = 0, imageSamplerDC = 0;
+
+    auto& simpleSampler = frameResources.passResources.samplers.find("simpleSampler");
+    if (simpleSampler == frameResources.passResources.samplers.end()) {
+        GP_LOG_RET_E(TAG, "Not found simpleSampler in pass.");
+    }
+    auto simpleSamplerD = imageSamplerDM.AcquireDescriptor(shaderResourceDC++);
     simpleSamplerD->BuildDescriptor(simpleSampler->second->RawGpuInst());
 
-    auto& outputColorProperties = resourceProperties->
-        resources[ShaderResourceProperties::ResourceSpace::PerScene][2];
+    for (auto& [sceneKey, sceneResources] : frameResources.scenesResources) {
+        auto& inputProps = sceneResources.sceneResources.constantBuffers.find("inputProps");
+        if (inputProps == sceneResources.sceneResources.constantBuffers.end()) {
+            GP_LOG_E(TAG, "Not found inputProps in [%s].", sceneKey);
+            continue;
+        }
+        inputProps->second->UploadConstantBuffer(currentBufferingIndex);
+        auto inputPropsD = shaderResourceDM.AcquireDescriptor(shaderResourceDC++);
+        inputPropsD->BuildDescriptor(inputProps->second->RawGpuInst(currentBufferingIndex));
 
-    recorder->RcBarrier(outputColor->second->RawGpuInst(currentBufferingIndex),
-        outputColorProperties.beforeState, outputColorProperties.currentState);
+        auto& inputTex2Ds = sceneResources.sceneResources.textures.find("inputTex2Ds");
+        if (inputTex2Ds == sceneResources.sceneResources.textures.end()) {
+            GP_LOG_E(TAG, "Not found inputTex2Ds in [%s].", sceneKey);
+            continue;
+        }
+        auto inputTex2DsD = shaderResourceDM.AcquireDescriptor(shaderResourceDC++);
+        inputTex2DsD->BuildDescriptor(
+            inputTex2Ds->second->RawGpuInst(currentBufferingIndex), false);
 
-    recorder->RcSetPipeline(AcquirePipelineState());
-    recorder->RcSetDescriptorHeap({
-        shaderResourceDM.AcquireDescriptorHeap(),
-        imageSamplerDM.AcquireDescriptorHeap() });
+        auto& outputColor = sceneResources.sceneResources.textures.find("outputColor");
+        if (outputColor == sceneResources.sceneResources.textures.end()) {
+            GP_LOG_RET_E(TAG, "Not found outputColor in [%s].", sceneKey);
+        }
+        auto outputColorD = shaderResourceDM.AcquireDescriptor(shaderResourceDC++);
+        outputColorD->BuildDescriptor(
+            outputColor->second->RawGpuInst(currentBufferingIndex), true);
 
-    recorder->RcSetComputeDescriptor(0, inputPropsD);
-    recorder->RcSetComputeDescriptor(1, inputTex2DsD);
-    recorder->RcSetComputeDescriptor(2, outputColorD);
-    recorder->RcSetComputeDescriptor(3, simpleSamplerD);
+        auto& outputColorProperties = resourceProperties->
+            resources[au::gp::ShaderResourceProperties::ResourceSpace::PerScene][2];
 
-    unsigned int dispatchThreadX = (outputColor->second->GetWidth() + 7) / 8;
-    unsigned int dispatchThreadY = (outputColor->second->GetHeight() + 7) / 8;
-    recorder->RcDispatch(dispatchThreadX, dispatchThreadY, 1);
+        recorder->RcBarrier(outputColor->second->RawGpuInst(currentBufferingIndex),
+            outputColorProperties.beforeState, outputColorProperties.currentState);
 
-    recorder->RcBarrier(outputColor->second->RawGpuInst(currentBufferingIndex),
-        outputColorProperties.currentState, outputColorProperties.afterState);
+        recorder->RcSetPipeline(AcquirePipelineState());
+        recorder->RcSetDescriptorHeap({
+            shaderResourceDM.AcquireDescriptorHeap(),
+            imageSamplerDM.AcquireDescriptorHeap() });
 
-    #if defined (DEBUG) || defined (_DEBUG)
-    if ((resources.dispatchItems.size() != 1) ||
-        (resources.dispatchItems[0]->threadGroups[0] != dispatchThreadX) ||
-        (resources.dispatchItems[0]->threadGroups[1] != dispatchThreadY) ||
-        (resources.dispatchItems[0]->threadGroups[2] != 1)) {
-        GP_LOG_D(TAG, "dispatchItems does not match the actual one, "
-            "but it does not affect ours function driven background rendering.");
+        recorder->RcSetComputeDescriptor(0, inputPropsD);
+        recorder->RcSetComputeDescriptor(1, inputTex2DsD);
+        recorder->RcSetComputeDescriptor(2, outputColorD);
+        recorder->RcSetComputeDescriptor(3, simpleSamplerD);
+
+        unsigned int dispatchThreadX = (outputColor->second->GetWidth() + 7) / 8;
+        unsigned int dispatchThreadY = (outputColor->second->GetHeight() + 7) / 8;
+        recorder->RcDispatch(dispatchThreadX, dispatchThreadY, 1);
+
+        recorder->RcBarrier(outputColor->second->RawGpuInst(currentBufferingIndex),
+            outputColorProperties.currentState, outputColorProperties.afterState);
+
+        #if defined (DEBUG) || defined (_DEBUG)
+        if ((sceneResources.dispatchItems.size() != 1) ||
+            (sceneResources.dispatchItems[0]->threadGroups[0] != dispatchThreadX) ||
+            (sceneResources.dispatchItems[0]->threadGroups[1] != dispatchThreadY) ||
+            (sceneResources.dispatchItems[0]->threadGroups[2] != 1)) {
+            GP_LOG_D(TAG, "dispatchItems does not match the actual one, "
+                "but it does not affect ours function driven background rendering.");
+        }
+        #endif
     }
-    #endif
 }
 
 void FunctionDrivenBackgroundRenderPass::OnAfterPass(unsigned int currentPassInFlowIndex)
@@ -275,40 +281,53 @@ void PresentPass::OnBeforePass(unsigned int currentBufferingIndex)
 
 void PresentPass::OnExecutePass(au::rhi::CommandRecorder* recorder)
 {
-    auto& resources = AcquireFrameResource(currentBufferingIndex);
+    auto& frameResources = AcquireFrameResources(currentBufferingIndex);
 
-    auto& color = resources.frameResources.textures.find("Color");
-    if (color == resources.frameResources.textures.end()) {
-        GP_LOG_RET_E(TAG, "Not found color output!");
+    for (auto& [sceneKey, sceneResources] : frameResources.scenesResources) {
+        for (auto& [viewKey, viewResources] : sceneResources.viewsResources) {
+            auto& color = viewResources.viewResources.textures.find("Color");
+            if (color == viewResources.viewResources.textures.end()) {
+                GP_LOG_E(TAG, "Not found color output in [%s,%s].", sceneKey, viewKey);
+                continue;
+            }
+
+            auto& present = viewResources.viewOutputs.displayPresentOutputs.find("Present");
+            if (present == viewResources.viewOutputs.displayPresentOutputs.end()) {
+                GP_LOG_E(TAG, "Not found present output in [%s,%s].", sceneKey, viewKey);
+                continue;
+            }
+
+            recorder->RcBarrier(color->second->RawGpuInst(currentBufferingIndex),
+                au::rhi::ResourceState::GENERAL_READ, au::rhi::ResourceState::COPY_SOURCE);
+            recorder->RcBarrier(present->second->RawGpuInst(),
+                au::rhi::ResourceState::PRESENT, au::rhi::ResourceState::COPY_DESTINATION);
+
+            recorder->RcCopy(present->second->RawGpuInst(),
+                color->second->RawGpuInst(currentBufferingIndex));
+
+            recorder->RcBarrier(color->second->RawGpuInst(currentBufferingIndex),
+                au::rhi::ResourceState::COPY_SOURCE, au::rhi::ResourceState::GENERAL_READ);
+            recorder->RcBarrier(present->second->RawGpuInst(),
+                au::rhi::ResourceState::COPY_DESTINATION, au::rhi::ResourceState::PRESENT);
+        }
     }
-
-    auto& presenter = resources.frameOutputs.displayPresentOutputs.find("Present");
-    if (presenter == resources.frameOutputs.displayPresentOutputs.end()) {
-        GP_LOG_RET_E(TAG, "Not found presenter output!");
-    }
-
-    recorder->RcBarrier(color->second->RawGpuInst(currentBufferingIndex),
-        au::rhi::ResourceState::GENERAL_READ, au::rhi::ResourceState::COPY_SOURCE);
-    recorder->RcBarrier(presenter->second->RawGpuInst(),
-        au::rhi::ResourceState::PRESENT, au::rhi::ResourceState::COPY_DESTINATION);
-
-    recorder->RcCopy(presenter->second->RawGpuInst(),
-        color->second->RawGpuInst(currentBufferingIndex));
-
-    recorder->RcBarrier(color->second->RawGpuInst(currentBufferingIndex),
-        au::rhi::ResourceState::COPY_SOURCE, au::rhi::ResourceState::GENERAL_READ);
-    recorder->RcBarrier(presenter->second->RawGpuInst(),
-        au::rhi::ResourceState::COPY_DESTINATION, au::rhi::ResourceState::PRESENT);
 }
 
 void PresentPass::OnAfterPass(unsigned int currentPassInFlowIndex)
 {
-    auto& resources = AcquireFrameResource(currentBufferingIndex);
-    auto& presenter = resources.frameOutputs.displayPresentOutputs.find("Present");
-    if (presenter == resources.frameOutputs.displayPresentOutputs.end()) {
-        GP_LOG_RET_E(TAG, "Not found presenter output!");
+    auto& frameResources = AcquireFrameResources(currentBufferingIndex);
+
+    for (auto& [sceneKey, sceneResources] : frameResources.scenesResources) {
+        for (auto& [viewKey, viewResources] : sceneResources.viewsResources) {
+            auto& present = viewResources.viewOutputs.displayPresentOutputs.find("Present");
+            if (present == viewResources.viewOutputs.displayPresentOutputs.end()) {
+                GP_LOG_E(TAG, "Not found present output for presenting in [%s,%s].",
+                    sceneKey, viewKey);
+                continue;
+            }
+            present->second->RawGpuInst()->Present();
+        }
     }
-    presenter->second->RawGpuInst()->Present();
 }
 
 void PresentPass::OnEnablePass(bool enable)
@@ -320,11 +339,12 @@ void PresentPass::OnEnablePass(bool enable)
 
 PassflowCP::~PassflowCP()
 {
-    passflow->CleanResource(outputDisplay);
-    passflow->CleanResource(outputColor);
-    passflow->CleanResource(inputProperties);
-    passflow->CleanResource(input2DTexturesArray);
-    passflow->CleanResource(inputTextureSampler);
+    outputDisplay.reset();
+    outputColor.reset();
+    inputProperties.reset();
+    input2DTexturesArray.reset();
+    inputTextureSampler.reset();
+
     passflow.reset();
 }
 
@@ -387,14 +407,16 @@ void PassflowCP::ExecuteOneFrame()
     properties.fps = properties.frames / (properties.time / 1000.0f);
     inputProperties->UploadConstantBuffer(frameIndex);
 
+    computePass->MakeCurrent("defaultScene", "nonView");
     computePass->AddDispatchItem(dispatchItem);
-    computePass->ImportFrameResource("inputProps", inputProperties);
-    computePass->ImportFrameResource("inputTex2Ds", input2DTexturesArray);
-    computePass->ImportFrameResource("outputColor", outputColor);
-    computePass->ImportFrameResource("simpleSampler", inputTextureSampler);
+    computePass->AddSceneResource("inputProps", inputProperties);
+    computePass->AddSceneResource("inputTex2Ds", input2DTexturesArray);
+    computePass->AddSceneResource("outputColor", outputColor);
+    computePass->AddSceneResource("simpleSampler", inputTextureSampler);
 
-    presentPass->ImportFrameResource("Color", outputColor);
-    presentPass->ImportFrameOutput("Present", outputDisplay);
+    presentPass->MakeCurrent("defaultScene", "onlyOneView");
+    presentPass->AddViewResource("Color", outputColor);
+    presentPass->AddOutput("Present", outputDisplay);
 
     frameIndex = passflow->ExecuteWorkflow();
 }

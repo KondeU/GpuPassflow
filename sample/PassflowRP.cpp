@@ -35,8 +35,8 @@ VertexOut Main(VertexIn vin)
 )";
 
 const std::string FragmentShaderString = R"(
-Texture2D gHalfTexture : register(t0, space3);
-SamplerState gSimpleSampler : register(s1, space3);
+Texture2D gHalfTexture : register(t0, space2);
+SamplerState gSimpleSampler : register(s1, space2);
 
 struct VertexOut
 {
@@ -118,10 +118,10 @@ private:
     GP_LOG_TAG(DrawPass);
 
     unsigned int currentBufferingIndex = 0;
-    std::unique_ptr<InputProperties> inputProperties;
-    std::unique_ptr<OutputProperties> outputProperties;
-    std::unique_ptr<ProgramProperties> programProperties;
-    std::unique_ptr<ShaderResourceProperties> resourceProperties;
+    std::unique_ptr<au::gp::InputProperties> inputProperties;
+    std::unique_ptr<au::gp::OutputProperties> outputProperties;
+    std::unique_ptr<au::gp::ProgramProperties> programProperties;
+    std::unique_ptr<au::gp::ShaderResourceProperties> resourceProperties;
 };
 
 DrawPass::DrawPass(au::gp::Passflow& passflow) : RasterizePass(passflow)
@@ -136,17 +136,16 @@ void DrawPass::OnPreparePass(au::rhi::Device* device)
 {
     InitializePipeline(device);
 
-    inputProperties = std::make_unique<InputProperties>(InputProperties{
-        { InputProperties::MakeDefaultPositionVertexAttribute() },
+    inputProperties = std::make_unique<au::gp::InputProperties>(au::gp::InputProperties{
+        { au::gp::InputProperties::MakeDefaultPositionVertexAttribute() },
         { au::rhi::IndexFormat::UINT32,
           au::rhi::PrimitiveTopology::TRIANGLE_LIST,
-          au::rhi::IndexStripCutValue::UINT32_MAX_VALUE },
-        true // Support to add multiple draw items, default is true.
+          au::rhi::IndexStripCutValue::UINT32_MAX_VALUE }
     });
     DeclareInput(*inputProperties);
 
-    outputProperties = std::make_unique<OutputProperties>();
-    outputProperties->targets[OutputProperties::OutputSlot::DS] = {
+    outputProperties = std::make_unique<au::gp::OutputProperties>();
+    outputProperties->targets[au::gp::OutputProperties::OutputSlot::DS] = {
         au::rhi::BasicFormat::D24_UNORM_S8_UINT,     // imagePixelFormat
         au::rhi::PassAction::Clear,                  // beginAction
         au::rhi::PassAction::Store,                  // endAction
@@ -154,7 +153,7 @@ void DrawPass::OnPreparePass(au::rhi::Device* device)
         au::rhi::ResourceState::DEPTH_STENCIL_WRITE, // currentState
         au::rhi::ResourceState::GENERAL_READ         // afterState
     };
-    outputProperties->targets[OutputProperties::OutputSlot::C0] = {
+    outputProperties->targets[au::gp::OutputProperties::OutputSlot::C0] = {
         au::rhi::BasicFormat::R8G8B8A8_UNORM,        // imagePixelFormat
         au::rhi::PassAction::Clear,                  // beginAction
         au::rhi::PassAction::Store,                  // endAction
@@ -162,7 +161,7 @@ void DrawPass::OnPreparePass(au::rhi::Device* device)
         au::rhi::ResourceState::COLOR_OUTPUT,        // currentState
         au::rhi::ResourceState::GENERAL_READ         // afterState
     };
-    outputProperties->targets[OutputProperties::OutputSlot::C1] = {
+    outputProperties->targets[au::gp::OutputProperties::OutputSlot::C1] = {
         au::rhi::BasicFormat::R8G8B8A8_UNORM,        // imagePixelFormat
         au::rhi::PassAction::Clear,                  // beginAction
         au::rhi::PassAction::Store,                  // endAction
@@ -172,13 +171,13 @@ void DrawPass::OnPreparePass(au::rhi::Device* device)
     };
     DeclareOutput(*outputProperties);
 
-    programProperties = std::make_unique<ProgramProperties>();
+    programProperties = std::make_unique<au::gp::ProgramProperties>();
     programProperties->shaders[au::rhi::ShaderStage::Vertex] = { VertexShaderString, "Main" };
     programProperties->shaders[au::rhi::ShaderStage::Pixel] = { FragmentShaderString, "Main" };
     DeclareProgram(*programProperties);
 
-    resourceProperties = std::make_unique<ShaderResourceProperties>();
-    resourceProperties->resources[ShaderResourceProperties::ResourceSpace::PerObject] = {
+    resourceProperties = std::make_unique<au::gp::ShaderResourceProperties>();
+    resourceProperties->resources[au::gp::ShaderResourceProperties::ResourceSpace::PerObject] = {
         { // The object vertex color
             0,                                        // baseBindingPoint
             1,                                        // bindingPointCount
@@ -198,7 +197,7 @@ void DrawPass::OnPreparePass(au::rhi::Device* device)
             au::rhi::ResourceState::GENERAL_READ      // afterState
         }
     };
-    resourceProperties->resources[ShaderResourceProperties::ResourceSpace::PerPass] = {
+    resourceProperties->resources[au::gp::ShaderResourceProperties::ResourceSpace::PerScene] = {
         { // A test texture
             0,                                        // baseBindingPoint
             1,                                        // bindingPointCount
@@ -226,132 +225,142 @@ void DrawPass::OnPreparePass(au::rhi::Device* device)
 void DrawPass::OnBeforePass(unsigned int currentBufferingIndex)
 {
     this->currentBufferingIndex = currentBufferingIndex;
-    ReserveEnoughDescriptors(currentBufferingIndex, 1u, 1u);
-    UpdateDrawItems(currentBufferingIndex);
+    ReserveEnoughDescriptors(currentBufferingIndex);
     UpdateFrameResources(currentBufferingIndex);
 }
 
 void DrawPass::OnExecutePass(au::rhi::CommandRecorder* recorder)
 {
-    auto& resources = AcquireFrameResource(currentBufferingIndex);
-
-    auto& color0 = resources.frameOutputs.colorOutputs.find("Color0");
-    if (color0 == resources.frameOutputs.colorOutputs.end()) {
-        GP_LOG_RET_E(TAG, "Not found color 0 output!");
-    }
-    auto& color1 = resources.frameOutputs.colorOutputs.find("Color1");
-    if (color1 == resources.frameOutputs.colorOutputs.end()) {
-        GP_LOG_RET_E(TAG, "Not found color 1 output!");
-    }
     auto& colorDM = AcquireDescriptorManager(
         currentBufferingIndex, au::rhi::DescriptorType::ColorOutput);
-    auto color0Descriptor = colorDM.AcquireDescriptor(0);
-    auto color1Descriptor = colorDM.AcquireDescriptor(1);
-    color0Descriptor->BuildDescriptor(color0->second->RawGpuInst(currentBufferingIndex), false);
-    color1Descriptor->BuildDescriptor(color1->second->RawGpuInst(currentBufferingIndex), false);
-
-    auto& depthStencil = resources.frameOutputs.depthStencilOutputs.find("DepthStencil");
-    if (depthStencil == resources.frameOutputs.depthStencilOutputs.end()) {
-        GP_LOG_RET_E(TAG, "Not found depth stencil output!");
-    }
     auto& depthStencilDM = AcquireDescriptorManager(
         currentBufferingIndex, au::rhi::DescriptorType::DepthStencil);
-    auto depthStencilDescriptor = depthStencilDM.AcquireDescriptor(0);
-    depthStencilDescriptor->BuildDescriptor(
-        depthStencil->second->RawGpuInst(currentBufferingIndex), false);
-
-    auto& color0Properties = outputProperties->targets[OutputProperties::OutputSlot::C0];
-    auto& color1Properties = outputProperties->targets[OutputProperties::OutputSlot::C1];
-    auto& depthStencilProperties = outputProperties->targets[OutputProperties::OutputSlot::DS];
-
-    unsigned int shaderResourceDescriptorIndex = 0;
     auto& shaderResourceDM = AcquireDescriptorManager(
         currentBufferingIndex, au::rhi::DescriptorType::ShaderResource);
-    auto& sampledTexture = resources.frameResources.textures.find("SampledTexture");
-    if (sampledTexture == resources.frameResources.textures.end()) {
-        GP_LOG_RET_E(TAG, "Not found sampled texture!");
-    }
-    auto samTexDescriptor = shaderResourceDM.AcquireDescriptor(shaderResourceDescriptorIndex++);
-    samTexDescriptor->BuildDescriptor(
-        sampledTexture->second->RawGpuInst(currentBufferingIndex), false);
-
     auto& imageSamplerDM = AcquireDescriptorManager(
         currentBufferingIndex, au::rhi::DescriptorType::ImageSampler);
-    auto& sampler = resources.frameResources.samplers.find("Sampler");
-    if (sampler == resources.frameResources.samplers.end()) {
-        GP_LOG_RET_E(TAG, "Not found image sampler!");
-    }
-    auto samplerDescriptor = imageSamplerDM.AcquireDescriptor(0);
-    samplerDescriptor->BuildDescriptor(sampler->second->RawGpuInst());
+    unsigned int colorDC = 0, depthStencilDC = 0,
+        shaderResourceDC = 0, imageSamplerDC = 0;
 
-    recorder->RcSetViewports({ { 0.0f, 0.0f,
-        static_cast<float>(color0->second->GetWidth()),
-        static_cast<float>(color0->second->GetHeight()) }});
-    recorder->RcSetScissors({ { 0, 0,
-    static_cast<long>(color0->second->GetWidth()),
-    static_cast<long>(color0->second->GetHeight()) } });
+    auto& frameResources = AcquireFrameResources(currentBufferingIndex);
 
-    recorder->RcBarrier(color0->second->RawGpuInst(currentBufferingIndex),
-        color0Properties.beforeState, color0Properties.currentState);
-    recorder->RcBarrier(color1->second->RawGpuInst(currentBufferingIndex),
-        color1Properties.beforeState, color1Properties.currentState);
-    recorder->RcBarrier(depthStencil->second->RawGpuInst(currentBufferingIndex),
-        depthStencilProperties.beforeState, depthStencilProperties.currentState);
-
-    recorder->RcBeginPass(nullptr,
-        {
-            { color0Descriptor, color0Properties.beginAction, color0Properties.endAction },
-            { color1Descriptor, color1Properties.beginAction, color1Properties.endAction }
-        },
-        {
-            { depthStencilDescriptor,
-              depthStencilProperties.beginAction, depthStencilProperties.endAction }
-        });
-
-    recorder->RcSetPipeline(AcquirePipelineState());
-    recorder->RcSetDescriptorHeap({
-        shaderResourceDM.AcquireDescriptorHeap(),
-        imageSamplerDM.AcquireDescriptorHeap() });
-
-    for (const auto& drawItem : resources.drawItems) {
-        auto& vinColor = drawItem->itemResources.structuredBuffers.find("vinColor");
-        if (vinColor == drawItem->itemResources.structuredBuffers.end()) {
-            GP_LOG_W(TAG, "Not found draw item vin color buffer!");
+    for (auto& [sceneKey, sceneResources] : frameResources.scenesResources) {
+        auto& sampledTexture = sceneResources.sceneResources.textures.find("SampledTexture");
+        if (sampledTexture == sceneResources.sceneResources.textures.end()) {
+            GP_LOG_E(TAG, "Not found sampled texture in [%s].", sceneKey);
             continue;
         }
+        auto samTexD = shaderResourceDM.AcquireDescriptor(shaderResourceDC++);
+        samTexD->BuildDescriptor(sampledTexture->second->RawGpuInst(currentBufferingIndex), false);
 
-        auto& mvpMat = drawItem->itemResources.constantBuffers.find("mvpMat");
-        if (mvpMat == drawItem->itemResources.constantBuffers.end()) {
-            GP_LOG_W(TAG, "Not found draw item mvp matrix data!");
+        auto& sampler = sceneResources.sceneResources.samplers.find("Sampler");
+        if (sampler == sceneResources.sceneResources.samplers.end()) {
+            GP_LOG_E(TAG, "Not found image sampler in [%s].", sceneKey);
             continue;
         }
+        auto samplerDescriptor = imageSamplerDM.AcquireDescriptor(imageSamplerDC++);
+        samplerDescriptor->BuildDescriptor(sampler->second->RawGpuInst());
 
-        auto vinColorD = shaderResourceDM.AcquireDescriptor(shaderResourceDescriptorIndex++);
-        vinColorD->BuildDescriptor(vinColor->second->RawGpuInst(0), false);
+        for (auto& [viewKey, viewResources] : sceneResources.viewsResources) {
+            auto& color0 = viewResources.viewOutputs.colorOutputs.find("Color0");
+            if (color0 == viewResources.viewOutputs.colorOutputs.end()) {
+                GP_LOG_E(TAG, "Not found color 0 output in [%s,%s].", sceneKey, viewKey);
+                continue;
+            }
+            auto color0D = colorDM.AcquireDescriptor(colorDC++);
+            color0D->BuildDescriptor(color0->second->RawGpuInst(currentBufferingIndex), false);
 
-        auto mvpMatD = shaderResourceDM.AcquireDescriptor(shaderResourceDescriptorIndex++);
-        mvpMatD->BuildDescriptor(mvpMat->second->RawGpuInst(currentBufferingIndex));
+            auto& color1 = viewResources.viewOutputs.colorOutputs.find("Color1");
+            if (color1 == viewResources.viewOutputs.colorOutputs.end()) {
+                GP_LOG_E(TAG, "Not found color 1 output in [%s,%s].", sceneKey, viewKey);
+                continue;
+            }
+            auto color1D = colorDM.AcquireDescriptor(colorDC++);
+            color1D->BuildDescriptor(color1->second->RawGpuInst(currentBufferingIndex), false);
 
-        recorder->RcSetGraphicsDescriptor(0, vinColorD);
-        recorder->RcSetGraphicsDescriptor(1, mvpMatD);
-        recorder->RcSetGraphicsDescriptor(2, samTexDescriptor);
-        recorder->RcSetGraphicsDescriptor(3, samplerDescriptor);
+            auto& ds = viewResources.viewOutputs.depthStencilOutputs.find("DepthStencil");
+            if (ds == viewResources.viewOutputs.depthStencilOutputs.end()) {
+                GP_LOG_E(TAG, "Not found DS output in [%s,%s].", sceneKey, viewKey);
+                continue;
+            }
+            auto dsD = depthStencilDM.AcquireDescriptor(depthStencilDC++);
+            dsD->BuildDescriptor(ds->second->RawGpuInst(currentBufferingIndex), false);
 
-        recorder->RcSetVertex(
-            { drawItem->vertexBuffer->RawGpuInst(0) }, AcquireVertexAttributes());
-        recorder->RcSetIndex(
-            drawItem->indexBuffer->RawGpuInst(0), AcquireIndexAttribute());
-        recorder->RcDraw(drawItem->indexBuffer->RawGpuInst(0));
+            auto& color0Properties =
+                outputProperties->targets[au::gp::OutputProperties::OutputSlot::C0];
+            auto& color1Properties =
+                outputProperties->targets[au::gp::OutputProperties::OutputSlot::C1];
+            auto& depthStencilProperties =
+                outputProperties->targets[au::gp::OutputProperties::OutputSlot::DS];
+
+            recorder->RcSetViewports({ { 0.0f, 0.0f,
+                static_cast<float>(color0->second->GetWidth()),
+                static_cast<float>(color0->second->GetHeight()) } });
+            recorder->RcSetScissors({ { 0, 0,
+            static_cast<long>(color0->second->GetWidth()),
+            static_cast<long>(color0->second->GetHeight()) } });
+
+            recorder->RcBarrier(color0->second->RawGpuInst(currentBufferingIndex),
+                color0Properties.beforeState, color0Properties.currentState);
+            recorder->RcBarrier(color1->second->RawGpuInst(currentBufferingIndex),
+                color1Properties.beforeState, color1Properties.currentState);
+            recorder->RcBarrier(ds->second->RawGpuInst(currentBufferingIndex),
+                depthStencilProperties.beforeState, depthStencilProperties.currentState);
+
+            recorder->RcBeginPass(nullptr,
+                {
+                    { color0D, color0Properties.beginAction, color0Properties.endAction },
+                    { color1D, color1Properties.beginAction, color1Properties.endAction }
+                },
+                {
+                    { dsD, depthStencilProperties.beginAction, depthStencilProperties.endAction }
+                }
+            );
+
+            recorder->RcSetPipeline(AcquirePipelineState());
+            recorder->RcSetDescriptorHeap({
+                shaderResourceDM.AcquireDescriptorHeap(),
+                imageSamplerDM.AcquireDescriptorHeap() });
+
+            for (const auto& drawItem : sceneResources.drawItems) {
+                auto& vinColor = drawItem->objectResources.structuredBuffers.find("vinColor");
+                if (vinColor == drawItem->objectResources.structuredBuffers.end()) {
+                    GP_LOG_W(TAG, "Not found draw item vin color buffer!");
+                    continue;
+                }
+                auto vinColorD = shaderResourceDM.AcquireDescriptor(shaderResourceDC++);
+                vinColorD->BuildDescriptor(vinColor->second->RawGpuInst(0), false);
+
+                auto& mvpMat = drawItem->objectResources.constantBuffers.find("mvpMat");
+                if (mvpMat == drawItem->objectResources.constantBuffers.end()) {
+                    GP_LOG_W(TAG, "Not found draw item mvp matrix data!");
+                    continue;
+                }
+                auto mvpMatD = shaderResourceDM.AcquireDescriptor(shaderResourceDC++);
+                mvpMatD->BuildDescriptor(mvpMat->second->RawGpuInst(currentBufferingIndex));
+
+                recorder->RcSetGraphicsDescriptor(0, vinColorD);
+                recorder->RcSetGraphicsDescriptor(1, mvpMatD);
+                recorder->RcSetGraphicsDescriptor(2, samTexD);
+                recorder->RcSetGraphicsDescriptor(3, samplerDescriptor);
+
+                recorder->RcSetVertex(
+                    {drawItem->vertexBuffer->RawGpuInst(0) }, AcquireVertexAttributes());
+                recorder->RcSetIndex(
+                    drawItem->indexBuffer->RawGpuInst(0), AcquireIndexAttribute());
+                recorder->RcDraw(drawItem->indexBuffer->RawGpuInst(0));
+            }
+
+            recorder->RcEndPass();
+
+            recorder->RcBarrier(color0->second->RawGpuInst(currentBufferingIndex),
+                color0Properties.currentState, color0Properties.afterState);
+            recorder->RcBarrier(color1->second->RawGpuInst(currentBufferingIndex),
+                color1Properties.currentState, color1Properties.afterState);
+            recorder->RcBarrier(ds->second->RawGpuInst(currentBufferingIndex),
+                depthStencilProperties.currentState, depthStencilProperties.afterState);
+        }
     }
-
-    recorder->RcEndPass();
-
-    recorder->RcBarrier(color0->second->RawGpuInst(currentBufferingIndex),
-        color0Properties.currentState, color0Properties.afterState);
-    recorder->RcBarrier(color1->second->RawGpuInst(currentBufferingIndex),
-        color1Properties.currentState, color1Properties.afterState);
-    recorder->RcBarrier(depthStencil->second->RawGpuInst(currentBufferingIndex),
-        depthStencilProperties.currentState, depthStencilProperties.afterState);
 }
 
 void DrawPass::OnAfterPass(unsigned int currentPassInFlowIndex)
@@ -398,46 +407,58 @@ void PresentPass::OnPreparePass(au::rhi::Device* device)
 void PresentPass::OnBeforePass(unsigned int currentBufferingIndex)
 {
     this->currentBufferingIndex = currentBufferingIndex;
-    // This Pass does not use DrawItem, so we do not need to call the UpdateDrawItems.
     UpdateFrameResources(currentBufferingIndex);
 }
 
 void PresentPass::OnExecutePass(au::rhi::CommandRecorder* recorder)
 {
-    auto& resources = AcquireFrameResource(currentBufferingIndex);
+    auto& frameResources = AcquireFrameResources(currentBufferingIndex);
 
-    auto& color = resources.frameOutputs.colorOutputs.find("Color");
-    if (color == resources.frameOutputs.colorOutputs.end()) {
-        GP_LOG_RET_E(TAG, "Not found color output!");
+    for (auto& [sceneKey, sceneResources] : frameResources.scenesResources) {
+        for (auto& [viewKey, viewResources] : sceneResources.viewsResources) {
+            auto& color = viewResources.viewResources.textures.find("Color");
+            if (color == viewResources.viewResources.textures.end()) {
+                GP_LOG_E(TAG, "Not found color output in [%s,%s].", sceneKey, viewKey);
+                continue;
+            }
+
+            auto& present = viewResources.viewOutputs.displayPresentOutputs.find("Present");
+            if (present == viewResources.viewOutputs.displayPresentOutputs.end()) {
+                GP_LOG_E(TAG, "Not found present output in [%s,%s].", sceneKey, viewKey);
+                continue;
+            }
+
+            recorder->RcBarrier(color->second->RawGpuInst(currentBufferingIndex),
+                au::rhi::ResourceState::GENERAL_READ, au::rhi::ResourceState::COPY_SOURCE);
+            recorder->RcBarrier(present->second->RawGpuInst(),
+                au::rhi::ResourceState::PRESENT, au::rhi::ResourceState::COPY_DESTINATION);
+
+            recorder->RcCopy(present->second->RawGpuInst(),
+                color->second->RawGpuInst(currentBufferingIndex));
+
+            recorder->RcBarrier(color->second->RawGpuInst(currentBufferingIndex),
+                au::rhi::ResourceState::COPY_SOURCE, au::rhi::ResourceState::GENERAL_READ);
+            recorder->RcBarrier(present->second->RawGpuInst(),
+                au::rhi::ResourceState::COPY_DESTINATION, au::rhi::ResourceState::PRESENT);
+        }
     }
-
-    auto& presenter = resources.frameOutputs.displayPresentOutputs.find("Present");
-    if (presenter == resources.frameOutputs.displayPresentOutputs.end()) {
-        GP_LOG_RET_E(TAG, "Not found presenter output!");
-    }
-
-    recorder->RcBarrier(color->second->RawGpuInst(currentBufferingIndex),
-        au::rhi::ResourceState::GENERAL_READ, au::rhi::ResourceState::COPY_SOURCE);
-    recorder->RcBarrier(presenter->second->RawGpuInst(),
-        au::rhi::ResourceState::PRESENT, au::rhi::ResourceState::COPY_DESTINATION);
-
-    recorder->RcCopy(presenter->second->RawGpuInst(),
-        color->second->RawGpuInst(currentBufferingIndex));
-
-    recorder->RcBarrier(color->second->RawGpuInst(currentBufferingIndex),
-        au::rhi::ResourceState::COPY_SOURCE, au::rhi::ResourceState::GENERAL_READ);
-    recorder->RcBarrier(presenter->second->RawGpuInst(),
-        au::rhi::ResourceState::COPY_DESTINATION, au::rhi::ResourceState::PRESENT);
 }
 
 void PresentPass::OnAfterPass(unsigned int currentPassInFlowIndex)
 {
-    auto& resources = AcquireFrameResource(currentBufferingIndex);
-    auto& presenter = resources.frameOutputs.displayPresentOutputs.find("Present");
-    if (presenter == resources.frameOutputs.displayPresentOutputs.end()) {
-        GP_LOG_RET_E(TAG, "Not found presenter output!");
+    auto& frameResources = AcquireFrameResources(currentBufferingIndex);
+
+    for (auto& [sceneKey, sceneResources] : frameResources.scenesResources) {
+        for (auto& [viewKey, viewResources] : sceneResources.viewsResources) {
+            auto& present = viewResources.viewOutputs.displayPresentOutputs.find("Present");
+            if (present == viewResources.viewOutputs.displayPresentOutputs.end()) {
+                GP_LOG_E(TAG, "Not found present output for presenting in [%s,%s].",
+                    sceneKey, viewKey);
+                continue;
+            }
+            present->second->RawGpuInst()->Present();
+        }
     }
-    presenter->second->RawGpuInst()->Present();
 }
 
 void PresentPass::OnEnablePass(bool enable)
@@ -449,20 +470,20 @@ void PresentPass::OnEnablePass(bool enable)
 
 PassflowRP::~PassflowRP()
 {
-    passflow->CleanResource(cubeVertices);
-    passflow->CleanResource(cubeIndices);
+    cubeVertices.reset();
+    cubeIndices.reset();
 
-    passflow->CleanResource(cubeVerticesColors);
+    cubeVerticesColors.reset();
 
-    passflow->CleanResource(cubeMVP);
+    cubeMVP.reset();
 
-    passflow->CleanResource(sampledTexture);
-    passflow->CleanResource(textureSampler);
+    sampledTexture.reset();
+    textureSampler.reset();
 
-    passflow->CleanResource(displayOutput);
-    passflow->CleanResource(depthStencilOutput);
-    passflow->CleanResource(presentColorOutput);
-    passflow->CleanResource(halfColorOutput);
+    displayOutput.reset();
+    depthStencilOutput.reset();
+    presentColorOutput.reset();
+    halfColorOutput.reset();
 
     passflow.reset();
 }
@@ -583,22 +604,24 @@ void PassflowRP::AutomateRotate()
 
 void PassflowRP::UpdateData()
 {
-    cubeMVP->UploadConstantBuffer(frameIndex);
+    cubeMVP->UploadConstantBuffer(passflow->GetCurrentBufferingIndex());
 
+    drawPass->MakeCurrent("defaultScene", "defaultView");
     auto drawItem = std::make_shared<au::gp::DrawItem>();
     drawItem->indexBuffer = cubeIndices;
     drawItem->vertexBuffer = cubeVertices;
-    drawItem->itemResources.structuredBuffers["vinColor"] = cubeVerticesColors;
-    drawItem->itemResources.constantBuffers["mvpMat"] = cubeMVP;
+    drawItem->objectResources.structuredBuffers["vinColor"] = cubeVerticesColors;
+    drawItem->objectResources.constantBuffers["mvpMat"] = cubeMVP;
     drawPass->AddDrawItem(drawItem);
-    drawPass->ImportFrameResource("SampledTexture", sampledTexture);
-    drawPass->ImportFrameResource("Sampler", textureSampler);
-    drawPass->ImportFrameOutput("Color0", presentColorOutput);
-    drawPass->ImportFrameOutput("Color1", halfColorOutput);
-    drawPass->ImportFrameOutput("DepthStencil", depthStencilOutput);
+    drawPass->AddSceneResource("SampledTexture", sampledTexture);
+    drawPass->AddSceneResource("Sampler", textureSampler);
+    drawPass->AddOutput("Color0", presentColorOutput);
+    drawPass->AddOutput("Color1", halfColorOutput);
+    drawPass->AddOutput("DepthStencil", depthStencilOutput);
 
-    presentPass->ImportFrameOutput("Color", presentColorOutput);
-    presentPass->ImportFrameOutput("Present", displayOutput);
+    presentPass->MakeCurrent("defaultScene", "defaultView");
+    presentPass->AddViewResource("Color", presentColorOutput);
+    presentPass->AddOutput("Present", displayOutput);
 }
 
 void PassflowRP::Draw()
