@@ -166,7 +166,7 @@ void FunctionDrivenBackgroundRenderPass::OnExecutePass(au::rhi::CommandRecorder*
     if (simpleSampler == frameResources.passResources.samplers.end()) {
         GP_LOG_RET_E(TAG, "Not found simpleSampler in pass.");
     }
-    auto simpleSamplerD = imageSamplerDM.AcquireDescriptor(shaderResourceDC++);
+    auto simpleSamplerD = imageSamplerDM.AcquireDescriptor(imageSamplerDC++);
     simpleSamplerD->BuildDescriptor(simpleSampler->second->RawGpuInst());
 
     for (auto& [sceneKey, sceneResources] : frameResources.scenesResources) {
@@ -412,7 +412,7 @@ void PassflowCP::ExecuteOneFrame()
     computePass->AddSceneResource("inputProps", inputProperties);
     computePass->AddSceneResource("inputTex2Ds", input2DTexturesArray);
     computePass->AddSceneResource("outputColor", outputColor);
-    computePass->AddSceneResource("simpleSampler", inputTextureSampler);
+    computePass->AddPassResource("simpleSampler", inputTextureSampler);
 
     presentPass->MakeCurrent("defaultScene", "onlyOneView");
     presentPass->AddViewResource("Color", outputColor);

@@ -8,7 +8,7 @@ static std::unordered_map<au::rhi::BackendContext::Backend,
 
 static std::vector<au::gp::ErrorHandler::Callback> g_loggers;
 
-GP_LOG_TAG("BackendContext");
+GP_LOG_TAG(BackendContext);
 
 }
 
