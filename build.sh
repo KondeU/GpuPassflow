@@ -31,6 +31,12 @@ parse_args() {
             -bos=* | --build_open_source=*)
             build_open_source="${arg#*=}"
             ;;
+            --build_sample=*)
+            build_sample="${arg#*=}"
+            ;;
+            --custom_frame_resources_key=*)
+            custom_frame_resources_key="${arg#*=}"
+            ;;
             *)
             echo "Error: unknown parameter $arg"
             usage
@@ -43,6 +49,8 @@ parse_args() {
 build_config_mode=Debug
 download_open_source=OFF
 build_open_source=OFF
+build_sample=ON
+custom_frame_resources_key="std::string"
 parse_args $@
 
 if [ "${download_open_source}" = "ON" ]; then
@@ -63,6 +71,18 @@ else
     _build_debug_mode=OFF
 fi
 
+if [ "${build_sample}" = "OFF" ]; then
+    _build_sample=OFF
+else
+    _build_sample=ON
+fi
+
+if [ "${custom_frame_resources_key}" = "std::string" ]; then
+    _custom_frame_resources_key=
+else
+    _custom_frame_resources_key=custom_frame_resources_key
+fi
+
 cmake -S . -B build                               \
   -DDOWNLOAD_OPEN_SOURCE=${_download_open_source} \
   -DREARCHIVE_OPEN_SOURCE=${_build_open_source}   \
@@ -70,6 +90,8 @@ cmake -S . -B build                               \
 cmake --build build --config ${build_config_mode} --parallel
 cmake --install build --prefix output --config ${build_config_mode}
 
-cmake -S ./sample -B build/sample/build
-cmake --build build/sample/build --config ${build_config_mode} --parallel
-cmake --install build/sample/build --prefix build/sample/output --config ${build_config_mode}
+if [ "${_build_sample}" = "ON" ]; then
+    cmake -S ./sample -B build/sample/build
+    cmake --build build/sample/build --config ${build_config_mode} --parallel
+    cmake --install build/sample/build --prefix build/sample/output --config ${build_config_mode}
+fi
