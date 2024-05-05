@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 CURRENT_PATH=$(cd "$(dirname "$0")"; pwd)
 cd ${CURRENT_PATH}
 
@@ -10,6 +10,8 @@ usage() {
     echo "-dos | --download_open_source, { OFF, ON }"
     echo "-bos | --build_open_source, { OFF, ON }"
     echo "-b | --build_config_mode, { Debug, Release }"
+    echo "--build_sample, { ON, OFF }"
+    echo "--custom_frame_resources_key, { string (FRsKey hash key type name) }"
     echo "-h | --help"
     echo ""
 }
@@ -80,18 +82,20 @@ fi
 if [ "${custom_frame_resources_key}" = "std::string" ]; then
     _custom_frame_resources_key=
 else
-    _custom_frame_resources_key=custom_frame_resources_key
+    _custom_frame_resources_key="-DGP_OPT_FRAME_RESOURCES_KEY_TYPE=${custom_frame_resources_key}"
+    _build_sample=OFF
 fi
 
 cmake -S . -B build                               \
   -DDOWNLOAD_OPEN_SOURCE=${_download_open_source} \
   -DREARCHIVE_OPEN_SOURCE=${_build_open_source}   \
-  -DBUILD_DEBUG_OPEN_SOURCE=${_build_debug_mode}
+  -DBUILD_DEBUG_OPEN_SOURCE=${_build_debug_mode}  \
+  ${_custom_frame_resources_key}
 cmake --build build --config ${build_config_mode} --parallel
 cmake --install build --prefix output --config ${build_config_mode}
 
 if [ "${_build_sample}" = "ON" ]; then
-    cmake -S ./sample -B build/sample/build
+    cmake -S ./sample -B build/sample/build ${_custom_frame_resources_key}
     cmake --build build/sample/build --config ${build_config_mode} --parallel
     cmake --install build/sample/build --prefix build/sample/output --config ${build_config_mode}
 fi
