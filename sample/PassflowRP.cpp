@@ -615,13 +615,13 @@ void PassflowRP::UpdateData()
     drawPass->AddDrawItem(drawItem);
     drawPass->AddSceneResource("SampledTexture", sampledTexture);
     drawPass->AddSceneResource("Sampler", textureSampler);
-    drawPass->AddOutput("Color0", presentColorOutput);
-    drawPass->AddOutput("Color1", halfColorOutput);
-    drawPass->AddOutput("DepthStencil", depthStencilOutput);
+    drawPass->AddViewOutput("Color0", presentColorOutput);
+    drawPass->AddViewOutput("Color1", halfColorOutput);
+    drawPass->AddViewOutput("DepthStencil", depthStencilOutput);
 
     presentPass->MakeCurrent("defaultScene", "defaultView");
     presentPass->AddViewResource("Color", presentColorOutput);
-    presentPass->AddOutput("Present", displayOutput);
+    presentPass->AddViewOutput("Present", displayOutput);
 }
 
 void PassflowRP::Draw()

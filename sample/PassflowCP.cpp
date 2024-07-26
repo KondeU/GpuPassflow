@@ -416,7 +416,7 @@ void PassflowCP::ExecuteOneFrame()
 
     presentPass->MakeCurrent("defaultScene", "onlyOneView");
     presentPass->AddViewResource("Color", outputColor);
-    presentPass->AddOutput("Present", outputDisplay);
+    presentPass->AddViewOutput("Present", outputDisplay);
 
     frameIndex = passflow->ExecuteWorkflow();
 }

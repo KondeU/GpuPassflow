@@ -46,9 +46,9 @@ struct ShaderResourceProperties final {
     static constexpr auto ResourceSpaceCount = 4;
     enum class ResourceSpace : uint8_t {
         PerObject = 0,
-        PerView = 1,
-        PerScene = 2,
-        PerPass = 3
+        PerView   = 1,
+        PerScene  = 2,
+        PerPass   = 3
     };
     struct ResourceAttribute final {
         unsigned int baseBindingPoint;

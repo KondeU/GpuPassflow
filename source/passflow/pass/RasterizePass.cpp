@@ -136,28 +136,28 @@ bool RasterizePass::AddViewResource(const FRsKey& name, Resource<Sampler> sample
     return true;
 }
 
-bool RasterizePass::AddOutput(const FRsKey& name, Resource<ColorOutput> output)
+bool RasterizePass::AddViewOutput(const FRsKey& name, Resource<ColorOutput> output)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddOutput(ColorOutput), please MakeCurrent first!");
+        GP_LOG_RETF_W(TAG, "Cannot AddViewOutput(ColorOutput), please MakeCurrent first!");
     }
     currentResources.view->viewOutputs.colorOutputs[name] = output;
     return true;
 }
 
-bool RasterizePass::AddOutput(const FRsKey& name, Resource<DepthStencilOutput> output)
+bool RasterizePass::AddViewOutput(const FRsKey& name, Resource<DepthStencilOutput> output)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddOutput(DepthStencilOutput), please MakeCurrent first!");
+        GP_LOG_RETF_W(TAG, "Cannot AddViewOutput(DepthStencilOutput), please MakeCurrent first!");
     }
     currentResources.view->viewOutputs.depthStencilOutputs[name] = output;
     return true;
 }
 
-bool RasterizePass::AddOutput(const FRsKey& name, Resource<DisplayPresentOutput> output)
+bool RasterizePass::AddViewOutput(const FRsKey& name, Resource<DisplayPresentOutput> output)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddOutput(DisplayPresentOutput), please MakeCurrent first!");
+        GP_LOG_RETF_W(TAG, "Cannot AddViewOutput(DisplayPresentOutput), please MakeCurrent first!");
     }
     currentResources.view->viewOutputs.displayPresentOutputs[name] = output;
     return true;

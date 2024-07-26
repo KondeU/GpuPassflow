@@ -35,9 +35,9 @@ public:
     virtual bool AddViewResource(const FRsKey& name, Resource<Sampler> sampler);
 
     // Frame(Pass) -> Scene -> View -> Output
-    virtual bool AddOutput(const FRsKey& name, Resource<ColorOutput> output);
-    virtual bool AddOutput(const FRsKey& name, Resource<DepthStencilOutput> output);
-    virtual bool AddOutput(const FRsKey& name, Resource<DisplayPresentOutput> output);
+    virtual bool AddViewOutput(const FRsKey& name, Resource<ColorOutput> output);
+    virtual bool AddViewOutput(const FRsKey& name, Resource<DepthStencilOutput> output);
+    virtual bool AddViewOutput(const FRsKey& name, Resource<DisplayPresentOutput> output);
 
     void ClearFrameResources();
 
