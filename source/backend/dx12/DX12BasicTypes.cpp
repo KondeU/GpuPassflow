@@ -9,6 +9,7 @@ DXGI_FORMAT ConvertBasicFormat(BasicFormat format)
 {
     static const std::unordered_map<BasicFormat, DXGI_FORMAT> map = {
         { BasicFormat::R8G8B8A8_UNORM,     DXGI_FORMAT_R8G8B8A8_UNORM     },
+        { BasicFormat::R8G8B8A8_UINT,      DXGI_FORMAT_R8G8B8A8_UINT      },
         { BasicFormat::R32G32B32_FLOAT,    DXGI_FORMAT_R32G32B32_FLOAT    },
         { BasicFormat::R32G32B32A32_FLOAT, DXGI_FORMAT_R32G32B32A32_FLOAT },
         { BasicFormat::D24_UNORM_S8_UINT,  DXGI_FORMAT_D24_UNORM_S8_UINT  },

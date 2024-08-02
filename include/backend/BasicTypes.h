@@ -21,6 +21,7 @@ namespace au::rhi {
 
 enum class BasicFormat {
     R8G8B8A8_UNORM,
+    R8G8B8A8_UINT,
     R32G32B32_FLOAT,
     R32G32B32A32_FLOAT,
     D24_UNORM_S8_UINT,
@@ -249,6 +250,7 @@ inline unsigned int QueryBasicFormatBytes(BasicFormat format)
 {
     switch (format) {
     case BasicFormat::R8G8B8A8_UNORM:
+    case BasicFormat::R8G8B8A8_UINT:
     case BasicFormat::D24_UNORM_S8_UINT:
     case BasicFormat::V32_FLOAT:
         return 4;
