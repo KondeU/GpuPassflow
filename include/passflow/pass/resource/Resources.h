@@ -175,7 +175,7 @@ public:
 
     void SetupConstantBuffer();
 
-    T& AcquireConstantBuffer(bool update = true);
+    T& AcquireConstantBuffer(bool update);
     void UpdateConstantBuffer(const T& value);
 
     void ReleaseConstantBuffer(); // Free the host memory.
@@ -199,7 +199,7 @@ public:
     void SetupStructuredBuffer(unsigned int elementsCount);
     void ResizeStructuredBuffer(unsigned int elementsCount);
 
-    std::vector<T>& AcquireStructuredBuffer(bool update = true);
+    std::vector<T>& AcquireStructuredBuffer(bool update);
     void UpdateStructuredBuffer(const std::vector<T>& value, unsigned int offset);
 
     void ReleaseStructuredBuffer(); // Free the host memory.
@@ -220,7 +220,7 @@ public:
     void SetupIndexBuffer(unsigned int indicesCount);
     void ResizeIndexBuffer(unsigned int indicesCount);
 
-    std::vector<T>& AcquireIndexBuffer(bool update = true);
+    std::vector<T>& AcquireIndexBuffer(bool update);
     void UpdateIndexBuffer(const std::vector<T>& value, unsigned int offset);
 
     void ReleaseIndexBuffer(); // Free the host memory.
@@ -241,7 +241,7 @@ public:
     void SetupVertexBuffer(unsigned int verticesCount);
     void ResizeVertexBuffer(unsigned int verticesCount);
 
-    std::vector<T>& AcquireVertexBuffer(bool update = true);
+    std::vector<T>& AcquireVertexBuffer(bool update);
     void UpdateVertexBuffer(const std::vector<T>& value, unsigned int offset);
 
     void ReleaseVertexBuffer(); // Free the host memory.
@@ -268,7 +268,7 @@ public:
     void ResizeTexture(
         unsigned int width, unsigned int height = 1, unsigned int arrays = 1);
 
-    std::vector<uint8_t>& AcquireTextureBuffer(bool update = true);
+    std::vector<uint8_t>& AcquireTextureBuffer(bool update);
 
     void ReleaseTextureBuffer(); // Free the host memory.
 
