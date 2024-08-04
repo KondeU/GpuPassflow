@@ -38,6 +38,7 @@ enum class IndexFormat {
 };
 
 enum class VertexFormat {
+    FLOAT32x2,
     FLOAT32x3,
     FLOAT32x4
     // TODO...
@@ -280,6 +281,8 @@ inline unsigned int QueryIndexFormatBytes(IndexFormat format)
 inline unsigned int QueryVertexFormatBytes(VertexFormat format)
 {
     switch (format) {
+    case VertexFormat::FLOAT32x2:
+        return 8;
     case VertexFormat::FLOAT32x3:
         return 12;
     case VertexFormat::FLOAT32x4:
