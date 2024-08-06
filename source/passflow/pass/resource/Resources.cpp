@@ -469,6 +469,12 @@ unsigned int BaseTexture::GetArrays() const
     return description.arrays;
 }
 
+void BaseTexture::GetSize(unsigned int& width, unsigned int& height) const
+{
+    width = description.width;
+    height = description.height;
+}
+
 void BaseTexture::GetSize(unsigned int& width, unsigned int& height, unsigned int& arrays) const
 {
     width = description.width;

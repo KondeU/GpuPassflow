@@ -147,6 +147,7 @@ public:
     unsigned int GetWidth() const;
     unsigned int GetHeight() const;
     unsigned int GetArrays() const;
+    void GetSize(unsigned int& width, unsigned int& height) const;
     void GetSize(unsigned int& width, unsigned int& height, unsigned int& arrays) const;
     virtual unsigned int GetDimensions() const = 0;
 
