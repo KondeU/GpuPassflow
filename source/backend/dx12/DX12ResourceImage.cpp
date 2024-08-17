@@ -91,6 +91,36 @@ D3D12_CLEAR_FLAGS DX12ResourceImage::DepthStencilClearFlags() const
     return ConvertClearFlags(description.format);
 }
 
+unsigned int DX12ResourceImage::GetRowBytesSize() const
+{
+    return QueryBasicFormatBytes(description.format) * description.width;
+}
+
+unsigned int DX12ResourceImage::GetSliceBytesSize() const
+{
+    return GetRowBytesSize() * description.height * description.arrays;
+}
+
+unsigned int DX12ResourceImage::GetTotalBytesSize() const
+{
+    unsigned int size = 0;
+
+    uint32_t width  = description.width;
+    uint32_t height = description.height;
+    uint8_t  arrays = description.arrays;
+
+    unsigned int bytes = QueryBasicFormatBytes(description.format);
+    for (uint8_t mip = 0; mip < description.mips; mip++) {
+        size += bytes * width * height * arrays;
+
+        width  = std::max(width  >> 1, 1u);
+        height = std::max(height >> 1, 1u);
+        arrays = std::max(arrays >> 1, 1);
+    }
+
+    return size;
+}
+
 Microsoft::WRL::ComPtr<ID3D12Resource> DX12ResourceImage::Buffer()
 {
     return buffer;

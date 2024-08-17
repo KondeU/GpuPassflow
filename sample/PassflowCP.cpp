@@ -361,7 +361,7 @@ void PassflowCP::Setup()
 
     inputProperties = passflow->MakeResource<au::gp::ConstantBuffer<FDBRProperties>>();
     inputProperties->SetupConstantBuffer();
-    inputProperties->AcquireConstantBuffer() = {};
+    inputProperties->AcquireConstantBuffer(true) = {};
     input2DTexturesArray = passflow->MakeResource<au::gp::Texture3D>();
     input2DTexturesArray->SetupTexture(au::rhi::BasicFormat::V32V32V32V32_FLOAT, 1, 1, 1);
     inputTextureSampler = passflow->MakeResource<au::gp::Sampler>();
@@ -398,7 +398,7 @@ void PassflowCP::ExecuteOneFrame()
     auto delta = static_cast<float>(duration.count()) / 1000.0f; // ms
     timestamp = current;
 
-    auto& properties = inputProperties->AcquireConstantBuffer();
+    auto& properties = inputProperties->AcquireConstantBuffer(true);
     properties.width = static_cast<float>(outputColor->GetWidth());
     properties.height = static_cast<float>(outputColor->GetHeight());
     properties.time += delta;

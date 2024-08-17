@@ -520,7 +520,7 @@ void PassflowRP::Setup()
 
     sampledTexture = passflow->MakeResource<au::gp::Texture2D>();
     sampledTexture->SetupTexture(au::rhi::BasicFormat::R32G32B32A32_FLOAT, 1, 1);
-    auto colorFloat = reinterpret_cast<float*>(sampledTexture->AcquireTextureBuffer().data());
+    auto colorFloat = reinterpret_cast<float*>(sampledTexture->AcquireTextureBuffer(true).data());
     colorFloat[0] = 0.5f;
     colorFloat[1] = 0.5f;
     colorFloat[2] = 0.5f;
@@ -599,7 +599,7 @@ void PassflowRP::AutomateRotate()
     DirectX::XMMATRIX mvp = world * view * projection;
 
     // Update the buffer with the latest MVP matrix.
-    DirectX::XMStoreFloat4x4(&(cubeMVP->AcquireConstantBuffer().mvp), XMMatrixTranspose(mvp));
+    DirectX::XMStoreFloat4x4(&(cubeMVP->AcquireConstantBuffer(true).mvp), XMMatrixTranspose(mvp));
 }
 
 void PassflowRP::UpdateData()

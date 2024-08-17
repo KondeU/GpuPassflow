@@ -23,6 +23,10 @@ public:
     D3D12_CLEAR_VALUE DepthStencilClearValue() const;
     D3D12_CLEAR_FLAGS DepthStencilClearFlags() const;
 
+    unsigned int GetRowBytesSize() const;
+    unsigned int GetSliceBytesSize() const;
+    unsigned int GetTotalBytesSize() const;
+
     Microsoft::WRL::ComPtr<ID3D12Resource> Buffer();
 
 private:

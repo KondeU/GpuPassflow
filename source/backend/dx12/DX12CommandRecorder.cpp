@@ -44,8 +44,15 @@ inline void RcUploadTemplate(DX12CommandRecorder& recorder,
         Implement& stag = dynamic_cast<Implement&>(staging);
         D3D12_SUBRESOURCE_DATA subResourceData{};
         subResourceData.pData = data;
-        subResourceData.RowPitch = size;
-        subResourceData.SlicePitch = subResourceData.RowPitch;
+        if constexpr (std::is_same<DX12ResourceImage, Implement>::value) {
+            subResourceData.RowPitch = std::min(size,
+                static_cast<size_t>(dest.GetRowBytesSize()));
+            subResourceData.SlicePitch = std::min(size,
+                static_cast<size_t>(dest.GetSliceBytesSize()));
+        } else {
+            subResourceData.RowPitch = size;
+            subResourceData.SlicePitch = size;
+        }
         UpdateSubresources(recorder.CommandList().Get(), // TODO: Only support one subresource yet.
             dest.Buffer().Get(), stag.Buffer().Get(),
             0, 0, 1, &subResourceData);
