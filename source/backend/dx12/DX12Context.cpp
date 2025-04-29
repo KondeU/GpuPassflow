@@ -40,16 +40,6 @@ DX12Context::~DX12Context()
     }
 }
 
-rhi::Device* DX12Context::CreateDevice(rhi::Device::Description description)
-{
-    return CreateInstance<rhi::Device>(devices, description, dxgi);
-}
-
-bool DX12Context::DestroyDevice(rhi::Device* device)
-{
-    return DestroyInstance(devices, device);
-}
-
 std::vector<std::string> DX12Context::GetAvailableAdaptors() const
 {
     std::vector<std::string> adaptorsList;
@@ -117,6 +107,16 @@ std::vector<std::string> DX12Context::GetAvailableAdaptors() const
     }
 
     return adaptorsList;
+}
+
+rhi::Device* DX12Context::CreateDevice(rhi::Device::Description description)
+{
+    return CreateInstance<rhi::Device>(devices, description, dxgi);
+}
+
+bool DX12Context::DestroyDevice(rhi::Device* device)
+{
+    return DestroyInstance(devices, device);
 }
 
 }

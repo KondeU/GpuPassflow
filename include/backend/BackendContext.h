@@ -22,17 +22,15 @@ class BackendContext {
 public:
     enum class Backend {
         DX12,
-        Vulkan,
-        SoftRaster
+        Vulkan
     };
 
     BackendApi static BackendContext* CreateBackend(Backend type);
     BackendApi static void DestroyBackend(Backend type);
 
+    virtual std::vector<std::string> GetAvailableAdaptors() const = 0;
     virtual Device* CreateDevice(Device::Description description) = 0;
     virtual bool DestroyDevice(Device* device) = 0;
-
-    virtual std::vector<std::string> GetAvailableAdaptors() const = 0;
 
 protected:
     BackendContext() = default;
