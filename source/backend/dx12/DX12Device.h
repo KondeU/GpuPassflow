@@ -44,8 +44,8 @@ public:
         rhi::VertexBuffer::Description description) override;
     bool DestroyInputVertex(rhi::VertexBuffer* instance) override;
 
-    rhi::InputVertexAttributes* CreateInputVertexAttributes() override;
-    bool DestroyInputVertexAttributes(rhi::InputVertexAttributes* instance) override;
+    rhi::VertexAttribute* CreateInputVertexAttributes() override;
+    bool DestroyInputVertexAttributes(rhi::VertexAttribute* instance) override;
 
     rhi::IndexBuffer* CreateInputIndex(
         rhi::IndexBuffer::Description description) override;

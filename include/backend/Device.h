@@ -32,8 +32,8 @@ public:
     virtual VertexBuffer* CreateInputVertex(VertexBuffer::Description description) = 0;
     virtual bool DestroyInputVertex(VertexBuffer* instance) = 0;
 
-    virtual InputVertexAttributes* CreateInputVertexAttributes() = 0;
-    virtual bool DestroyInputVertexAttributes(InputVertexAttributes* instance) = 0;
+    virtual VertexAttribute* CreateInputVertexAttributes() = 0;
+    virtual bool DestroyInputVertexAttributes(VertexAttribute* instance) = 0;
 
     virtual IndexBuffer* CreateInputIndex(IndexBuffer::Description description) = 0;
     virtual bool DestroyInputIndex(IndexBuffer* instance) = 0;

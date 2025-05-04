@@ -6,8 +6,8 @@
 namespace au::gp {
 
 struct InputProperties final {
-    static rhi::InputVertexAttributes::Attribute MakeDefaultPositionVertexAttribute();
-    std::vector<rhi::InputVertexAttributes::Attribute> vertexAttributes;
+    static rhi::VertexAttribute::Attribute MakeDefaultPositionVertexAttribute();
+    std::vector<rhi::VertexAttribute::Attribute> vertexAttributes;
     rhi::InputIndexAttribute::Attribute indexAttribute;
 };
 

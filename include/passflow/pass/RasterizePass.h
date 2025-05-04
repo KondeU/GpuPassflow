@@ -56,7 +56,7 @@ protected:
     // inherited classes can use them in the OnExecutePass function when drawing.
     rhi::PipelineState* AcquirePipelineState();
     rhi::InputIndexAttribute* AcquireIndexAttribute();
-    rhi::InputVertexAttributes* AcquireVertexAttributes();
+    rhi::VertexAttribute* AcquireVertexAttributes();
 
     DynamicDescriptorManager& AcquireDescriptorManager(
         unsigned int bufferingIndex, rhi::DescriptorType descriptorType);
@@ -75,7 +75,7 @@ private:
     rhi::PipelineState* pipelineState = nullptr;
     rhi::PipelineLayout* pipelineLayout = nullptr;
 
-    rhi::InputVertexAttributes* inputVertexAttributes = nullptr;
+    rhi::VertexAttribute* inputVertexAttributes = nullptr;
     rhi::InputIndexAttribute* inputIndexAttribute = nullptr;
 
     std::map<rhi::ShaderStage, rhi::Shader*> programShaders;

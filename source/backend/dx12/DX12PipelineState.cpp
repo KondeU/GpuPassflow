@@ -74,7 +74,7 @@ void DX12PipelineState::SetIndexAssembly(rhi::InputIndexAttribute* iia)
         dxIia->GetIndexInformation().PrimitiveTopologyType;
 }
 
-void DX12PipelineState::SetVertexAssembly(rhi::InputVertexAttributes* iva)
+void DX12PipelineState::SetVertexAssembly(rhi::VertexAttribute* iva)
 {
     auto dxIva = dynamic_cast<DX12InputVertexAttributes*>(iva);
     graphicsPipelineState.InputLayout = {

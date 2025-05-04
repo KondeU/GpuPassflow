@@ -120,13 +120,13 @@ bool DX12Device::DestroyInputVertex(rhi::VertexBuffer* instance)
     return DestroyInstance(inputVertices, instance);
 }
 
-rhi::InputVertexAttributes*
+rhi::VertexAttribute*
 DX12Device::CreateInputVertexAttributes()
 {
-    return CreateInstance<rhi::InputVertexAttributes>(inputVertexAttributes, {});
+    return CreateInstance<rhi::VertexAttribute>(inputVertexAttributes, {});
 }
 
-bool DX12Device::DestroyInputVertexAttributes(rhi::InputVertexAttributes* instance)
+bool DX12Device::DestroyInputVertexAttributes(rhi::VertexAttribute* instance)
 {
     return DestroyInstance(inputVertexAttributes, instance);
 }

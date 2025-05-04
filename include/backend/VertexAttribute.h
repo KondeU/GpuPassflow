@@ -5,7 +5,7 @@
 
 namespace au::rhi {
 
-class InputVertexAttributes {
+class VertexAttribute {
 public:
     struct Description final {
         unsigned int reserved = 4; // Usually, these are position/color/normal/tangent, uv...
@@ -39,8 +39,8 @@ public:
     virtual void ClearAttributes() = 0;
 
 protected:
-    InputVertexAttributes() = default;
-    virtual ~InputVertexAttributes() = default;
+    VertexAttribute() = default;
+    virtual ~VertexAttribute() = default;
 };
 
 }

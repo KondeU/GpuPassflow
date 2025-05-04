@@ -355,7 +355,7 @@ rhi::InputIndexAttribute* RasterizePass::AcquireIndexAttribute()
     return inputIndexAttribute;
 }
 
-rhi::InputVertexAttributes* RasterizePass::AcquireVertexAttributes()
+rhi::VertexAttribute* RasterizePass::AcquireVertexAttributes()
 {
     return inputVertexAttributes;
 }

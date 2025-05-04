@@ -5,7 +5,7 @@
 
 namespace au::backend {
 
-class DX12InputVertexAttributes : public rhi::InputVertexAttributes
+class DX12InputVertexAttributes : public rhi::VertexAttribute
     , DX12Object<DX12InputVertexAttributes> {
 public:
     explicit DX12InputVertexAttributes();

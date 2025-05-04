@@ -2,7 +2,7 @@
 
 namespace au::gp {
 
-rhi::InputVertexAttributes::Attribute InputProperties::MakeDefaultPositionVertexAttribute()
+rhi::VertexAttribute::Attribute InputProperties::MakeDefaultPositionVertexAttribute()
 {
     return { rhi::VertexFormat::FLOAT32x3, "POSITION", 0, 0 };
 }

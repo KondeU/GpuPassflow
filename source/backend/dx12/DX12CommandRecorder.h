@@ -83,7 +83,7 @@ public:
     void RcSetPipeline(rhi::PipelineState* const pipelineState) override;
 
     void RcSetVertex(const std::vector<rhi::VertexBuffer*>& vertices,
-        rhi::InputVertexAttributes* const attributes, unsigned int startSlot) override;
+        rhi::VertexAttribute* const attributes, unsigned int startSlot) override;
     void RcSetIndex(rhi::IndexBuffer* const index,
         rhi::InputIndexAttribute* const attribute) override;
 

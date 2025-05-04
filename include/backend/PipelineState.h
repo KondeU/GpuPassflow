@@ -6,7 +6,7 @@ namespace au::rhi {
 
 class PipelineLayout;
 class InputIndexAttribute;
-class InputVertexAttributes;
+class VertexAttribute;
 class Shader;
 
 class PipelineState {
@@ -25,7 +25,7 @@ public:
 
     // Input state.
     virtual void SetIndexAssembly(InputIndexAttribute* iia) = 0;
-    virtual void SetVertexAssembly(InputVertexAttributes* iva) = 0;
+    virtual void SetVertexAssembly(VertexAttribute* iva) = 0;
 
     // Shader program.
     virtual void SetShader(ShaderStage stage, Shader* shader) = 0;

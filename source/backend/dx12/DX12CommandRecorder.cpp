@@ -502,7 +502,7 @@ void DX12CommandRecorder::RcSetPipeline(PipelineState* const pipelineState)
 
 void DX12CommandRecorder::RcSetVertex(
     const std::vector<VertexBuffer*>& vertices,
-    InputVertexAttributes* const attributes, unsigned int startSlot)
+    VertexAttribute* const attributes, unsigned int startSlot)
 {
     CHECK_RECORD(description.commandType, CommandType::Graphics, RcSetVertex);
 
