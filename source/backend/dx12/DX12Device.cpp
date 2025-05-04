@@ -142,13 +142,13 @@ bool DX12Device::DestroyInputIndex(rhi::IndexBuffer* instance)
     return DestroyInstance(inputIndices, instance);
 }
 
-rhi::InputIndexAttribute*
+rhi::IndexAttribute*
 DX12Device::CreateInputIndexAttribute()
 {
-    return CreateInstance<rhi::InputIndexAttribute>(inputIndexAttributes, {});
+    return CreateInstance<rhi::IndexAttribute>(inputIndexAttributes, {});
 }
 
-bool DX12Device::DestroyInputIndexAttribute(rhi::InputIndexAttribute* instance)
+bool DX12Device::DestroyInputIndexAttribute(rhi::IndexAttribute* instance)
 {
     return DestroyInstance(inputIndexAttributes, instance);
 }

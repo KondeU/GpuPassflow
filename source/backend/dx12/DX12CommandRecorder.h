@@ -85,7 +85,7 @@ public:
     void RcSetVertex(const std::vector<rhi::VertexBuffer*>& vertices,
         rhi::VertexAttribute* const attributes, unsigned int startSlot) override;
     void RcSetIndex(rhi::IndexBuffer* const index,
-        rhi::InputIndexAttribute* const attribute) override;
+        rhi::IndexAttribute* const attribute) override;
 
     void RcSetDescriptorHeap(const std::vector<rhi::DescriptorHeap*>& heaps) override;
 

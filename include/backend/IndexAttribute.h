@@ -4,7 +4,7 @@
 
 namespace au::rhi {
 
-class InputIndexAttribute {
+class IndexAttribute {
 public:
     struct Description final {
         unsigned int reserved = 1;
@@ -28,8 +28,8 @@ public:
     virtual void SetAttribute(Attribute attribute) = 0;
 
 protected:
-    InputIndexAttribute() = default;
-    virtual ~InputIndexAttribute() = default;
+    IndexAttribute() = default;
+    virtual ~IndexAttribute() = default;
 };
 
 }

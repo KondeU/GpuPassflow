@@ -51,8 +51,8 @@ public:
         rhi::IndexBuffer::Description description) override;
     bool DestroyInputIndex(rhi::IndexBuffer* instance) override;
 
-    rhi::InputIndexAttribute* CreateInputIndexAttribute() override;
-    bool DestroyInputIndexAttribute(rhi::InputIndexAttribute* instance) override;
+    rhi::IndexAttribute* CreateInputIndexAttribute() override;
+    bool DestroyInputIndexAttribute(rhi::IndexAttribute* instance) override;
 
     rhi::ResourceConstantBuffer* CreateResourceBuffer(
         rhi::ResourceConstantBuffer::Description description) override;

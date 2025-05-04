@@ -350,7 +350,7 @@ rhi::PipelineState* RasterizePass::AcquirePipelineState()
     return pipelineState;
 }
 
-rhi::InputIndexAttribute* RasterizePass::AcquireIndexAttribute()
+rhi::IndexAttribute* RasterizePass::AcquireIndexAttribute()
 {
     return inputIndexAttribute;
 }

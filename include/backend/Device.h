@@ -38,8 +38,8 @@ public:
     virtual IndexBuffer* CreateInputIndex(IndexBuffer::Description description) = 0;
     virtual bool DestroyInputIndex(IndexBuffer* instance) = 0;
 
-    virtual InputIndexAttribute* CreateInputIndexAttribute() = 0;
-    virtual bool DestroyInputIndexAttribute(InputIndexAttribute* instance) = 0;
+    virtual IndexAttribute* CreateInputIndexAttribute() = 0;
+    virtual bool DestroyInputIndexAttribute(IndexAttribute* instance) = 0;
 
     //----------------------------------------//
     //                Resource                //

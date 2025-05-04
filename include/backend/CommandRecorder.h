@@ -8,7 +8,7 @@ namespace au::rhi {
 class VertexBuffer;
 class IndexBuffer;
 class VertexAttribute;
-class InputIndexAttribute;
+class IndexAttribute;
 class ResourceConstantBuffer;
 class ResourceStorageBuffer;
 class ResourceImage;
@@ -98,7 +98,7 @@ public:
 
     virtual void RcSetVertex(const std::vector<VertexBuffer*>& vertices,
         VertexAttribute* const attributes, unsigned int startSlot = 0) = 0;
-    virtual void RcSetIndex(IndexBuffer* const index, InputIndexAttribute* const attribute) = 0;
+    virtual void RcSetIndex(IndexBuffer* const index, IndexAttribute* const attribute) = 0;
 
     virtual void RcSetDescriptorHeap(const std::vector<DescriptorHeap*>& heaps) = 0;
 

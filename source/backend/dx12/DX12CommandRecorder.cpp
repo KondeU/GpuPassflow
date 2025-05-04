@@ -520,7 +520,7 @@ void DX12CommandRecorder::RcSetVertex(
 }
 
 void DX12CommandRecorder::RcSetIndex(
-    IndexBuffer* const index, InputIndexAttribute* const attribute)
+    IndexBuffer* const index, IndexAttribute* const attribute)
 {
     CHECK_RECORD(description.commandType, CommandType::Graphics, RcSetIndex);
 

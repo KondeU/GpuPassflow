@@ -65,7 +65,7 @@ void DX12PipelineState::SetPipelineLayout(rhi::PipelineLayout* layout)
     graphicsPipelineState.pRootSignature = pLayout->Signature().Get();
 }
 
-void DX12PipelineState::SetIndexAssembly(rhi::InputIndexAttribute* iia)
+void DX12PipelineState::SetIndexAssembly(rhi::IndexAttribute* iia)
 {
     auto dxIia = dynamic_cast<DX12InputIndexAttribute*>(iia);
     graphicsPipelineState.IBStripCutValue =

@@ -8,7 +8,7 @@ namespace au::gp {
 struct InputProperties final {
     static rhi::VertexAttribute::Attribute MakeDefaultPositionVertexAttribute();
     std::vector<rhi::VertexAttribute::Attribute> vertexAttributes;
-    rhi::InputIndexAttribute::Attribute indexAttribute;
+    rhi::IndexAttribute::Attribute indexAttribute;
 };
 
 struct OutputProperties final {

@@ -19,7 +19,7 @@ public:
 
     void SetPipelineLayout(rhi::PipelineLayout* layout) override;
 
-    void SetIndexAssembly(rhi::InputIndexAttribute* iia) override;
+    void SetIndexAssembly(rhi::IndexAttribute* iia) override;
     void SetVertexAssembly(rhi::VertexAttribute* iva) override;
 
     void SetShader(rhi::ShaderStage stage, rhi::Shader* shader) override;

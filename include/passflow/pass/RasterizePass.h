@@ -55,7 +55,7 @@ protected:
     // Use these functions to acquire pipeline state object or input attributes,
     // inherited classes can use them in the OnExecutePass function when drawing.
     rhi::PipelineState* AcquirePipelineState();
-    rhi::InputIndexAttribute* AcquireIndexAttribute();
+    rhi::IndexAttribute* AcquireIndexAttribute();
     rhi::VertexAttribute* AcquireVertexAttributes();
 
     DynamicDescriptorManager& AcquireDescriptorManager(
@@ -76,7 +76,7 @@ private:
     rhi::PipelineLayout* pipelineLayout = nullptr;
 
     rhi::VertexAttribute* inputVertexAttributes = nullptr;
-    rhi::InputIndexAttribute* inputIndexAttribute = nullptr;
+    rhi::IndexAttribute* inputIndexAttribute = nullptr;
 
     std::map<rhi::ShaderStage, rhi::Shader*> programShaders;
     std::map<uint8_t, rhi::DescriptorGroup*> descriptorGroups;
