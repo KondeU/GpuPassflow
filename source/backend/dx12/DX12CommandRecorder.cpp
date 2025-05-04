@@ -152,7 +152,7 @@ void DX12CommandRecorder::RcBarrier(
 }
 
 void DX12CommandRecorder::RcBarrier(
-    InputIndex* const resource, ResourceState before, ResourceState after)
+    IndexBuffer* const resource, ResourceState before, ResourceState after)
 {
     RcBarrierTemplate<DX12InputIndex>(*this, *resource, before, after);
 }
@@ -196,9 +196,9 @@ void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
 }
 
 void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
-    InputIndex* const destination, InputIndex* const staging)
+    IndexBuffer* const destination, IndexBuffer* const staging)
 {
-    CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:InputIndex);
+    CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:IndexBuffer);
     RcUploadTemplate<DX12InputIndex>(*this, *destination, *staging, size, data);
 }
 
@@ -231,9 +231,9 @@ void DX12CommandRecorder::RcCopy(
 }
 
 void DX12CommandRecorder::RcCopy(
-    InputIndex* const destination, InputIndex* const source)
+    IndexBuffer* const destination, IndexBuffer* const source)
 {
-    CHECK_RECORD(description.commandType, CommandType::All, RcCopy:InputIndex);
+    CHECK_RECORD(description.commandType, CommandType::All, RcCopy:IndexBuffer);
     RcCopyTemplate<DX12InputIndex>(*this, *destination, *source);
 }
 
@@ -520,7 +520,7 @@ void DX12CommandRecorder::RcSetVertex(
 }
 
 void DX12CommandRecorder::RcSetIndex(
-    InputIndex* const index, InputIndexAttribute* const attribute)
+    IndexBuffer* const index, InputIndexAttribute* const attribute)
 {
     CHECK_RECORD(description.commandType, CommandType::Graphics, RcSetIndex);
 
@@ -617,7 +617,7 @@ void DX12CommandRecorder::RcSetComputeDescriptors(
     }
 }
 
-void DX12CommandRecorder::RcDraw(InputIndex* const index)
+void DX12CommandRecorder::RcDraw(IndexBuffer* const index)
 {
     CHECK_RECORD(description.commandType, CommandType::Graphics, RcDraw);
     recorder->DrawIndexedInstanced(dynamic_cast<DX12InputIndex*>(index)->IndicesCount(), 1, 0, 0, 0);

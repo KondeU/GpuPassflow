@@ -97,7 +97,7 @@ public:
     void UploadIndexBuffers();
 
     virtual void* RawCpuPtr() = 0;
-    rhi::InputIndex* RawGpuInst(unsigned int index);
+    rhi::IndexBuffer* RawGpuInst(unsigned int index);
 
     Resource<BaseIndexBuffer> Clone() const;
 
@@ -105,8 +105,8 @@ protected:
     void SetupGPU();
     void CloseGPU();
 
-    rhi::InputIndex::Description description{ 0, 0 }; // Default memory type: GPU_ONLY
-    std::vector<rhi::InputIndex*> indices;
+    rhi::IndexBuffer::Description description{ 0, 0 }; // Default memory type: GPU_ONLY
+    std::vector<rhi::IndexBuffer*> indices;
 };
 
 class BaseVertexBuffer : public DeviceHolder {

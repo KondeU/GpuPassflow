@@ -21,7 +21,7 @@ public:
 
     void RcBarrier(rhi::VertexBuffer* const resource,
         rhi::ResourceState before, rhi::ResourceState after) override;
-    void RcBarrier(rhi::InputIndex* const resource,
+    void RcBarrier(rhi::IndexBuffer* const resource,
         rhi::ResourceState before, rhi::ResourceState after) override;
     void RcBarrier(rhi::ResourceConstantBuffer* const resource,
         rhi::ResourceState before, rhi::ResourceState after) override;
@@ -35,7 +35,7 @@ public:
     void RcUpload(const void* const data, size_t size,
         rhi::VertexBuffer* const destination, rhi::VertexBuffer* const staging) override;
     void RcUpload(const void* const data, size_t size,
-        rhi::InputIndex* const destination, rhi::InputIndex* const staging) override;
+        rhi::IndexBuffer* const destination, rhi::IndexBuffer* const staging) override;
     void RcUpload(const void* const data, size_t size,
         rhi::ResourceConstantBuffer* const destination,
         rhi::ResourceConstantBuffer* const staging) override;
@@ -47,8 +47,8 @@ public:
 
     void RcCopy(rhi::VertexBuffer* const destination,
         rhi::VertexBuffer* const source) override;
-    void RcCopy(rhi::InputIndex* const destination,
-        rhi::InputIndex* const source) override;
+    void RcCopy(rhi::IndexBuffer* const destination,
+        rhi::IndexBuffer* const source) override;
     void RcCopy(rhi::ResourceConstantBuffer* const destination,
         rhi::ResourceConstantBuffer* const source) override;
     void RcCopy(rhi::ResourceStorageBuffer* const destination,
@@ -84,7 +84,7 @@ public:
 
     void RcSetVertex(const std::vector<rhi::VertexBuffer*>& vertices,
         rhi::InputVertexAttributes* const attributes, unsigned int startSlot) override;
-    void RcSetIndex(rhi::InputIndex* const index,
+    void RcSetIndex(rhi::IndexBuffer* const index,
         rhi::InputIndexAttribute* const attribute) override;
 
     void RcSetDescriptorHeap(const std::vector<rhi::DescriptorHeap*>& heaps) override;
@@ -99,7 +99,7 @@ public:
     void RcSetComputeDescriptors(
         unsigned int index, const std::vector<rhi::Descriptor*>& descriptors) override;
 
-    void RcDraw(rhi::InputIndex* const index) override;
+    void RcDraw(rhi::IndexBuffer* const index) override;
 
     void RcDispatch(
         unsigned int xThreadGroupsCount,

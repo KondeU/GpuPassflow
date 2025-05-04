@@ -6,7 +6,7 @@
 namespace au::rhi {
 
 class VertexBuffer;
-class InputIndex;
+class IndexBuffer;
 class InputVertexAttributes;
 class InputIndexAttribute;
 class ResourceConstantBuffer;
@@ -35,7 +35,7 @@ public:
 
     virtual void RcBarrier(VertexBuffer* const resource,
         ResourceState before, ResourceState after) = 0;
-    virtual void RcBarrier(InputIndex* const resource,
+    virtual void RcBarrier(IndexBuffer* const resource,
         ResourceState before, ResourceState after) = 0;
     virtual void RcBarrier(ResourceConstantBuffer* const resource,
         ResourceState before, ResourceState after) = 0;
@@ -49,7 +49,7 @@ public:
     virtual void RcUpload(const void* const data, size_t size,
         VertexBuffer* const destination, VertexBuffer* const staging) = 0;
     virtual void RcUpload(const void* const data, size_t size,
-        InputIndex* const destination, InputIndex* const staging) = 0;
+        IndexBuffer* const destination, IndexBuffer* const staging) = 0;
     virtual void RcUpload(const void* const data, size_t size,
         ResourceConstantBuffer* const destination, ResourceConstantBuffer* const staging) = 0;
     virtual void RcUpload(const void* const data, size_t size,
@@ -58,7 +58,7 @@ public:
         ResourceImage* const destination, ResourceImage* const staging) = 0;
 
     virtual void RcCopy(VertexBuffer* const dst, VertexBuffer* const src) = 0;
-    virtual void RcCopy(InputIndex* const dst, InputIndex* const src) = 0;
+    virtual void RcCopy(IndexBuffer* const dst, IndexBuffer* const src) = 0;
     virtual void RcCopy(ResourceConstantBuffer* const dst, ResourceConstantBuffer* const src) = 0;
     virtual void RcCopy(ResourceStorageBuffer* const dst, ResourceStorageBuffer* const src) = 0;
     virtual void RcCopy(ResourceImage* const dst, ResourceImage* const src) = 0;
@@ -98,7 +98,7 @@ public:
 
     virtual void RcSetVertex(const std::vector<VertexBuffer*>& vertices,
         InputVertexAttributes* const attributes, unsigned int startSlot = 0) = 0;
-    virtual void RcSetIndex(InputIndex* const index, InputIndexAttribute* const attribute) = 0;
+    virtual void RcSetIndex(IndexBuffer* const index, InputIndexAttribute* const attribute) = 0;
 
     virtual void RcSetDescriptorHeap(const std::vector<DescriptorHeap*>& heaps) = 0;
 
@@ -112,7 +112,7 @@ public:
     virtual void RcSetComputeDescriptors(
         unsigned int index, const std::vector<Descriptor*>& descriptors) = 0;
 
-    virtual void RcDraw(InputIndex* const index) = 0;
+    virtual void RcDraw(IndexBuffer* const index) = 0;
 
     virtual void RcDispatch(
         unsigned int xThreadGroupsCount,

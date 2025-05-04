@@ -285,7 +285,7 @@ void BaseIndexBuffer::UploadIndexBuffers()
     }
 }
 
-rhi::InputIndex* BaseIndexBuffer::RawGpuInst(unsigned int index)
+rhi::IndexBuffer* BaseIndexBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= indices.size()) {
         GP_LOG_RETN_W(TAG, "Acquire index buffer backend instance failed, index out of range.");

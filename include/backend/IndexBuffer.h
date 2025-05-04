@@ -4,7 +4,7 @@
 
 namespace au::rhi {
 
-class InputIndex {
+class IndexBuffer {
 public:
     struct Description final {
         unsigned int indicesCount;
@@ -25,8 +25,8 @@ public:
     virtual void Unmap() = 0;
 
 protected:
-    InputIndex() = default;
-    virtual ~InputIndex() = default;
+    IndexBuffer() = default;
+    virtual ~IndexBuffer() = default;
 };
 
 }
