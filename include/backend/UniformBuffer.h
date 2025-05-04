@@ -6,7 +6,7 @@ namespace au::rhi {
 
 // Uniform buffer object (UBO) in Vulkan
 // Constant buffer object (CBO) in DX12
-class ResourceConstantBuffer {
+class UniformBuffer {
 public:
     struct Description final {
         unsigned int bufferBytesSize;
@@ -24,8 +24,8 @@ public:
     virtual void Unmap() = 0;
 
 protected:
-    ResourceConstantBuffer() = default;
-    virtual ~ResourceConstantBuffer() = default;
+    UniformBuffer() = default;
+    virtual ~UniformBuffer() = default;
 };
 
 }

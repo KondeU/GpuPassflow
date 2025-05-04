@@ -158,7 +158,7 @@ void DX12CommandRecorder::RcBarrier(
 }
 
 void DX12CommandRecorder::RcBarrier(
-    ResourceConstantBuffer* const resource, ResourceState before, ResourceState after)
+    UniformBuffer* const resource, ResourceState before, ResourceState after)
 {
     RcBarrierTemplate<DX12ResourceConstantBuffer>(*this, *resource, before, after);
 }
@@ -203,9 +203,9 @@ void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
 }
 
 void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
-    ResourceConstantBuffer* const destination, ResourceConstantBuffer* const staging)
+    UniformBuffer* const destination, UniformBuffer* const staging)
 {
-    CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:ResourceConstantBuffer);
+    CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:UniformBuffer);
     RcUploadTemplate<DX12ResourceConstantBuffer>(*this, *destination, *staging, size, data);
 }
 
@@ -238,9 +238,9 @@ void DX12CommandRecorder::RcCopy(
 }
 
 void DX12CommandRecorder::RcCopy(
-    ResourceConstantBuffer* const destination, ResourceConstantBuffer* const source)
+    UniformBuffer* const destination, UniformBuffer* const source)
 {
-    CHECK_RECORD(description.commandType, CommandType::All, RcCopy:ResourceConstantBuffer);
+    CHECK_RECORD(description.commandType, CommandType::All, RcCopy:UniformBuffer);
     RcCopyTemplate<DX12ResourceConstantBuffer>(*this, *destination, *source);
 }
 

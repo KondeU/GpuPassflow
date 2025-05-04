@@ -45,9 +45,9 @@ public:
     //                Resource                //
     //----------------------------------------//
 
-    virtual ResourceConstantBuffer* CreateResourceBuffer(
-        ResourceConstantBuffer::Description description) = 0;
-    virtual bool DestroyResourceBuffer(ResourceConstantBuffer* instance) = 0;
+    virtual UniformBuffer* CreateResourceBuffer(
+        UniformBuffer::Description description) = 0;
+    virtual bool DestroyResourceBuffer(UniformBuffer* instance) = 0;
 
     virtual ResourceStorageBuffer* CreateResourceBuffer(
         ResourceStorageBuffer::Description description) = 0;

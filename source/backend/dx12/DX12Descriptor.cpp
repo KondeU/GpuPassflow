@@ -63,7 +63,7 @@ void DX12Descriptor::Shutdown()
     pResource = static_cast<void*>(nullptr);
 }
 
-void DX12Descriptor::BuildDescriptor(rhi::ResourceConstantBuffer* resource)
+void DX12Descriptor::BuildDescriptor(rhi::UniformBuffer* resource)
 {
     if (heap.GetHeapType() != D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) {
         GP_LOG_RET_E(TAG, "This descriptor heap and descriptor is not support buffer!");
@@ -191,7 +191,7 @@ DX12ResourceConstantBuffer* DX12Descriptor::BindedResourceConstantBuffer() const
     auto ptr = std::get_if<DX12ResourceConstantBuffer*>(&pResource);
     if (!ptr) {
         GP_LOG_RETN_E(TAG, "Get binded resource buffer failed, this descriptor is not build with "
-            "ResourceConstantBuffer, or maybe you forgot to call the BuildDescriptor function.");
+            "UniformBuffer, or maybe you forgot to call the BuildDescriptor function.");
     }
     return *ptr;
 }

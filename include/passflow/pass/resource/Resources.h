@@ -49,7 +49,7 @@ public:
     void UploadConstantBuffers();
 
     virtual void* RawCpuPtr() = 0;
-    rhi::ResourceConstantBuffer* RawGpuInst(unsigned int index);
+    rhi::UniformBuffer* RawGpuInst(unsigned int index);
 
     Resource<BaseConstantBuffer> Clone() const;
 
@@ -57,8 +57,8 @@ protected:
     void SetupGPU();
     void CloseGPU();
 
-    rhi::ResourceConstantBuffer::Description description{ 0 }; // Default memory type: CPU_TO_GPU
-    std::vector<rhi::ResourceConstantBuffer*> buffers;
+    rhi::UniformBuffer::Description description{ 0 }; // Default memory type: CPU_TO_GPU
+    std::vector<rhi::UniformBuffer*> buffers;
 };
 
 class BaseStructuredBuffer : public DeviceHolder { // TODO: change to ArrayBuffer

@@ -153,14 +153,14 @@ bool DX12Device::DestroyInputIndexAttribute(rhi::IndexAttribute* instance)
     return DestroyInstance(inputIndexAttributes, instance);
 }
 
-rhi::ResourceConstantBuffer*
-DX12Device::CreateResourceBuffer(rhi::ResourceConstantBuffer::Description description)
+rhi::UniformBuffer*
+DX12Device::CreateResourceBuffer(rhi::UniformBuffer::Description description)
 {
-    return CreateInstance<rhi::ResourceConstantBuffer>(
+    return CreateInstance<rhi::UniformBuffer>(
         resourceConstantBuffers, description, *this);
 }
 
-bool DX12Device::DestroyResourceBuffer(rhi::ResourceConstantBuffer* instance)
+bool DX12Device::DestroyResourceBuffer(rhi::UniformBuffer* instance)
 {
     return DestroyInstance(resourceConstantBuffers, instance);
 }

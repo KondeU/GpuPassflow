@@ -9,7 +9,7 @@ class VertexBuffer;
 class IndexBuffer;
 class VertexAttribute;
 class IndexAttribute;
-class ResourceConstantBuffer;
+class UniformBuffer;
 class ResourceStorageBuffer;
 class ResourceImage;
 class Descriptor;
@@ -37,7 +37,7 @@ public:
         ResourceState before, ResourceState after) = 0;
     virtual void RcBarrier(IndexBuffer* const resource,
         ResourceState before, ResourceState after) = 0;
-    virtual void RcBarrier(ResourceConstantBuffer* const resource,
+    virtual void RcBarrier(UniformBuffer* const resource,
         ResourceState before, ResourceState after) = 0;
     virtual void RcBarrier(ResourceStorageBuffer* const resource,
         ResourceState before, ResourceState after) = 0;
@@ -51,7 +51,7 @@ public:
     virtual void RcUpload(const void* const data, size_t size,
         IndexBuffer* const destination, IndexBuffer* const staging) = 0;
     virtual void RcUpload(const void* const data, size_t size,
-        ResourceConstantBuffer* const destination, ResourceConstantBuffer* const staging) = 0;
+        UniformBuffer* const destination, UniformBuffer* const staging) = 0;
     virtual void RcUpload(const void* const data, size_t size,
         ResourceStorageBuffer* const destination, ResourceStorageBuffer* const staging) = 0;
     virtual void RcUpload(const void* const data, size_t size,
@@ -59,7 +59,7 @@ public:
 
     virtual void RcCopy(VertexBuffer* const dst, VertexBuffer* const src) = 0;
     virtual void RcCopy(IndexBuffer* const dst, IndexBuffer* const src) = 0;
-    virtual void RcCopy(ResourceConstantBuffer* const dst, ResourceConstantBuffer* const src) = 0;
+    virtual void RcCopy(UniformBuffer* const dst, UniformBuffer* const src) = 0;
     virtual void RcCopy(ResourceStorageBuffer* const dst, ResourceStorageBuffer* const src) = 0;
     virtual void RcCopy(ResourceImage* const dst, ResourceImage* const src) = 0;
     virtual void RcCopy(Swapchain* const dst, ResourceImage* const src) = 0;
