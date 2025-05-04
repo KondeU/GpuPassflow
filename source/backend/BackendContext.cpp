@@ -17,9 +17,8 @@ namespace au::rhi {
 BackendContext* BackendContext::CreateBackend(Backend type)
 {
     static const std::unordered_map<Backend, std::string> libraries = {
-        { Backend::DX12,       "backend_dx12"   },
-        { Backend::Vulkan,     "backend_vulkan" },
-        { Backend::SoftRaster, "backend_cpu"    }
+        { Backend::DX12,   "backend_dx12"   },
+        { Backend::Vulkan, "backend_vulkan" }
     };
 
     GP_LOG_I(TAG, "Create backend: %d", gp::EnumCast(type));

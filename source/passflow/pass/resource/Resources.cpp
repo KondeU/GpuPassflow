@@ -368,7 +368,7 @@ void BaseVertexBuffer::UploadVertexBuffers()
     }
 }
 
-rhi::InputVertex* BaseVertexBuffer::RawGpuInst(unsigned int index)
+rhi::VertexBuffer* BaseVertexBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= vertices.size()) {
         GP_LOG_RETN_W(TAG, "Acquire vertex buffer backend instance failed, index out of range.");

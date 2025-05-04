@@ -146,7 +146,7 @@ void DX12CommandRecorder::EndRecord()
 }
 
 void DX12CommandRecorder::RcBarrier(
-    InputVertex* const resource, ResourceState before, ResourceState after)
+    VertexBuffer* const resource, ResourceState before, ResourceState after)
 {
     RcBarrierTemplate<DX12InputVertex>(*this, *resource, before, after);
 }
@@ -189,9 +189,9 @@ void DX12CommandRecorder::RcBarrier(
 }
 
 void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
-    InputVertex* const destination, InputVertex* const staging)
+    VertexBuffer* const destination, VertexBuffer* const staging)
 {
-    CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:InputVertex);
+    CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:VertexBuffer);
     RcUploadTemplate<DX12InputVertex>(*this, *destination, *staging, size, data);
 }
 
@@ -224,9 +224,9 @@ void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
 }
 
 void DX12CommandRecorder::RcCopy(
-    InputVertex* const destination, InputVertex* const source)
+    VertexBuffer* const destination, VertexBuffer* const source)
 {
-    CHECK_RECORD(description.commandType, CommandType::All, RcCopy:InputVertex);
+    CHECK_RECORD(description.commandType, CommandType::All, RcCopy:VertexBuffer);
     RcCopyTemplate<DX12InputVertex>(*this, *destination, *source);
 }
 
@@ -501,7 +501,7 @@ void DX12CommandRecorder::RcSetPipeline(PipelineState* const pipelineState)
 }
 
 void DX12CommandRecorder::RcSetVertex(
-    const std::vector<InputVertex*>& vertices,
+    const std::vector<VertexBuffer*>& vertices,
     InputVertexAttributes* const attributes, unsigned int startSlot)
 {
     CHECK_RECORD(description.commandType, CommandType::Graphics, RcSetVertex);

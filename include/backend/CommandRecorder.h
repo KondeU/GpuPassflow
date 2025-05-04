@@ -5,7 +5,7 @@
 
 namespace au::rhi {
 
-class InputVertex;
+class VertexBuffer;
 class InputIndex;
 class InputVertexAttributes;
 class InputIndexAttribute;
@@ -33,7 +33,7 @@ public:
     virtual void BeginRecord() = 0;
     virtual void EndRecord() = 0;
 
-    virtual void RcBarrier(InputVertex* const resource,
+    virtual void RcBarrier(VertexBuffer* const resource,
         ResourceState before, ResourceState after) = 0;
     virtual void RcBarrier(InputIndex* const resource,
         ResourceState before, ResourceState after) = 0;
@@ -47,7 +47,7 @@ public:
         ResourceState before, ResourceState after) = 0;
 
     virtual void RcUpload(const void* const data, size_t size,
-        InputVertex* const destination, InputVertex* const staging) = 0;
+        VertexBuffer* const destination, VertexBuffer* const staging) = 0;
     virtual void RcUpload(const void* const data, size_t size,
         InputIndex* const destination, InputIndex* const staging) = 0;
     virtual void RcUpload(const void* const data, size_t size,
@@ -57,7 +57,7 @@ public:
     virtual void RcUpload(const void* const data, size_t size,
         ResourceImage* const destination, ResourceImage* const staging) = 0;
 
-    virtual void RcCopy(InputVertex* const dst, InputVertex* const src) = 0;
+    virtual void RcCopy(VertexBuffer* const dst, VertexBuffer* const src) = 0;
     virtual void RcCopy(InputIndex* const dst, InputIndex* const src) = 0;
     virtual void RcCopy(ResourceConstantBuffer* const dst, ResourceConstantBuffer* const src) = 0;
     virtual void RcCopy(ResourceStorageBuffer* const dst, ResourceStorageBuffer* const src) = 0;
@@ -96,7 +96,7 @@ public:
 
     virtual void RcSetPipeline(PipelineState* const pipelineState) = 0;
 
-    virtual void RcSetVertex(const std::vector<InputVertex*>& vertices,
+    virtual void RcSetVertex(const std::vector<VertexBuffer*>& vertices,
         InputVertexAttributes* const attributes, unsigned int startSlot = 0) = 0;
     virtual void RcSetIndex(InputIndex* const index, InputIndexAttribute* const attribute) = 0;
 

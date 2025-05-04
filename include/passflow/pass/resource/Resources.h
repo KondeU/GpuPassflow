@@ -121,7 +121,7 @@ public:
     void UploadVertexBuffers();
 
     virtual void* RawCpuPtr() = 0;
-    rhi::InputVertex* RawGpuInst(unsigned int index);
+    rhi::VertexBuffer* RawGpuInst(unsigned int index);
 
     Resource<BaseVertexBuffer> Clone() const;
 
@@ -129,8 +129,8 @@ protected:
     void SetupGPU();
     void CloseGPU();
 
-    rhi::InputVertex::Description description{ 0, 0 }; // Default memory type: GPU_ONLY
-    std::vector<rhi::InputVertex*> vertices;
+    rhi::VertexBuffer::Description description{ 0, 0 }; // Default memory type: GPU_ONLY
+    std::vector<rhi::VertexBuffer*> vertices;
 };
 
 class BaseTexture : public DeviceHolder {

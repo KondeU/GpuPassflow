@@ -19,7 +19,7 @@ public:
     void BeginRecord() override;
     void EndRecord() override;
 
-    void RcBarrier(rhi::InputVertex* const resource,
+    void RcBarrier(rhi::VertexBuffer* const resource,
         rhi::ResourceState before, rhi::ResourceState after) override;
     void RcBarrier(rhi::InputIndex* const resource,
         rhi::ResourceState before, rhi::ResourceState after) override;
@@ -33,7 +33,7 @@ public:
         rhi::ResourceState before, rhi::ResourceState after) override;
 
     void RcUpload(const void* const data, size_t size,
-        rhi::InputVertex* const destination, rhi::InputVertex* const staging) override;
+        rhi::VertexBuffer* const destination, rhi::VertexBuffer* const staging) override;
     void RcUpload(const void* const data, size_t size,
         rhi::InputIndex* const destination, rhi::InputIndex* const staging) override;
     void RcUpload(const void* const data, size_t size,
@@ -45,8 +45,8 @@ public:
     void RcUpload(const void* const data, size_t size,
         rhi::ResourceImage* const destination, rhi::ResourceImage* const staging) override;
 
-    void RcCopy(rhi::InputVertex* const destination,
-        rhi::InputVertex* const source) override;
+    void RcCopy(rhi::VertexBuffer* const destination,
+        rhi::VertexBuffer* const source) override;
     void RcCopy(rhi::InputIndex* const destination,
         rhi::InputIndex* const source) override;
     void RcCopy(rhi::ResourceConstantBuffer* const destination,
@@ -82,7 +82,7 @@ public:
 
     void RcSetPipeline(rhi::PipelineState* const pipelineState) override;
 
-    void RcSetVertex(const std::vector<rhi::InputVertex*>& vertices,
+    void RcSetVertex(const std::vector<rhi::VertexBuffer*>& vertices,
         rhi::InputVertexAttributes* const attributes, unsigned int startSlot) override;
     void RcSetIndex(rhi::InputIndex* const index,
         rhi::InputIndexAttribute* const attribute) override;

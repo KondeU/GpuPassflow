@@ -8,7 +8,7 @@ namespace au::backend {
 class DX12Device;
 class DX12InputVertexAttributes;
 
-class DX12InputVertex : public rhi::InputVertex
+class DX12InputVertex : public rhi::VertexBuffer
     , DX12Object<DX12InputVertex> {
 public:
     explicit DX12InputVertex(DX12Device& device);

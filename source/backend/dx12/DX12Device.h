@@ -40,9 +40,9 @@ public:
         rhi::CommandRecorder::Description description) override;
     bool DestroyCommandRecorder(rhi::CommandRecorder* instance) override;
 
-    rhi::InputVertex* CreateInputVertex(
-        rhi::InputVertex::Description description) override;
-    bool DestroyInputVertex(rhi::InputVertex* instance) override;
+    rhi::VertexBuffer* CreateInputVertex(
+        rhi::VertexBuffer::Description description) override;
+    bool DestroyInputVertex(rhi::VertexBuffer* instance) override;
 
     rhi::InputVertexAttributes* CreateInputVertexAttributes() override;
     bool DestroyInputVertexAttributes(rhi::InputVertexAttributes* instance) override;

@@ -1,12 +1,13 @@
 #pragma once
 
-#include "InputVertex.h"
-#include "InputVertexAttributes.h"
-#include "InputIndex.h"
-#include "InputIndexAttribute.h"
-#include "ResourceConstantBuffer.h"
-#include "ResourceStorageBuffer.h"
-#include "ResourceImage.h"
+#include "VertexBuffer.h"
+#include "VertexAttribute.h"
+#include "IndexBuffer.h"
+#include "IndexAttribute.h"
+#include "ConstantBuffer.h"
+#include "UniformBuffer.h"
+#include "StorageBuffer.h"
+#include "ImageBuffer.h"
 #include "ImageSampler.h"
 #include "Swapchain.h"
 #include "Shader.h"
@@ -28,8 +29,8 @@ public:
     //             Input Assembly             //
     //----------------------------------------//
 
-    virtual InputVertex* CreateInputVertex(InputVertex::Description description) = 0;
-    virtual bool DestroyInputVertex(InputVertex* instance) = 0;
+    virtual VertexBuffer* CreateInputVertex(VertexBuffer::Description description) = 0;
+    virtual bool DestroyInputVertex(VertexBuffer* instance) = 0;
 
     virtual InputVertexAttributes* CreateInputVertexAttributes() = 0;
     virtual bool DestroyInputVertexAttributes(InputVertexAttributes* instance) = 0;

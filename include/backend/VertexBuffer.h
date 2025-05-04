@@ -4,7 +4,7 @@
 
 namespace au::rhi {
 
-class InputVertex {
+class VertexBuffer {
 public:
     struct Description final {
         unsigned int verticesCount;
@@ -25,8 +25,8 @@ public:
     virtual void Unmap() = 0;
 
 protected:
-    InputVertex() = default;
-    virtual ~InputVertex() = default;
+    VertexBuffer() = default;
+    virtual ~VertexBuffer() = default;
 };
 
 }
