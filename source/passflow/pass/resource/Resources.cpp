@@ -202,7 +202,7 @@ void BaseStructuredBuffer::UploadStructuredBuffers()
     }
 }
 
-rhi::ResourceStorageBuffer* BaseStructuredBuffer::RawGpuInst(unsigned int index)
+rhi::StorageBuffer* BaseStructuredBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= buffers.size()) {
         GP_LOG_RETN_W(TAG,

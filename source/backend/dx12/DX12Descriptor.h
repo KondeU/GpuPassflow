@@ -23,7 +23,7 @@ public:
     void Shutdown();
 
     void BuildDescriptor(rhi::UniformBuffer* resource) override;
-    void BuildDescriptor(rhi::ResourceStorageBuffer* resource, bool write) override;
+    void BuildDescriptor(rhi::StorageBuffer* resource, bool write) override;
     void BuildDescriptor(rhi::ResourceImage* resource, bool write) override;
     void BuildDescriptor(rhi::ImageSampler* sampler) override;
 

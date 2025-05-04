@@ -58,9 +58,9 @@ public:
         rhi::UniformBuffer::Description description) override;
     bool DestroyResourceBuffer(rhi::UniformBuffer* instance) override;
 
-    rhi::ResourceStorageBuffer* CreateResourceBuffer(
-        rhi::ResourceStorageBuffer::Description description) override;
-    bool DestroyResourceBuffer(rhi::ResourceStorageBuffer* instance) override;
+    rhi::StorageBuffer* CreateResourceBuffer(
+        rhi::StorageBuffer::Description description) override;
+    bool DestroyResourceBuffer(rhi::StorageBuffer* instance) override;
 
     rhi::ResourceImage* CreateResourceImage(
         rhi::ResourceImage::Description description) override;

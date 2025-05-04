@@ -73,7 +73,7 @@ public:
     void UploadStructuredBuffers();
 
     virtual void* RawCpuPtr() = 0;
-    rhi::ResourceStorageBuffer* RawGpuInst(unsigned int index);
+    rhi::StorageBuffer* RawGpuInst(unsigned int index);
 
     Resource<BaseStructuredBuffer> Clone() const;
 
@@ -81,8 +81,8 @@ protected:
     void SetupGPU();
     void CloseGPU();
 
-    rhi::ResourceStorageBuffer::Description description{ 0, 0 }; // Default memory type: GPU_ONLY
-    std::vector<rhi::ResourceStorageBuffer*> buffers;
+    rhi::StorageBuffer::Description description{ 0, 0 }; // Default memory type: GPU_ONLY
+    std::vector<rhi::StorageBuffer*> buffers;
 };
 
 class BaseIndexBuffer : public DeviceHolder {

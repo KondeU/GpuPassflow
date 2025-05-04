@@ -49,9 +49,9 @@ public:
         UniformBuffer::Description description) = 0;
     virtual bool DestroyResourceBuffer(UniformBuffer* instance) = 0;
 
-    virtual ResourceStorageBuffer* CreateResourceBuffer(
-        ResourceStorageBuffer::Description description) = 0;
-    virtual bool DestroyResourceBuffer(ResourceStorageBuffer* instance) = 0;
+    virtual StorageBuffer* CreateResourceBuffer(
+        StorageBuffer::Description description) = 0;
+    virtual bool DestroyResourceBuffer(StorageBuffer* instance) = 0;
 
     virtual ResourceImage* CreateResourceImage(ResourceImage::Description description) = 0;
     virtual bool DestroyResourceImage(ResourceImage* instance) = 0;

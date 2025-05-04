@@ -25,7 +25,7 @@ public:
         rhi::ResourceState before, rhi::ResourceState after) override;
     void RcBarrier(rhi::UniformBuffer* const resource,
         rhi::ResourceState before, rhi::ResourceState after) override;
-    void RcBarrier(rhi::ResourceStorageBuffer* const resource,
+    void RcBarrier(rhi::StorageBuffer* const resource,
         rhi::ResourceState before, rhi::ResourceState after) override;
     void RcBarrier(rhi::ResourceImage* const resource,
         rhi::ResourceState before, rhi::ResourceState after) override;
@@ -40,8 +40,8 @@ public:
         rhi::UniformBuffer* const destination,
         rhi::UniformBuffer* const staging) override;
     void RcUpload(const void* const data, size_t size,
-        rhi::ResourceStorageBuffer* const destination,
-        rhi::ResourceStorageBuffer* const staging) override;
+        rhi::StorageBuffer* const destination,
+        rhi::StorageBuffer* const staging) override;
     void RcUpload(const void* const data, size_t size,
         rhi::ResourceImage* const destination, rhi::ResourceImage* const staging) override;
 
@@ -51,8 +51,8 @@ public:
         rhi::IndexBuffer* const source) override;
     void RcCopy(rhi::UniformBuffer* const destination,
         rhi::UniformBuffer* const source) override;
-    void RcCopy(rhi::ResourceStorageBuffer* const destination,
-        rhi::ResourceStorageBuffer* const source) override;
+    void RcCopy(rhi::StorageBuffer* const destination,
+        rhi::StorageBuffer* const source) override;
     void RcCopy(rhi::ResourceImage* const destination,
         rhi::ResourceImage* const source) override;
     void RcCopy(rhi::Swapchain* const destination,

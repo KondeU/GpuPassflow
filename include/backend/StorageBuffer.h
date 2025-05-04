@@ -6,7 +6,7 @@ namespace au::rhi {
 
 // Storage buffer object (SBO) in Vulkan
 // Structured buffer object in DX12
-class ResourceStorageBuffer {
+class StorageBuffer {
 public:
     struct Description final {
         unsigned int elementsCount;
@@ -30,8 +30,8 @@ public:
     virtual void Unmap() = 0;
 
 protected:
-    ResourceStorageBuffer() = default;
-    virtual ~ResourceStorageBuffer() = default;
+    StorageBuffer() = default;
+    virtual ~StorageBuffer() = default;
 };
 
 }
