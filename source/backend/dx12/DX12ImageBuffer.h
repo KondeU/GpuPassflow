@@ -7,7 +7,7 @@ namespace au::backend {
 
 class DX12Device;
 
-class DX12ResourceImage : public rhi::ResourceImage
+class DX12ResourceImage : public rhi::ImageBuffer
     , DX12Object<DX12ResourceImage> {
 public:
     explicit DX12ResourceImage(DX12Device& device);

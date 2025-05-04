@@ -11,7 +11,7 @@ class VertexAttribute;
 class IndexAttribute;
 class UniformBuffer;
 class StorageBuffer;
-class ResourceImage;
+class ImageBuffer;
 class Descriptor;
 class DescriptorHeap;
 class PipelineState;
@@ -41,7 +41,7 @@ public:
         ResourceState before, ResourceState after) = 0;
     virtual void RcBarrier(StorageBuffer* const resource,
         ResourceState before, ResourceState after) = 0;
-    virtual void RcBarrier(ResourceImage* const resource,
+    virtual void RcBarrier(ImageBuffer* const resource,
         ResourceState before, ResourceState after) = 0;
     virtual void RcBarrier(Swapchain* const swapchain,
         ResourceState before, ResourceState after) = 0;
@@ -55,14 +55,14 @@ public:
     virtual void RcUpload(const void* const data, size_t size,
         StorageBuffer* const destination, StorageBuffer* const staging) = 0;
     virtual void RcUpload(const void* const data, size_t size,
-        ResourceImage* const destination, ResourceImage* const staging) = 0;
+        ImageBuffer* const destination, ImageBuffer* const staging) = 0;
 
     virtual void RcCopy(VertexBuffer* const dst, VertexBuffer* const src) = 0;
     virtual void RcCopy(IndexBuffer* const dst, IndexBuffer* const src) = 0;
     virtual void RcCopy(UniformBuffer* const dst, UniformBuffer* const src) = 0;
     virtual void RcCopy(StorageBuffer* const dst, StorageBuffer* const src) = 0;
-    virtual void RcCopy(ResourceImage* const dst, ResourceImage* const src) = 0;
-    virtual void RcCopy(Swapchain* const dst, ResourceImage* const src) = 0;
+    virtual void RcCopy(ImageBuffer* const dst, ImageBuffer* const src) = 0;
+    virtual void RcCopy(Swapchain* const dst, ImageBuffer* const src) = 0;
 
     virtual void RcSetViewports(const std::vector<Viewport>& viewports) = 0;
     virtual void RcSetScissors(const std::vector<Scissor>& scissors) = 0;

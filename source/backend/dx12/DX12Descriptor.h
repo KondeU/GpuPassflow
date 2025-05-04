@@ -24,7 +24,7 @@ public:
 
     void BuildDescriptor(rhi::UniformBuffer* resource) override;
     void BuildDescriptor(rhi::StorageBuffer* resource, bool write) override;
-    void BuildDescriptor(rhi::ResourceImage* resource, bool write) override;
+    void BuildDescriptor(rhi::ImageBuffer* resource, bool write) override;
     void BuildDescriptor(rhi::ImageSampler* sampler) override;
 
     D3D12_CPU_DESCRIPTOR_HANDLE AttachmentView() const;      // RTV/DSV

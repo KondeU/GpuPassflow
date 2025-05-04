@@ -4,7 +4,7 @@
 
 namespace au::rhi {
 
-class ResourceImage {
+class ImageBuffer {
 public:
     struct Description final {
         BasicFormat format;
@@ -49,8 +49,8 @@ public:
     virtual void Unmap(unsigned int msaaLayer = 0) = 0;
 
 protected:
-    ResourceImage() = default;
-    virtual ~ResourceImage() = default;
+    ImageBuffer() = default;
+    virtual ~ImageBuffer() = default;
 };
 
 }

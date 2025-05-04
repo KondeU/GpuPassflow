@@ -152,7 +152,7 @@ public:
     virtual unsigned int GetDimensions() const = 0;
 
     virtual void* RawCpuPtr() = 0;
-    rhi::ResourceImage* RawGpuInst(unsigned int index);
+    rhi::ImageBuffer* RawGpuInst(unsigned int index);
 
     Resource<BaseTexture> Clone() const;
 
@@ -160,8 +160,8 @@ protected:
     void SetupGPU();
     void CloseGPU();
 
-    rhi::ResourceImage::Description description{ rhi::BasicFormat::R32G32B32A32_FLOAT, 1, 1 };
-    std::vector<rhi::ResourceImage*> images; // Default memory type: GPU_ONLY
+    rhi::ImageBuffer::Description description{ rhi::BasicFormat::R32G32B32A32_FLOAT, 1, 1 };
+    std::vector<rhi::ImageBuffer*> images; // Default memory type: GPU_ONLY
 };
 
 //////////////////////////////////////////////////

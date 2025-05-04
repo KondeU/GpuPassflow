@@ -177,13 +177,13 @@ bool DX12Device::DestroyResourceBuffer(rhi::StorageBuffer* instance)
     return DestroyInstance(resourceStorageBuffers, instance);
 }
 
-rhi::ResourceImage*
-DX12Device::CreateResourceImage(rhi::ResourceImage::Description description)
+rhi::ImageBuffer*
+DX12Device::CreateResourceImage(rhi::ImageBuffer::Description description)
 {
-    return CreateInstance<rhi::ResourceImage>(resourceImages, description, *this);
+    return CreateInstance<rhi::ImageBuffer>(resourceImages, description, *this);
 }
 
-bool DX12Device::DestroyResourceImage(rhi::ResourceImage* instance)
+bool DX12Device::DestroyResourceImage(rhi::ImageBuffer* instance)
 {
     return DestroyInstance(resourceImages, instance);
 }

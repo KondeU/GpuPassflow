@@ -27,7 +27,7 @@ public:
         rhi::ResourceState before, rhi::ResourceState after) override;
     void RcBarrier(rhi::StorageBuffer* const resource,
         rhi::ResourceState before, rhi::ResourceState after) override;
-    void RcBarrier(rhi::ResourceImage* const resource,
+    void RcBarrier(rhi::ImageBuffer* const resource,
         rhi::ResourceState before, rhi::ResourceState after) override;
     void RcBarrier(rhi::Swapchain* const swapchain,
         rhi::ResourceState before, rhi::ResourceState after) override;
@@ -43,7 +43,7 @@ public:
         rhi::StorageBuffer* const destination,
         rhi::StorageBuffer* const staging) override;
     void RcUpload(const void* const data, size_t size,
-        rhi::ResourceImage* const destination, rhi::ResourceImage* const staging) override;
+        rhi::ImageBuffer* const destination, rhi::ImageBuffer* const staging) override;
 
     void RcCopy(rhi::VertexBuffer* const destination,
         rhi::VertexBuffer* const source) override;
@@ -53,10 +53,10 @@ public:
         rhi::UniformBuffer* const source) override;
     void RcCopy(rhi::StorageBuffer* const destination,
         rhi::StorageBuffer* const source) override;
-    void RcCopy(rhi::ResourceImage* const destination,
-        rhi::ResourceImage* const source) override;
+    void RcCopy(rhi::ImageBuffer* const destination,
+        rhi::ImageBuffer* const source) override;
     void RcCopy(rhi::Swapchain* const destination,
-        rhi::ResourceImage* const source) override;
+        rhi::ImageBuffer* const source) override;
 
     void RcSetViewports(const std::vector<rhi::Viewport>& viewports) override;
     void RcSetScissors(const std::vector<rhi::Scissor>& scissors) override;

@@ -53,8 +53,8 @@ public:
         StorageBuffer::Description description) = 0;
     virtual bool DestroyResourceBuffer(StorageBuffer* instance) = 0;
 
-    virtual ResourceImage* CreateResourceImage(ResourceImage::Description description) = 0;
-    virtual bool DestroyResourceImage(ResourceImage* instance) = 0;
+    virtual ImageBuffer* CreateResourceImage(ImageBuffer::Description description) = 0;
+    virtual bool DestroyResourceImage(ImageBuffer* instance) = 0;
 
     virtual ImageSampler* CreateImageSampler(ImageSampler::Description description) = 0;
     virtual bool DestroyImageSampler(ImageSampler* instance) = 0;

@@ -482,7 +482,7 @@ void BaseTexture::GetSize(unsigned int& width, unsigned int& height, unsigned in
     arrays = description.arrays;
 }
 
-rhi::ResourceImage* BaseTexture::RawGpuInst(unsigned int index)
+rhi::ImageBuffer* BaseTexture::RawGpuInst(unsigned int index)
 {
     if (index >= images.size()) {
         GP_LOG_RETN_W(TAG, "Acquire texture backend instance failed, index out of range.");

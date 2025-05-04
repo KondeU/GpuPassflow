@@ -115,7 +115,7 @@ void DX12Descriptor::BuildDescriptor(rhi::StorageBuffer* resource, bool write)
     pResource = dxResource;
 }
 
-void DX12Descriptor::BuildDescriptor(rhi::ResourceImage* resource, bool write)
+void DX12Descriptor::BuildDescriptor(rhi::ImageBuffer* resource, bool write)
 {
     auto dxResource = dynamic_cast<DX12ResourceImage*>(resource);
 
@@ -211,7 +211,7 @@ DX12ResourceImage* DX12Descriptor::BindedResourceImage() const
     auto ptr = std::get_if<DX12ResourceImage*>(&pResource);
     if (!ptr) {
         GP_LOG_RETN_E(TAG, "Get binded resource buffer failed, this descriptor is not build with "
-            "ResourceImage, or maybe you forgot to call the BuildDescriptor function.");
+            "ImageBuffer, or maybe you forgot to call the BuildDescriptor function.");
     }
     return *ptr;
 }

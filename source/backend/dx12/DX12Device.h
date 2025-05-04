@@ -62,9 +62,9 @@ public:
         rhi::StorageBuffer::Description description) override;
     bool DestroyResourceBuffer(rhi::StorageBuffer* instance) override;
 
-    rhi::ResourceImage* CreateResourceImage(
-        rhi::ResourceImage::Description description) override;
-    bool DestroyResourceImage(rhi::ResourceImage* instance) override;
+    rhi::ImageBuffer* CreateResourceImage(
+        rhi::ImageBuffer::Description description) override;
+    bool DestroyResourceImage(rhi::ImageBuffer* instance) override;
 
     rhi::ImageSampler* CreateImageSampler(
         rhi::ImageSampler::Description description) override;

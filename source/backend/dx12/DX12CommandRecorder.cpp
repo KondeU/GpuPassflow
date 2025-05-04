@@ -170,7 +170,7 @@ void DX12CommandRecorder::RcBarrier(
 }
 
 void DX12CommandRecorder::RcBarrier(
-    ResourceImage* const resource, ResourceState before, ResourceState after)
+    ImageBuffer* const resource, ResourceState before, ResourceState after)
 {
     RcBarrierTemplate<DX12ResourceImage>(*this, *resource, before, after);
 }
@@ -212,14 +212,14 @@ void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
 void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
     StorageBuffer* const destination, StorageBuffer* const staging)
 {
-    CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:ResourceImage);
+    CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:ImageBuffer);
     RcUploadTemplate<DX12ResourceStorageBuffer>(*this, *destination, *staging, size, data);
 }
 
 void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
-    ResourceImage* const destination, ResourceImage* const staging)
+    ImageBuffer* const destination, ImageBuffer* const staging)
 {
-    CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:ResourceImage);
+    CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:ImageBuffer);
     RcUploadTemplate<DX12ResourceImage>(*this, *destination, *staging, size, data);
 }
 
@@ -252,15 +252,15 @@ void DX12CommandRecorder::RcCopy(
 }
 
 void DX12CommandRecorder::RcCopy(
-    ResourceImage* const destination, ResourceImage* const source)
+    ImageBuffer* const destination, ImageBuffer* const source)
 {
-    CHECK_RECORD(description.commandType, CommandType::All, RcCopy:ResourceImage);
+    CHECK_RECORD(description.commandType, CommandType::All, RcCopy:ImageBuffer);
     RcCopyTemplate<DX12ResourceImage>(*this, *destination, *source);
 }
 
-void DX12CommandRecorder::RcCopy(Swapchain* const destination, ResourceImage* const source)
+void DX12CommandRecorder::RcCopy(Swapchain* const destination, ImageBuffer* const source)
 {
-    CHECK_RECORD(description.commandType, CommandType::Graphics, RcCopy:ResourceImage);
+    CHECK_RECORD(description.commandType, CommandType::Graphics, RcCopy:ImageBuffer);
     auto image = dynamic_cast<DX12ResourceImage*>(source);
     auto swapchain = dynamic_cast<DX12Swapchain*>(destination);
     recorder->CopyResource(swapchain->CurrentRenderTargetBuffer().Get(), image->Buffer().Get());
@@ -317,7 +317,7 @@ void DX12CommandRecorder::RcClearDepthStencilAttachment(Swapchain* const swapcha
 void DX12CommandRecorder::RcClearColorAttachment(Descriptor* const descriptor)
 {
     CHECK_RECORD(description.commandType,
-        CommandType::Graphics, RcClearColorAttachment:ResourceImage);
+        CommandType::Graphics, RcClearColorAttachment:ImageBuffer);
     auto dxDescriptor = dynamic_cast<DX12Descriptor*>(descriptor);
     auto dxAttachment = dxDescriptor->BindedResourceImage();
     if (!dxAttachment) {
@@ -333,7 +333,7 @@ void DX12CommandRecorder::RcClearColorAttachment(Descriptor* const descriptor)
 void DX12CommandRecorder::RcClearDepthStencilAttachment(Descriptor* const descriptor)
 {
     CHECK_RECORD(description.commandType,
-        CommandType::Graphics, RcClearDepthStencilAttachment:ResourceImage);
+        CommandType::Graphics, RcClearDepthStencilAttachment:ImageBuffer);
     auto dxDescriptor = dynamic_cast<DX12Descriptor*>(descriptor);
     auto dxAttachment = dxDescriptor->BindedResourceImage();
     if (!dxAttachment) {

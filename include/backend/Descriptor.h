@@ -6,7 +6,7 @@ namespace au::rhi {
 
 class UniformBuffer;
 class StorageBuffer;
-class ResourceImage;
+class ImageBuffer;
 class ImageSampler;
 
 class Descriptor {
@@ -22,7 +22,7 @@ public:
 
     virtual void BuildDescriptor(UniformBuffer* resource) = 0;
     virtual void BuildDescriptor(StorageBuffer* resource, bool write) = 0;
-    virtual void BuildDescriptor(ResourceImage* resource, bool write) = 0;
+    virtual void BuildDescriptor(ImageBuffer* resource, bool write) = 0;
     virtual void BuildDescriptor(ImageSampler* sampler) = 0;
 
 protected:
