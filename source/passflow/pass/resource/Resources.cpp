@@ -333,11 +333,11 @@ void BaseVertexBuffer::ForceUploadVertexBuffer(unsigned int index)
     }
     auto vertexBuffer = vertices[index];
     if (description.memoryType == rhi::TransferDirection::GPU_ONLY) {
-        auto staging = device->CreateInputVertex({ description.verticesCount,
+        auto staging = device->CreateVertexBuffer({ description.verticesCount,
             description.attributesByteSize, rhi::TransferDirection::CPU_TO_GPU });
         UploadRemote(device, vertexBuffer, staging, RawCpuPtr(),
             description.attributesByteSize, description.verticesCount);
-        device->DestroyInputVertex(staging);
+        device->DestroyVertexBuffer(staging);
     } else if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(vertexBuffer, RawCpuPtr(),
             description.attributesByteSize, description.verticesCount);
@@ -383,14 +383,14 @@ void BaseVertexBuffer::SetupGPU()
     }
     vertices.resize(avoidInfight ? multipleBufferingCount : 1);
     for (auto& vertex : vertices) {
-        vertex = device->CreateInputVertex(description);
+        vertex = device->CreateVertexBuffer(description);
     }
 }
 
 void BaseVertexBuffer::CloseGPU()
 {
     for (auto vertex : vertices) {
-        device->DestroyInputVertex(vertex);
+        device->DestroyVertexBuffer(vertex);
     }
     vertices.resize(0);
 }

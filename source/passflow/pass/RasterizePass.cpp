@@ -181,7 +181,7 @@ void RasterizePass::InitializePipeline(rhi::Device* device)
 
 void RasterizePass::DeclareInput(const InputProperties& properties)
 {
-    inputVertexAttributes = device->CreateInputVertexAttributes();
+    inputVertexAttributes = device->CreateVertexAttribute();
     for (const auto& attribute : properties.vertexAttributes) {
         inputVertexAttributes->AddAttribute(attribute);
     }
@@ -305,7 +305,7 @@ void RasterizePass::CleanPipeline()
 {
     if (device) {
         if (inputVertexAttributes) {
-            device->DestroyInputVertexAttributes(inputVertexAttributes);
+            device->DestroyVertexAttribute(inputVertexAttributes);
         }
         inputVertexAttributes = nullptr;
         if (inputIndexAttribute) {

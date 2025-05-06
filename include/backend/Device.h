@@ -25,15 +25,11 @@ public:
         std::string adaptor;
     };
 
-    //----------------------------------------//
-    //             Input Assembly             //
-    //----------------------------------------//
+    virtual VertexBuffer* CreateVertexBuffer(VertexBuffer::Description description) = 0;
+    virtual bool DestroyVertexBuffer(VertexBuffer* instance) = 0;
 
-    virtual VertexBuffer* CreateInputVertex(VertexBuffer::Description description) = 0;
-    virtual bool DestroyInputVertex(VertexBuffer* instance) = 0;
-
-    virtual VertexAttribute* CreateInputVertexAttributes() = 0;
-    virtual bool DestroyInputVertexAttributes(VertexAttribute* instance) = 0;
+    virtual VertexAttribute* CreateVertexAttribute() = 0;
+    virtual bool DestroyVertexAttribute(VertexAttribute* instance) = 0;
 
     virtual IndexBuffer* CreateInputIndex(IndexBuffer::Description description) = 0;
     virtual bool DestroyInputIndex(IndexBuffer* instance) = 0;

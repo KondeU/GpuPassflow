@@ -110,23 +110,23 @@ bool DX12Device::DestroyCommandRecorder(rhi::CommandRecorder* instance)
 }
 
 rhi::VertexBuffer*
-DX12Device::CreateInputVertex(rhi::VertexBuffer::Description description)
+DX12Device::CreateVertexBuffer(rhi::VertexBuffer::Description description)
 {
     return CreateInstance<rhi::VertexBuffer>(inputVertices, description, *this);
 }
 
-bool DX12Device::DestroyInputVertex(rhi::VertexBuffer* instance)
+bool DX12Device::DestroyVertexBuffer(rhi::VertexBuffer* instance)
 {
     return DestroyInstance(inputVertices, instance);
 }
 
 rhi::VertexAttribute*
-DX12Device::CreateInputVertexAttributes()
+DX12Device::CreateVertexAttribute()
 {
     return CreateInstance<rhi::VertexAttribute>(inputVertexAttributes, {});
 }
 
-bool DX12Device::DestroyInputVertexAttributes(rhi::VertexAttribute* instance)
+bool DX12Device::DestroyVertexAttribute(rhi::VertexAttribute* instance)
 {
     return DestroyInstance(inputVertexAttributes, instance);
 }
