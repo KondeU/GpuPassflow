@@ -51,7 +51,7 @@ private:
     UINT mRenderTargetViewDescriptorHandleIncrementSize = 0; // RTV
     UINT mDepthStencilViewDescriptorHandleIncrementSize = 0; // DSV
 
-    Description description{ rhi::DescriptorType::ConstantBuffer };
+    Description description{ rhi::DescriptorType::UniformBuffer };
     UINT descriptorHandleIncrementSize = 0;
     D3D12_CPU_DESCRIPTOR_HANDLE hCpuDescriptor;
     D3D12_GPU_DESCRIPTOR_HANDLE hGpuDescriptor;

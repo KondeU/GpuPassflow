@@ -167,10 +167,10 @@ protected:
 //////////////////////////////////////////////////
 
 template <typename T>
-class ConstantBuffer final : public BaseConstantBuffer {
+class UniformBuffer final : public BaseConstantBuffer {
 public:
     static_assert(std::is_trivial<T>::value && std::is_standard_layout<T>::value,
-        "The specialization type of ConstantBuffer must be POD!");
+        "The specialization type of UniformBuffer must be POD!");
 
     void ConfigureConstantBufferHeapType(rhi::TransferDirection type);
 

@@ -31,7 +31,7 @@ bool ComputePass::AddDispatchItem(std::shared_ptr<DispatchItem> item)
 bool ComputePass::AddPassResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
 {
     if (currentResources.frame == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddPassResource(ConstantBuffer), please MakeCurrent first!");
+        GP_LOG_RETF_W(TAG, "Cannot AddPassResource(UniformBuffer), please MakeCurrent first!");
     }
     currentResources.frame->passResources.constantBuffers[name] = buffer;
     return true;
@@ -67,7 +67,7 @@ bool ComputePass::AddPassResource(const FRsKey& name, Resource<Sampler> sampler)
 bool ComputePass::AddSceneResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
 {
     if (currentResources.scene == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddSceneResource(ConstantBuffer), please MakeCurrent first!");
+        GP_LOG_RETF_W(TAG, "Cannot AddSceneResource(UniformBuffer), please MakeCurrent first!");
     }
     currentResources.scene->sceneResources.constantBuffers[name] = buffer;
     return true;
@@ -103,7 +103,7 @@ bool ComputePass::AddSceneResource(const FRsKey& name, Resource<Sampler> sampler
 bool ComputePass::AddViewResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddViewResource(ConstantBuffer), please MakeCurrent first!");
+        GP_LOG_RETF_W(TAG, "Cannot AddViewResource(UniformBuffer), please MakeCurrent first!");
     }
     currentResources.view->viewResources.constantBuffers[name] = buffer;
     return true;

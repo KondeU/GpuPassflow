@@ -12,23 +12,23 @@ inline void SafeCopyMemory(void* dstAddr, size_t dstSize, const void* srcAddr, s
 }
 
 //////////////////////////////////////////////////
-// ConstantBuffer<T>
+// UniformBuffer<T>
 
 template <typename T>
-inline void ConstantBuffer<T>::ConfigureConstantBufferHeapType(rhi::TransferDirection type)
+inline void UniformBuffer<T>::ConfigureConstantBufferHeapType(rhi::TransferDirection type)
 {
     description.memoryType = type;
 }
 
 template <typename T>
-inline void ConstantBuffer<T>::SetupConstantBuffer()
+inline void UniformBuffer<T>::SetupConstantBuffer()
 {
     description.bufferBytesSize = sizeof(T);
     SetupGPU();
 }
 
 template <typename T>
-inline T& ConstantBuffer<T>::AcquireConstantBuffer(bool update)
+inline T& UniformBuffer<T>::AcquireConstantBuffer(bool update)
 {
     if (update) {
         dirty.set();
@@ -40,19 +40,19 @@ inline T& ConstantBuffer<T>::AcquireConstantBuffer(bool update)
 }
 
 template <typename T>
-inline void ConstantBuffer<T>::UpdateConstantBuffer(const T& value)
+inline void UniformBuffer<T>::UpdateConstantBuffer(const T& value)
 {
     SafeCopyMemory(&AcquireConstantBuffer(true), sizeof(T), &value, sizeof(value));
 }
 
 template <typename T>
-inline void ConstantBuffer<T>::ReleaseConstantBuffer()
+inline void UniformBuffer<T>::ReleaseConstantBuffer()
 {
     constantBufferData.reset();
 }
 
 template <typename T>
-inline void* ConstantBuffer<T>::RawCpuPtr()
+inline void* UniformBuffer<T>::RawCpuPtr()
 {
     return &AcquireConstantBuffer(false);
 }

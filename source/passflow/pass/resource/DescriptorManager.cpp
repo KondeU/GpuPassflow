@@ -79,8 +79,8 @@ rhi::Descriptor* DynamicDescriptorManager::AcquireDescriptor(unsigned int index)
     if (!descriptor) {
         // The Type used to create the DescriptorHeap only specifies the type of Heap, while
         // the Type used to create the Descriptor specifies the specific type. For example, the
-        // type of DescriptorHeap is ShaderResource, and the type of Descriptor is ConstantBuffer.
-        // And where, ShaderResource contains types such as ConstantBuffer and so on.
+        // type of DescriptorHeap is ShaderResource, and the type of Descriptor is UniformBuffer.
+        // And where, ShaderResource contains types such as UniformBuffer and so on.
         // Here we directly use the Type of DescriptorHeap to allocate the Descriptor. There is
         // no problem in this way, but the abstract logic is not quite correct.
         descriptor = descriptorHeap->AllocateDescriptor({ heapType });

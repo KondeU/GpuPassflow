@@ -62,7 +62,6 @@ enum class BasicFormat {
     R8_SINT,
     R8_UNORM,
     R8_SNORM,
-    R1_UNORM,
     A8_UNORM,
     D32_FLOAT,
     D24_UNORM_S8_UINT,
@@ -72,7 +71,7 @@ enum class BasicFormat {
     B8G8R8A8_UNORM,
     B8G8R8X8_UNORM,
     B8G8R8A8_UNORM_SRGB,
-    B8G8R8X8_UNORM_SRGB,
+    B8G8R8X8_UNORM_SRGB
 };
 
 enum class IndexFormat {
@@ -81,10 +80,38 @@ enum class IndexFormat {
 };
 
 enum class VertexFormat {
-    FLOAT32x2,
-    FLOAT32x3,
-    FLOAT32x4
-    // TODO...
+    UINT8,
+    UINT8_VEC2,
+    UINT8_VEC3,
+    UINT8_VEC4,
+    SINT8,
+    SINT8_VEC2,
+    SINT8_VEC3,
+    SINT8_VEC4,
+    UINT16,
+    UINT16_VEC2,
+    UINT16_VEC3,
+    UINT16_VEC4,
+    SINT16,
+    SINT16_VEC2,
+    SINT16_VEC3,
+    SINT16_VEC4,
+    FLOAT16,
+    FLOAT16_VEC2,
+    FLOAT16_VEC3,
+    FLOAT16_VEC4,
+    UINT32,
+    UINT32_VEC2,
+    UINT32_VEC3,
+    UINT32_VEC4,
+    SINT32,
+    SINT32_VEC2,
+    SINT32_VEC3,
+    SINT32_VEC4,
+    FLOAT32,
+    FLOAT32_VEC2,
+    FLOAT32_VEC3,
+    FLOAT32_VEC4
 };
 
 enum class VertexInputRate {
@@ -121,14 +148,7 @@ enum class ResourceState {
     DEPTH_STENCIL_READ,
     DEPTH_STENCIL_WRITE,
     COPY_SOURCE,
-    COPY_DESTINATION,
-    RESOLVE_SOURCE,
-    RESOLVE_DESTINATION
-};
-
-enum class MSAA : uint8_t {
-    MSAAx1 = 1,
-    MSAAx4 = 4
+    COPY_DESTINATION
 };
 
 enum class CommandType : uint8_t {
@@ -154,16 +174,16 @@ enum class ImageDimension : uint8_t {
 };
 
 enum class DescriptorType : uint8_t {
-    ConstantBuffer   = (1 << 0),
-    StorageBuffer    = (1 << 1),
+    UniformBuffer    = (1 << 0),
+    ReadOnlyBuffer   = (1 << 1),
     ReadWriteBuffer  = (1 << 2),
     ReadOnlyTexture  = (1 << 3),
     ReadWriteTexture = (1 << 4),
-    ShaderResource = // descriptor for shader resource: buffer or texture
-        ConstantBuffer | StorageBuffer | ReadWriteBuffer | ReadOnlyTexture | ReadWriteTexture,
-    ImageSampler   = (1 << 5), // descriptor for image sampler
-    ColorOutput    = (1 << 6), // descriptor for render target
-    DepthStencil   = (1 << 7)  // descriptor for depth stencil
+    ShaderResource   = // descriptor for shader resource: buffer or texture
+        UniformBuffer | ReadOnlyBuffer | ReadWriteBuffer | ReadOnlyTexture | ReadWriteTexture,
+    ImageSampler     = (1 << 5), // descriptor for image sampler
+    ColorOutput      = (1 << 6), // descriptor for render target
+    DepthStencil     = (1 << 7)  // descriptor for depth stencil
 };
 
 enum class PipelineStage : uint32_t {
@@ -267,15 +287,16 @@ enum class PassAction : uint8_t {
     Load    = (1 << 1),
     Store   = (1 << 2),
     Clear   = (1 << 3),
-    Resolve = (1 << 4),
-    BeginAction = Discard | Load  | Clear,
-    EndAction   = Discard | Store | Resolve
+    BeginAction = Discard | Load | Clear,
+    EndAction   = Discard | Store
 };
 
 inline bool IsBasicFormatHasDepth(BasicFormat format)
 {
     switch (format) {
+    case BasicFormat::D32_FLOAT:
     case BasicFormat::D24_UNORM_S8_UINT:
+    case BasicFormat::D16_UNORM:
         return true;
     }
     return false;
@@ -293,19 +314,73 @@ inline bool IsBasicFormatHasStencil(BasicFormat format)
 inline unsigned int QueryBasicFormatBytes(BasicFormat format)
 {
     switch (format) {
-    case BasicFormat::R8G8B8A8_UNORM:
-    case BasicFormat::R8G8B8A8_UINT:
-    case BasicFormat::D24_UNORM_S8_UINT:
-    case BasicFormat::V32_FLOAT:
-        return 4;
-    case BasicFormat::V32V32_FLOAT:
-        return 8;
-    case BasicFormat::R32G32B32_FLOAT:
-    case BasicFormat::V32V32V32_FLOAT:
-        return 12;
     case BasicFormat::R32G32B32A32_FLOAT:
-    case BasicFormat::V32V32V32V32_FLOAT:
+    case BasicFormat::R32G32B32A32_UINT:
+    case BasicFormat::R32G32B32A32_SINT:
         return 16;
+    case BasicFormat::R32G32B32_FLOAT:
+    case BasicFormat::R32G32B32_UINT:
+    case BasicFormat::R32G32B32_SINT:
+        return 12;
+    case BasicFormat::R16G16B16A16_FLOAT:
+    case BasicFormat::R16G16B16A16_UINT:
+    case BasicFormat::R16G16B16A16_SINT:
+    case BasicFormat::R16G16B16A16_UNORM:
+    case BasicFormat::R16G16B16A16_SNORM:
+        return 8;
+    case BasicFormat::R32G32_FLOAT:
+    case BasicFormat::R32G32_UINT:
+    case BasicFormat::R32G32_SINT:
+        return 8;
+    case BasicFormat::R10G10B10A2_UINT:
+    case BasicFormat::R10G10B10A2_UNORM:
+        return 4;
+    case BasicFormat::R8G8B8A8_UINT:
+    case BasicFormat::R8G8B8A8_SINT:
+    case BasicFormat::R8G8B8A8_UNORM:
+    case BasicFormat::R8G8B8A8_UNORM_SRGB:
+    case BasicFormat::R8G8B8A8_SNORM:
+        return 4;
+    case BasicFormat::R16G16_FLOAT:
+    case BasicFormat::R16G16_UINT:
+    case BasicFormat::R16G16_SINT:
+    case BasicFormat::R16G16_UNORM:
+    case BasicFormat::R16G16_SNORM:
+        return 4;
+    case BasicFormat::R32_FLOAT:
+    case BasicFormat::R32_UINT:
+    case BasicFormat::R32_SINT:
+        return 4;
+    case BasicFormat::R8G8_UINT:
+    case BasicFormat::R8G8_SINT:
+    case BasicFormat::R8G8_UNORM:
+    case BasicFormat::R8G8_SNORM:
+        return 2;
+    case BasicFormat::R16_FLOAT:
+    case BasicFormat::R16_UINT:
+    case BasicFormat::R16_SINT:
+    case BasicFormat::R16_UNORM:
+    case BasicFormat::R16_SNORM:
+        return 2;
+    case BasicFormat::R8_UINT:
+    case BasicFormat::R8_SINT:
+    case BasicFormat::R8_UNORM:
+    case BasicFormat::R8_SNORM:
+    case BasicFormat::A8_UNORM:
+        return 1;
+    case BasicFormat::D32_FLOAT:
+    case BasicFormat::D24_UNORM_S8_UINT:
+        return 4;
+    case BasicFormat::D16_UNORM:
+        return 2;
+    case BasicFormat::B5G6R5_UNORM:
+    case BasicFormat::B5G5R5A1_UNORM:
+        return 2;
+    case BasicFormat::B8G8R8A8_UNORM:
+    case BasicFormat::B8G8R8X8_UNORM:
+    case BasicFormat::B8G8R8A8_UNORM_SRGB:
+    case BasicFormat::B8G8R8X8_UNORM_SRGB:
+        return 4;
     }
     return 0;
 }
@@ -324,11 +399,51 @@ inline unsigned int QueryIndexFormatBytes(IndexFormat format)
 inline unsigned int QueryVertexFormatBytes(VertexFormat format)
 {
     switch (format) {
-    case VertexFormat::FLOAT32x2:
+    case VertexFormat::UINT8:
+    case VertexFormat::SINT8:
+        return 1;
+    case VertexFormat::UINT8_VEC2:
+    case VertexFormat::SINT8_VEC2:
+        return 2;
+    case VertexFormat::UINT8_VEC3:
+    case VertexFormat::SINT8_VEC3:
+        return 4;
+    case VertexFormat::UINT8_VEC4:
+    case VertexFormat::SINT8_VEC4:
+        return 4;
+
+    case VertexFormat::UINT16:
+    case VertexFormat::SINT16:
+    case VertexFormat::FLOAT16:
+        return 2;
+    case VertexFormat::UINT16_VEC2:
+    case VertexFormat::SINT16_VEC2:
+    case VertexFormat::FLOAT16_VEC2:
+        return 4;
+    case VertexFormat::UINT16_VEC3:
+    case VertexFormat::SINT16_VEC3:
+    case VertexFormat::FLOAT16_VEC3:
         return 8;
-    case VertexFormat::FLOAT32x3:
+    case VertexFormat::UINT16_VEC4:
+    case VertexFormat::SINT16_VEC4:
+    case VertexFormat::FLOAT16_VEC4:
+        return 8;
+
+    case VertexFormat::UINT32:
+    case VertexFormat::SINT32:
+    case VertexFormat::FLOAT32:
+        return 4;
+    case VertexFormat::UINT32_VEC2:
+    case VertexFormat::SINT32_VEC2:
+    case VertexFormat::FLOAT32_VEC2:
+        return 8;
+    case VertexFormat::UINT32_VEC3:
+    case VertexFormat::SINT32_VEC3:
+    case VertexFormat::FLOAT32_VEC3:
         return 12;
-    case VertexFormat::FLOAT32x4:
+    case VertexFormat::UINT32_VEC4:
+    case VertexFormat::SINT32_VEC4:
+    case VertexFormat::FLOAT32_VEC4:
         return 16;
     }
     return 0;

@@ -170,7 +170,7 @@ D3D12_DESCRIPTOR_HEAP_FLAGS ConvertDescriptorHeapVisible(DescriptorType type)
 D3D12_DESCRIPTOR_RANGE_TYPE ConvertDescriptorRangeType(DescriptorType type, bool& success)
 {
     static const std::unordered_map<DescriptorType, D3D12_DESCRIPTOR_RANGE_TYPE> map = {
-        { DescriptorType::ConstantBuffer,   D3D12_DESCRIPTOR_RANGE_TYPE_CBV     },
+        { DescriptorType::UniformBuffer,   D3D12_DESCRIPTOR_RANGE_TYPE_CBV     },
         { DescriptorType::StorageBuffer,    D3D12_DESCRIPTOR_RANGE_TYPE_SRV     },
         { DescriptorType::ReadWriteBuffer,  D3D12_DESCRIPTOR_RANGE_TYPE_UAV     },
         { DescriptorType::ReadOnlyTexture,  D3D12_DESCRIPTOR_RANGE_TYPE_SRV     },

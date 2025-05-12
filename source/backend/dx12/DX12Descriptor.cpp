@@ -57,7 +57,7 @@ void DX12Descriptor::Setup(Description description)
 
 void DX12Descriptor::Shutdown()
 {
-    description = { rhi::DescriptorType::ConstantBuffer };
+    description = { rhi::DescriptorType::UniformBuffer };
     hCpuDescriptor = {};
     hGpuDescriptor = {};
     pResource = static_cast<void*>(nullptr);
