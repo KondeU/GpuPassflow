@@ -22,7 +22,8 @@ void RasterizePass::MakeCurrent(const FRsKey& scene, const FRsKey& view)
 bool RasterizePass::AddDrawItem(std::shared_ptr<DrawItem> item)
 {
     if (currentResources.scene == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddDrawItem, please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddDrawItem, please MakeCurrent first!");
+        return false;
     }
     currentResources.scene->drawItems.emplace_back(item);
     return true;
@@ -31,7 +32,8 @@ bool RasterizePass::AddDrawItem(std::shared_ptr<DrawItem> item)
 bool RasterizePass::AddPassResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
 {
     if (currentResources.frame == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddPassResource(UniformBuffer), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddPassResource(UniformBuffer), please MakeCurrent first!");
+        return false;
     }
     currentResources.frame->passResources.constantBuffers[name] = buffer;
     return true;
@@ -40,7 +42,8 @@ bool RasterizePass::AddPassResource(const FRsKey& name, Resource<BaseConstantBuf
 bool RasterizePass::AddPassResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer)
 {
     if (currentResources.frame == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddPassResource(StructuredBuffer), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddPassResource(StructuredBuffer), please MakeCurrent first!");
+        return false;
     }
     currentResources.frame->passResources.structuredBuffers[name] = buffer;
     return true;
@@ -49,7 +52,8 @@ bool RasterizePass::AddPassResource(const FRsKey& name, Resource<BaseStructuredB
 bool RasterizePass::AddPassResource(const FRsKey& name, Resource<BaseTexture> texture)
 {
     if (currentResources.frame == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddPassResource(Texture), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddPassResource(Texture), please MakeCurrent first!");
+        return false;
     }
     currentResources.frame->passResources.textures[name] = texture;
     return true;
@@ -58,7 +62,8 @@ bool RasterizePass::AddPassResource(const FRsKey& name, Resource<BaseTexture> te
 bool RasterizePass::AddPassResource(const FRsKey& name, Resource<Sampler> sampler)
 {
     if (currentResources.frame == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddPassResource(Sampler), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddPassResource(Sampler), please MakeCurrent first!");
+        return false;
     }
     currentResources.frame->passResources.samplers[name] = sampler;
     return true;
@@ -67,7 +72,8 @@ bool RasterizePass::AddPassResource(const FRsKey& name, Resource<Sampler> sample
 bool RasterizePass::AddSceneResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
 {
     if (currentResources.scene == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddSceneResource(UniformBuffer), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddSceneResource(UniformBuffer), please MakeCurrent first!");
+        return false;
     }
     currentResources.scene->sceneResources.constantBuffers[name] = buffer;
     return true;
@@ -76,7 +82,8 @@ bool RasterizePass::AddSceneResource(const FRsKey& name, Resource<BaseConstantBu
 bool RasterizePass::AddSceneResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer)
 {
     if (currentResources.scene == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddSceneResource(StructuredBuffer), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddSceneResource(StructuredBuffer), please MakeCurrent first!");
+        return false;
     }
     currentResources.scene->sceneResources.structuredBuffers[name] = buffer;
     return true;
@@ -85,7 +92,8 @@ bool RasterizePass::AddSceneResource(const FRsKey& name, Resource<BaseStructured
 bool RasterizePass::AddSceneResource(const FRsKey& name, Resource<BaseTexture> texture)
 {
     if (currentResources.scene == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddSceneResource(Texture), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddSceneResource(Texture), please MakeCurrent first!");
+        return false;
     }
     currentResources.scene->sceneResources.textures[name] = texture;
     return true;
@@ -94,7 +102,8 @@ bool RasterizePass::AddSceneResource(const FRsKey& name, Resource<BaseTexture> t
 bool RasterizePass::AddSceneResource(const FRsKey& name, Resource<Sampler> sampler)
 {
     if (currentResources.scene == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddSceneResource(Sampler), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddSceneResource(Sampler), please MakeCurrent first!");
+        return false;
     }
     currentResources.scene->sceneResources.samplers[name] = sampler;
     return true;
@@ -103,7 +112,8 @@ bool RasterizePass::AddSceneResource(const FRsKey& name, Resource<Sampler> sampl
 bool RasterizePass::AddViewResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddViewResource(UniformBuffer), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddViewResource(UniformBuffer), please MakeCurrent first!");
+        return false;
     }
     currentResources.view->viewResources.constantBuffers[name] = buffer;
     return true;
@@ -112,7 +122,8 @@ bool RasterizePass::AddViewResource(const FRsKey& name, Resource<BaseConstantBuf
 bool RasterizePass::AddViewResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddViewResource(StructuredBuffer), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddViewResource(StructuredBuffer), please MakeCurrent first!");
+        return false;
     }
     currentResources.view->viewResources.structuredBuffers[name] = buffer;
     return true;
@@ -121,7 +132,8 @@ bool RasterizePass::AddViewResource(const FRsKey& name, Resource<BaseStructuredB
 bool RasterizePass::AddViewResource(const FRsKey& name, Resource<BaseTexture> texture)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddViewResource(Texture), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddViewResource(Texture), please MakeCurrent first!");
+        return false;
     }
     currentResources.view->viewResources.textures[name] = texture;
     return true;
@@ -130,7 +142,8 @@ bool RasterizePass::AddViewResource(const FRsKey& name, Resource<BaseTexture> te
 bool RasterizePass::AddViewResource(const FRsKey& name, Resource<Sampler> sampler)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddViewResource(Sampler), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddViewResource(Sampler), please MakeCurrent first!");
+        return false;
     }
     currentResources.view->viewResources.samplers[name] = sampler;
     return true;
@@ -139,7 +152,8 @@ bool RasterizePass::AddViewResource(const FRsKey& name, Resource<Sampler> sample
 bool RasterizePass::AddViewOutput(const FRsKey& name, Resource<ColorOutput> output)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddViewOutput(ColorOutput), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddViewOutput(ColorOutput), please MakeCurrent first!");
+        return false;
     }
     currentResources.view->viewOutputs.colorOutputs[name] = output;
     return true;
@@ -148,7 +162,8 @@ bool RasterizePass::AddViewOutput(const FRsKey& name, Resource<ColorOutput> outp
 bool RasterizePass::AddViewOutput(const FRsKey& name, Resource<DepthStencilOutput> output)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddViewOutput(DepthStencilOutput), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddViewOutput(DepthStencilOutput), please MakeCurrent first!");
+        return false;
     }
     currentResources.view->viewOutputs.depthStencilOutputs[name] = output;
     return true;
@@ -157,7 +172,8 @@ bool RasterizePass::AddViewOutput(const FRsKey& name, Resource<DepthStencilOutpu
 bool RasterizePass::AddViewOutput(const FRsKey& name, Resource<DisplayPresentOutput> output)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddViewOutput(DisplayPresentOutput), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddViewOutput(DisplayPresentOutput), please MakeCurrent first!");
+        return false;
     }
     currentResources.view->viewOutputs.displayPresentOutputs[name] = output;
     return true;
@@ -263,18 +279,22 @@ void RasterizePass::DeclareResource(const ShaderResourceProperties& properties)
 bool RasterizePass::BuildPipeline()
 {
     if (!pipelineState) {
-        GP_LOG_RETF_E(TAG, "Build pipeline failed, please initialize pipeline first.");
+        GP_LOG_E(TAG, "Build pipeline failed, please initialize pipeline first.");
+        return false;
     }
     if (!pipelineLayout) {
-        GP_LOG_RETF_E(TAG, "Build pipeline failed, please declare resource first.");
+        GP_LOG_E(TAG, "Build pipeline failed, please declare resource first.");
+        return false;
     }
     if (programShaders.empty()) {
-        GP_LOG_RETF_E(TAG, "Build pipeline failed, please declare program first.");
+        GP_LOG_E(TAG, "Build pipeline failed, please declare program first.");
+        return false;
     }
     for (const auto& [stage, shader] : programShaders) {
         if (!shader->IsValid()) {
-            GP_LOG_RETF_E(TAG, "Build pipeline failed, "
+            GP_LOG_E(TAG, "Build pipeline failed, "
                 "shader(stage is `%d`) is invalid.", EnumCast(stage));
+            return false;
         }
     }
 
@@ -385,7 +405,8 @@ DynamicDescriptorManager& RasterizePass::AcquireDescriptorManager(
 void RasterizePass::UpdateFrameResources(unsigned int bufferingIndex)
 {
     if (bufferingIndex >= (frameResources.size() - 1)) {
-        GP_LOG_RET_E(TAG, "Cannot staging frame resources, target buffering index out of range!");
+        GP_LOG_E(TAG, "Cannot staging frame resources, target buffering index out of range!");
+        return;
     }
     frameResources[bufferingIndex] = frameResources.back();
     frameResources.back() = std::make_shared<FrameResources>();

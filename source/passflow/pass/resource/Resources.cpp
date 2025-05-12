@@ -55,7 +55,7 @@ void DeviceHolder::CheckSize(unsigned int& size)
 {
     if (size == 0) {
         size = 1;
-        GP_LOG_W(TAG, "Resource size check failed(size=0)! fallback to using 1.");
+        GP_LOG_W(TAG, "Resource size check failed(size=0)! fallback to use 1.");
         return;
     } // else check pass.
 }
@@ -63,8 +63,8 @@ void DeviceHolder::CheckSize(unsigned int& size)
 void DeviceHolder::CheckSize(unsigned int& size, unsigned int limit)
 {
     if (size > limit) {
-        size = 1;
-        GP_LOG_E(TAG, "Resource size check failed(size>limit)! fallback to using 1.");
+        size = limit;
+        GP_LOG_E(TAG, "Resource size check failed(size>limit)! fallback to use limit: %d", limit);
         return;
     } // else check pass, and goto next check.
     CheckSize(size);
@@ -170,7 +170,8 @@ BaseStructuredBuffer::~BaseStructuredBuffer()
 void BaseStructuredBuffer::ForceUploadStructuredBuffer(unsigned int index)
 {
     if (index >= buffers.size()) {
-        GP_LOG_RET_W(TAG, "Upload structured buffer failed, index out of range.");
+        GP_LOG_W(TAG, "Upload structured buffer failed, index out of range.");
+        return;
     }
     auto buffer = buffers[index];
     if (description.memoryType == rhi::TransferDirection::GPU_ONLY) {
@@ -182,7 +183,8 @@ void BaseStructuredBuffer::ForceUploadStructuredBuffer(unsigned int index)
     } else if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(buffer, RawCpuPtr(), description.elementBytesSize, description.elementsCount);
     } else {
-        GP_LOG_RET_W(TAG, "Upload structured buffer failed, this buffer is in the readback heap.");
+        GP_LOG_W(TAG, "Upload structured buffer failed, this buffer is in the readback heap.");
+        return;
     }
     dirty.reset(index);
 }
@@ -211,8 +213,8 @@ void BaseStructuredBuffer::UploadStructuredBuffers()
 rhi::StorageBuffer* BaseStructuredBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= buffers.size()) {
-        GP_LOG_RETN_W(TAG,
-            "Acquire structured buffer backend instance failed, index out of range.");
+        GP_LOG_W(TAG, "Acquire structured buffer backend instance failed, index out of range.");
+        return nullptr;
     }
     return buffers[index];
 }
@@ -220,7 +222,8 @@ rhi::StorageBuffer* BaseStructuredBuffer::RawGpuInst(unsigned int index)
 void BaseStructuredBuffer::SetupGPU()
 {
     if (!buffers.empty()) {
-        GP_LOG_RET_W(TAG, "The structured buffer GPU resource `%p` has already been setup.", this);
+        GP_LOG_W(TAG, "The structured buffer GPU resource `%p` has already been setup.", this);
+        return;
     }
     buffers.resize(avoidInfight ? multipleBufferingCount : 1);
     for (auto& buffer : buffers) {
@@ -253,7 +256,8 @@ BaseIndexBuffer::~BaseIndexBuffer()
 void BaseIndexBuffer::ForceUploadIndexBuffer(unsigned int index)
 {
     if (index >= indices.size()) {
-        GP_LOG_RET_W(TAG, "Upload index buffer failed, index out of range.");
+        GP_LOG_W(TAG, "Upload index buffer failed, index out of range.");
+        return;
     }
     auto indexBuffer = indices[index];
     if (description.memoryType == rhi::TransferDirection::GPU_ONLY) {
@@ -265,7 +269,8 @@ void BaseIndexBuffer::ForceUploadIndexBuffer(unsigned int index)
     } else if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(indexBuffer, RawCpuPtr(), description.indexByteSize, description.indicesCount);
     } else {
-        GP_LOG_RET_W(TAG, "Upload index buffer failed, this buffer is in the readback heap.");
+        GP_LOG_W(TAG, "Upload index buffer failed, this buffer is in the readback heap.");
+        return;
     }
     dirty.reset(index);
 }
@@ -294,7 +299,8 @@ void BaseIndexBuffer::UploadIndexBuffers()
 rhi::IndexBuffer* BaseIndexBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= indices.size()) {
-        GP_LOG_RETN_W(TAG, "Acquire index buffer backend instance failed, index out of range.");
+        GP_LOG_W(TAG, "Acquire index buffer backend instance failed, index out of range.");
+        return nullptr;
     }
     return indices[index];
 }
@@ -302,7 +308,8 @@ rhi::IndexBuffer* BaseIndexBuffer::RawGpuInst(unsigned int index)
 void BaseIndexBuffer::SetupGPU()
 {
     if (!indices.empty()) {
-        GP_LOG_RET_W(TAG, "The index buffer GPU resource `%p` has already been setup.", this);
+        GP_LOG_W(TAG, "The index buffer GPU resource `%p` has already been setup.", this);
+        return;
     }
     indices.resize(avoidInfight ? multipleBufferingCount : 1);
     for (auto& index : indices) {
@@ -335,7 +342,8 @@ BaseVertexBuffer::~BaseVertexBuffer()
 void BaseVertexBuffer::ForceUploadVertexBuffer(unsigned int index)
 {
     if (index >= vertices.size()) {
-        GP_LOG_RET_W(TAG, "Upload vertex buffer failed, index out of range.");
+        GP_LOG_W(TAG, "Upload vertex buffer failed, index out of range.");
+        return;
     }
     auto vertexBuffer = vertices[index];
     if (description.memoryType == rhi::TransferDirection::GPU_ONLY) {
@@ -348,7 +356,8 @@ void BaseVertexBuffer::ForceUploadVertexBuffer(unsigned int index)
         UploadHost(vertexBuffer, RawCpuPtr(),
             description.attributesByteSize, description.verticesCount);
     } else {
-        GP_LOG_RET_W(TAG, "Upload vertex buffer failed, this buffer is in the readback heap.");
+        GP_LOG_W(TAG, "Upload vertex buffer failed, this buffer is in the readback heap.");
+        return;
     }
     dirty.reset(index);
 }
@@ -377,7 +386,8 @@ void BaseVertexBuffer::UploadVertexBuffers()
 rhi::VertexBuffer* BaseVertexBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= vertices.size()) {
-        GP_LOG_RETN_W(TAG, "Acquire vertex buffer backend instance failed, index out of range.");
+        GP_LOG_W(TAG, "Acquire vertex buffer backend instance failed, index out of range.");
+        return nullptr;
     }
     return vertices[index];
 }
@@ -385,7 +395,8 @@ rhi::VertexBuffer* BaseVertexBuffer::RawGpuInst(unsigned int index)
 void BaseVertexBuffer::SetupGPU()
 {
     if (!vertices.empty()) {
-        GP_LOG_RET_W(TAG, "The vertex buffer GPU resource `%p` has already been setup.", this);
+        GP_LOG_W(TAG, "The vertex buffer GPU resource `%p` has already been setup.", this);
+        return;
     }
     vertices.resize(avoidInfight ? multipleBufferingCount : 1);
     for (auto& vertex : vertices) {
@@ -418,7 +429,8 @@ BaseTexture::~BaseTexture()
 void BaseTexture::ForceUploadTextureBuffer(unsigned int index)
 {
     if (index >= images.size()) {
-        GP_LOG_RET_W(TAG, "Upload texture buffer failed, index out of range.");
+        GP_LOG_W(TAG, "Upload texture buffer failed, index out of range.");
+        return;
     }
     auto image = images[index];
     // TODO: Current only support 1x MSAA and 1 mipmap.
@@ -434,7 +446,8 @@ void BaseTexture::ForceUploadTextureBuffer(unsigned int index)
     } else if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(image, RawCpuPtr(), bytes);
     } else {
-        GP_LOG_RET_W(TAG, "Upload texture buffer failed, this buffer is in the readback heap.");
+        GP_LOG_W(TAG, "Upload texture buffer failed, this buffer is in the readback heap.");
+        return;
     }
     dirty.reset(index);
 }
@@ -491,7 +504,8 @@ void BaseTexture::GetSize(unsigned int& width, unsigned int& height, unsigned in
 rhi::ImageBuffer* BaseTexture::RawGpuInst(unsigned int index)
 {
     if (index >= images.size()) {
-        GP_LOG_RETN_W(TAG, "Acquire texture backend instance failed, index out of range.");
+        GP_LOG_W(TAG, "Acquire texture backend instance failed, index out of range.");
+        return nullptr;
     }
     return images[index];
 }
@@ -499,7 +513,8 @@ rhi::ImageBuffer* BaseTexture::RawGpuInst(unsigned int index)
 void BaseTexture::SetupGPU()
 {
     if (!images.empty()) {
-        GP_LOG_RET_W(TAG, "The texture GPU resource `%p` has already been setup.", this);
+        GP_LOG_W(TAG, "The texture GPU resource `%p` has already been setup.", this);
+        return;
     }
     images.resize(avoidInfight ? multipleBufferingCount : 1);
     for (auto& image : images) {
@@ -650,7 +665,8 @@ void DisplayPresentOutput::SetupDisplayPresentOutput(
     description.isEnabledDepthStencil = false;
 
     if (swapchain) {
-        GP_LOG_RET_W(TAG, "The swapchain GPU resource `%p` has already been setup.", this);
+        GP_LOG_W(TAG, "The swapchain GPU resource `%p` has already been setup.", this);
+        return;
     }
     swapchain = device->CreateSwapchain(description);
 }
@@ -666,7 +682,8 @@ void DisplayPresentOutput::ResizeDisplay(unsigned int width, unsigned int height
     if (swapchain) {
         swapchain->Resize(width, height); // Swapchain resize will call WaitIdle.
     } else {
-        GP_LOG_RET_W(TAG, "Resize failed, DisplayPresentOutput `%p` has not been setup.", this);
+        GP_LOG_W(TAG, "Resize failed, DisplayPresentOutput `%p` has not been setup.", this);
+        return;
     }
 }
 

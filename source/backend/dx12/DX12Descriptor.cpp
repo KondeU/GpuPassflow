@@ -39,11 +39,13 @@ void DX12Descriptor::Setup(Description description)
     } else if (gp::EnumCast(description.type) & gp::EnumCast(rhi::DescriptorType::DepthStencil)) {
         descriptorHandleIncrementSize = mDepthStencilViewDescriptorHandleIncrementSize;
     } else {
-        GP_LOG_RET_E(TAG, "The descriptor type is invalid!");
+        GP_LOG_E(TAG, "The descriptor type is invalid!");
+        return;
     }
 
     if (ConvertDescriptorHeap(description.type) != heap.GetHeapType()) {
-        GP_LOG_RET_E(TAG, "The descriptor type is not match with the heap type!");
+        GP_LOG_E(TAG, "The descriptor type is not match with the heap type!");
+        return;
     }
 
     auto hCpu = CD3DX12_CPU_DESCRIPTOR_HANDLE(heap.Heap()->GetCPUDescriptorHandleForHeapStart());
@@ -66,7 +68,8 @@ void DX12Descriptor::Shutdown()
 void DX12Descriptor::BuildDescriptor(rhi::UniformBuffer* resource)
 {
     if (heap.GetHeapType() != D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) {
-        GP_LOG_RET_E(TAG, "This descriptor heap and descriptor is not support buffer!");
+        GP_LOG_E(TAG, "This descriptor heap and descriptor is not support buffer!");
+        return;
     }
 
     auto dxResource = dynamic_cast<DX12ResourceConstantBuffer*>(resource);
@@ -83,7 +86,8 @@ void DX12Descriptor::BuildDescriptor(rhi::UniformBuffer* resource)
 void DX12Descriptor::BuildDescriptor(rhi::StorageBuffer* resource, bool write)
 {
     if (heap.GetHeapType() != D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) {
-        GP_LOG_RET_E(TAG, "This descriptor heap and descriptor is not support buffer!");
+        GP_LOG_E(TAG, "This descriptor heap and descriptor is not support buffer!");
+        return;
     }
 
     auto dxResource = dynamic_cast<DX12ResourceStorageBuffer*>(resource);
@@ -136,7 +140,8 @@ void DX12Descriptor::BuildDescriptor(rhi::ImageBuffer* resource, bool write)
         device->CreateDepthStencilView(dxResource->Buffer().Get(), NULL, hCpuDescriptor);
         break;
     default:
-        GP_LOG_RET_E(TAG, "This descriptor heap and descriptor is not support image!");
+        GP_LOG_E(TAG, "This descriptor heap and descriptor is not support image!");
+        return;
     }
 
     pResource = dxResource;
@@ -145,7 +150,8 @@ void DX12Descriptor::BuildDescriptor(rhi::ImageBuffer* resource, bool write)
 void DX12Descriptor::BuildDescriptor(rhi::ImageSampler* sampler)
 {
     if (heap.GetHeapType() != D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER) {
-        GP_LOG_RET_E(TAG, "This descriptor heap and descriptor is not support sampler!");
+        GP_LOG_E(TAG, "This descriptor heap and descriptor is not support sampler!");
+        return;
     }
 
     auto dxSampler = dynamic_cast<DX12ImageSampler*>(sampler);
@@ -190,8 +196,9 @@ DX12ResourceConstantBuffer* DX12Descriptor::BindedResourceConstantBuffer() const
 {
     auto ptr = std::get_if<DX12ResourceConstantBuffer*>(&pResource);
     if (!ptr) {
-        GP_LOG_RETN_E(TAG, "Get binded resource buffer failed, this descriptor is not build with "
+        GP_LOG_E(TAG, "Get binded resource buffer failed, this descriptor is not build with "
             "UniformBuffer, or maybe you forgot to call the BuildDescriptor function.");
+        return nullptr;
     }
     return *ptr;
 }
@@ -200,8 +207,9 @@ DX12ResourceStorageBuffer* DX12Descriptor::BindedResourceStorageBuffer() const
 {
     auto ptr = std::get_if<DX12ResourceStorageBuffer*>(&pResource);
     if (!ptr) {
-        GP_LOG_RETN_E(TAG, "Get binded resource buffer failed, this descriptor is not build with "
+        GP_LOG_E(TAG, "Get binded resource buffer failed, this descriptor is not build with "
             "StorageBuffer, or maybe you forgot to call the BuildDescriptor function.");
+        return nullptr;
     }
     return *ptr;
 }
@@ -210,8 +218,9 @@ DX12ResourceImage* DX12Descriptor::BindedResourceImage() const
 {
     auto ptr = std::get_if<DX12ResourceImage*>(&pResource);
     if (!ptr) {
-        GP_LOG_RETN_E(TAG, "Get binded resource buffer failed, this descriptor is not build with "
+        GP_LOG_E(TAG, "Get binded resource buffer failed, this descriptor is not build with "
             "ImageBuffer, or maybe you forgot to call the BuildDescriptor function.");
+        return nullptr;
     }
     return *ptr;
 }
@@ -220,8 +229,9 @@ DX12ImageSampler* DX12Descriptor::BindedImageSampler() const
 {
     auto ptr = std::get_if<DX12ImageSampler*>(&pResource);
     if (!ptr) {
-        GP_LOG_RETN_E(TAG, "Get binded resource buffer failed, this descriptor is not build with "
+        GP_LOG_E(TAG, "Get binded resource buffer failed, this descriptor is not build with "
             "ImageSampler, or maybe you forgot to call the BuildDescriptor function.");
+        return nullptr;
     }
     return *ptr;
 }

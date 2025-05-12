@@ -22,7 +22,8 @@ void ComputePass::MakeCurrent(const FRsKey& scene, const FRsKey& view)
 bool ComputePass::AddDispatchItem(std::shared_ptr<DispatchItem> item)
 {
     if (currentResources.scene == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddDrawItem, please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddDrawItem, please MakeCurrent first!");
+        return false;
     }
     currentResources.scene->dispatchItems.emplace_back(item);
     return true;
@@ -31,7 +32,8 @@ bool ComputePass::AddDispatchItem(std::shared_ptr<DispatchItem> item)
 bool ComputePass::AddPassResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
 {
     if (currentResources.frame == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddPassResource(UniformBuffer), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddPassResource(UniformBuffer), please MakeCurrent first!");
+        return false;
     }
     currentResources.frame->passResources.constantBuffers[name] = buffer;
     return true;
@@ -40,7 +42,8 @@ bool ComputePass::AddPassResource(const FRsKey& name, Resource<BaseConstantBuffe
 bool ComputePass::AddPassResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer)
 {
     if (currentResources.frame == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddPassResource(StructuredBuffer), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddPassResource(StructuredBuffer), please MakeCurrent first!");
+        return false;
     }
     currentResources.frame->passResources.structuredBuffers[name] = buffer;
     return true;
@@ -49,7 +52,8 @@ bool ComputePass::AddPassResource(const FRsKey& name, Resource<BaseStructuredBuf
 bool ComputePass::AddPassResource(const FRsKey& name, Resource<BaseTexture> texture)
 {
     if (currentResources.frame == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddPassResource(Texture), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddPassResource(Texture), please MakeCurrent first!");
+        return false;
     }
     currentResources.frame->passResources.textures[name] = texture;
     return true;
@@ -58,7 +62,8 @@ bool ComputePass::AddPassResource(const FRsKey& name, Resource<BaseTexture> text
 bool ComputePass::AddPassResource(const FRsKey& name, Resource<Sampler> sampler)
 {
     if (currentResources.frame == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddPassResource(Sampler), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddPassResource(Sampler), please MakeCurrent first!");
+        return false;
     }
     currentResources.frame->passResources.samplers[name] = sampler;
     return true;
@@ -67,7 +72,8 @@ bool ComputePass::AddPassResource(const FRsKey& name, Resource<Sampler> sampler)
 bool ComputePass::AddSceneResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
 {
     if (currentResources.scene == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddSceneResource(UniformBuffer), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddSceneResource(UniformBuffer), please MakeCurrent first!");
+        return false;
     }
     currentResources.scene->sceneResources.constantBuffers[name] = buffer;
     return true;
@@ -76,7 +82,8 @@ bool ComputePass::AddSceneResource(const FRsKey& name, Resource<BaseConstantBuff
 bool ComputePass::AddSceneResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer)
 {
     if (currentResources.scene == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddSceneResource(StructuredBuffer), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddSceneResource(StructuredBuffer), please MakeCurrent first!");
+        return false;
     }
     currentResources.scene->sceneResources.structuredBuffers[name] = buffer;
     return true;
@@ -85,7 +92,8 @@ bool ComputePass::AddSceneResource(const FRsKey& name, Resource<BaseStructuredBu
 bool ComputePass::AddSceneResource(const FRsKey& name, Resource<BaseTexture> texture)
 {
     if (currentResources.scene == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddSceneResource(Texture), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddSceneResource(Texture), please MakeCurrent first!");
+        return false;
     }
     currentResources.scene->sceneResources.textures[name] = texture;
     return true;
@@ -94,7 +102,8 @@ bool ComputePass::AddSceneResource(const FRsKey& name, Resource<BaseTexture> tex
 bool ComputePass::AddSceneResource(const FRsKey& name, Resource<Sampler> sampler)
 {
     if (currentResources.scene == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddSceneResource(Sampler), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddSceneResource(Sampler), please MakeCurrent first!");
+        return false;
     }
     currentResources.scene->sceneResources.samplers[name] = sampler;
     return true;
@@ -103,7 +112,8 @@ bool ComputePass::AddSceneResource(const FRsKey& name, Resource<Sampler> sampler
 bool ComputePass::AddViewResource(const FRsKey& name, Resource<BaseConstantBuffer> buffer)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddViewResource(UniformBuffer), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddViewResource(UniformBuffer), please MakeCurrent first!");
+        return false;
     }
     currentResources.view->viewResources.constantBuffers[name] = buffer;
     return true;
@@ -112,7 +122,8 @@ bool ComputePass::AddViewResource(const FRsKey& name, Resource<BaseConstantBuffe
 bool ComputePass::AddViewResource(const FRsKey& name, Resource<BaseStructuredBuffer> buffer)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddViewResource(StructuredBuffer), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddViewResource(StructuredBuffer), please MakeCurrent first!");
+        return false;
     }
     currentResources.view->viewResources.structuredBuffers[name] = buffer;
     return true;
@@ -121,7 +132,8 @@ bool ComputePass::AddViewResource(const FRsKey& name, Resource<BaseStructuredBuf
 bool ComputePass::AddViewResource(const FRsKey& name, Resource<BaseTexture> texture)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddViewResource(Texture), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddViewResource(Texture), please MakeCurrent first!");
+        return false;
     }
     currentResources.view->viewResources.textures[name] = texture;
     return true;
@@ -130,7 +142,8 @@ bool ComputePass::AddViewResource(const FRsKey& name, Resource<BaseTexture> text
 bool ComputePass::AddViewResource(const FRsKey& name, Resource<Sampler> sampler)
 {
     if (currentResources.view == nullptr) {
-        GP_LOG_RETF_W(TAG, "Cannot AddViewResource(Sampler), please MakeCurrent first!");
+        GP_LOG_W(TAG, "Cannot AddViewResource(Sampler), please MakeCurrent first!");
+        return false;
     }
     currentResources.view->viewResources.samplers[name] = sampler;
     return true;
@@ -211,16 +224,20 @@ void ComputePass::DeclareResource(const ShaderResourceProperties& properties)
 bool ComputePass::BuildPipeline()
 {
     if (!pipelineState) {
-        GP_LOG_RETF_E(TAG, "Build pipeline failed, please initialize pipeline first.");
+        GP_LOG_E(TAG, "Build pipeline failed, please initialize pipeline first.");
+        return false;
     }
     if (!pipelineLayout) {
-        GP_LOG_RETF_E(TAG, "Build pipeline failed, please declare resource first.");
+        GP_LOG_E(TAG, "Build pipeline failed, please declare resource first.");
+        return false;
     }
     if (!computeShader) {
-        GP_LOG_RETF_E(TAG, "Build pipeline failed, please declare program first.");
+        GP_LOG_E(TAG, "Build pipeline failed, please declare program first.");
+        return false;
     }
     if (!computeShader->IsValid()) {
-        GP_LOG_RETF_E(TAG, "Build pipeline failed, compute shader is invalid.");
+        GP_LOG_E(TAG, "Build pipeline failed, compute shader is invalid.");
+        return false;
     }
 
     pipelineState->SetPipelineLayout(pipelineLayout);
@@ -289,7 +306,8 @@ ComputePass::AcquireImageSamplerDescriptorManager(unsigned int bufferingIndex)
 void ComputePass::UpdateFrameResources(unsigned int bufferingIndex)
 {
     if (bufferingIndex >= (frameResources.size() - 1)) {
-        GP_LOG_RET_E(TAG, "Cannot staging frame resources, target buffering index out of range!");
+        GP_LOG_E(TAG, "Cannot staging frame resources, target buffering index out of range!");
+        return;
     }
     frameResources[bufferingIndex] = frameResources.back();
     frameResources.back() = std::make_shared<FrameResources>();

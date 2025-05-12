@@ -321,8 +321,8 @@ void DX12CommandRecorder::RcClearColorAttachment(Descriptor* const descriptor)
     auto dxDescriptor = dynamic_cast<DX12Descriptor*>(descriptor);
     auto dxAttachment = dxDescriptor->BindedResourceImage();
     if (!dxAttachment) {
-        GP_LOG_RET_E(TAG, "Clear color attachment failed "
-            "because descriptor not bind image.");
+        GP_LOG_E(TAG, "Clear color attachment failed because descriptor not bind image.");
+        return;
     }
     recorder->ClearRenderTargetView(
         dxDescriptor->AttachmentView(),
@@ -337,8 +337,8 @@ void DX12CommandRecorder::RcClearDepthStencilAttachment(Descriptor* const descri
     auto dxDescriptor = dynamic_cast<DX12Descriptor*>(descriptor);
     auto dxAttachment = dxDescriptor->BindedResourceImage();
     if (!dxAttachment) {
-        GP_LOG_RET_E(TAG, "Clear depth stencil attachment failed "
-            "because descriptor not bind image.");
+        GP_LOG_E(TAG, "Clear depth stencil attachment failed because descriptor not bind image.");
+        return;
     }
     recorder->ClearDepthStencilView(
         dxDescriptor->AttachmentView(),
@@ -486,7 +486,8 @@ void DX12CommandRecorder::RcSetPipeline(PipelineState* const pipelineState)
     if (auto pso = dxPipelineState->PSO().Get()) {
         recorder->SetPipelineState(pso);
     } else {
-        GP_LOG_RET_E(TAG, "Records RcSetPipeline failed, pipeline state object is invalid.");
+        GP_LOG_E(TAG, "Records RcSetPipeline failed, pipeline state object is invalid.");
+        return;
     }
     if (dxPipelineState->IsItGraphicsPipelineState()) {
         recorder->SetGraphicsRootSignature(
@@ -495,8 +496,9 @@ void DX12CommandRecorder::RcSetPipeline(PipelineState* const pipelineState)
         recorder->SetComputeRootSignature(
             dxPipelineState->BindedPipelineLayout()->Signature().Get());
     } else {
-        GP_LOG_RET_E(TAG, "Records RcSetPipeline failed, "
+        GP_LOG_E(TAG, "Records RcSetPipeline failed, "
             "input pipeline state is neither graphics nor compute.");
+        return;
     }
 }
 
@@ -587,8 +589,9 @@ void DX12CommandRecorder::RcSetGraphicsDescriptors(
     if (dxBaseDescriptor->IsNativeDescriptorsContinuous(dxDescriptorsHandles)) {
         recorder->SetGraphicsRootDescriptorTable(index, dxBaseDescriptor->NativeGpuDescriptor());
     } else {
-        GP_LOG_RET_E(TAG, "Records RcSetGraphicsDescriptors failed, "
+        GP_LOG_E(TAG, "Records RcSetGraphicsDescriptors failed, "
             "descriptors is not continuous or descriptors is empty.");
+        return;
     }
 }
 
@@ -612,8 +615,9 @@ void DX12CommandRecorder::RcSetComputeDescriptors(
     if (dxBaseDescriptor->IsNativeDescriptorsContinuous(dxDescriptorsHandles)) {
         recorder->SetComputeRootDescriptorTable(index, dxBaseDescriptor->NativeGpuDescriptor());
     } else {
-        GP_LOG_RET_E(TAG, "Records RcSetComputeDescriptors failed, "
+        GP_LOG_E(TAG, "Records RcSetComputeDescriptors failed, "
             "descriptors is not continuous or descriptors is empty.");
+        return;
     }
 }
 

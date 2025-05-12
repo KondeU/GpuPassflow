@@ -38,8 +38,9 @@ void DX12DescriptorGroup::AddDescriptors(rhi::DescriptorType type,
     unsigned int beginId = range.first;
     unsigned int endId = range.second;
     if (beginId > endId) {
-        GP_LOG_RET_F(TAG, "Add ranged descriptors information to descriptor group failed! "
+        GP_LOG_F(TAG, "Add ranged descriptors information to descriptor group failed! "
             "Arguments are invalid, failed because the begin id is large then the end id.");
+        return;
     }
 
     bool isValidDescriptorType = false;
@@ -47,8 +48,9 @@ void DX12DescriptorGroup::AddDescriptors(rhi::DescriptorType type,
         ConvertDescriptorRangeType(type, isValidDescriptorType);
 
     if (!isValidDescriptorType) {
-        GP_LOG_RET_F(TAG, "Add descriptor information to descriptor group failed! "
+        GP_LOG_F(TAG, "Add descriptor information to descriptor group failed! "
             "Invalid descriptor type, only can be the buffer/texture/sampler types.");
+        return;
     }
 
     descriptorRanges.emplace_back(std::make_unique<CD3DX12_DESCRIPTOR_RANGE>());

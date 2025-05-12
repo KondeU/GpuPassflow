@@ -34,13 +34,16 @@ void DX12PipelineLayout::Shutdown()
 bool DX12PipelineLayout::AddGroup(rhi::DescriptorGroup* group)
 {
     if (IsValid()) {
-        GP_LOG_RETF_E(TAG, "Add group failed because pipeline layout has been built!");
+        GP_LOG_E(TAG, "Add group failed because pipeline layout has been built!");
+        return false;
     }
     if (!description.cache.empty()) {
-        GP_LOG_RETF_E(TAG, "Add group failed because it should be built from cache!");
+        GP_LOG_E(TAG, "Add group failed because it should be built from cache!");
+        return false;
     }
     if (group == nullptr) {
-        GP_LOG_RETF_E(TAG, "Add group failed because descriptor group is null!");
+        GP_LOG_E(TAG, "Add group failed because descriptor group is null!");
+        return false;
     }
 
     const auto& params = dynamic_cast<DX12DescriptorGroup*>(group)->GetRootParameters();
@@ -69,8 +72,8 @@ bool DX12PipelineLayout::BuildLayout()
             &rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1,
             &serializedRootSignature, &serializeRootSignatureError));
         if (serializeRootSignatureError != nullptr) {
-            GP_LOG_RETF_E(TAG, "Serialize root signature failed!\nerror:\n%s",
-                serializeRootSignatureError->GetBufferPointer());
+            GP_LOG_E(TAG, "Serialize root signature failed!\nerror:\n%s");
+            return false;
         }
     } else {
         switch (description.cacheType) {
@@ -102,7 +105,8 @@ bool DX12PipelineLayout::IsValid() const
 std::string DX12PipelineLayout::DumpCache() const
 {
     if ((!IsValid()) || (serializedRootSignature == nullptr)) {
-        GP_LOG_RETD_E(TAG, "Dump pipeline layout cache failed because dump before doing build!");
+        GP_LOG_E(TAG, "Dump pipeline layout cache failed because dump before doing build!");
+        return {};
     }
     return std::string(static_cast<const char*>(
         serializedRootSignature->GetBufferPointer()), serializedRootSignature->GetBufferSize());

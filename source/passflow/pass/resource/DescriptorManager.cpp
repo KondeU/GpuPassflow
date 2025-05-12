@@ -73,7 +73,8 @@ void DynamicDescriptorManager::ReallocateDescriptorHeap(unsigned int descriptorC
 rhi::Descriptor* DynamicDescriptorManager::AcquireDescriptor(unsigned int index)
 {
     if (!descriptorHeap || index >= descriptors.size()) {
-        GP_LOG_RETN_W(TAG, "Acquire descriptor out of range!");
+        GP_LOG_W(TAG, "Acquire descriptor out of range!");
+        return nullptr;
     }
     auto& descriptor = descriptors[index];
     if (!descriptor) {

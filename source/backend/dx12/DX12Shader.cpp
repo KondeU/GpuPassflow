@@ -82,8 +82,8 @@ void DX12Shader::ProcessSource(bool fromFile)
     case rhi::ShaderStage::Geometry: target = "gs" + target; break;
     case rhi::ShaderStage::Pixel:    target = "ps" + target; break;
     case rhi::ShaderStage::Compute:  target = "cs" + target; break;
-    default: GP_LOG_RET_W(TAG, "Compile HLSL shader source failed! "
-                               "No supported shader stage: %d", description.stage);
+    default: GP_LOG_W(TAG, "Compile HLSL shader source failed! No supported shader stage: %d", description.stage);
+    return;
     }
 
     Microsoft::WRL::ComPtr<ID3DBlob> errors;

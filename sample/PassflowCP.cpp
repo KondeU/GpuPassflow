@@ -80,7 +80,8 @@ FunctionDrivenBackgroundRenderPass::~FunctionDrivenBackgroundRenderPass()
 void FunctionDrivenBackgroundRenderPass::SetFunctionShader(std::string shader)
 {
     if (!backendDevice) {
-        GP_LOG_RET_E(TAG, "SetFunctionShader failed, backend device has not been stored!");
+        GP_LOG_E(TAG, "SetFunctionShader failed, backend device has not been stored!");
+        return;
     }
 
     backendDevice->WaitIdle();
@@ -164,7 +165,8 @@ void FunctionDrivenBackgroundRenderPass::OnExecutePass(au::rhi::CommandRecorder*
 
     auto& simpleSampler = frameResources.passResources.samplers.find("simpleSampler");
     if (simpleSampler == frameResources.passResources.samplers.end()) {
-        GP_LOG_RET_E(TAG, "Not found simpleSampler in pass.");
+        GP_LOG_E(TAG, "Not found simpleSampler in pass.");
+        return;
     }
     auto simpleSamplerD = imageSamplerDM.AcquireDescriptor(imageSamplerDC++);
     simpleSamplerD->BuildDescriptor(simpleSampler->second->RawGpuInst());
@@ -190,7 +192,8 @@ void FunctionDrivenBackgroundRenderPass::OnExecutePass(au::rhi::CommandRecorder*
 
         auto& outputColor = sceneResources.sceneResources.textures.find("outputColor");
         if (outputColor == sceneResources.sceneResources.textures.end()) {
-            GP_LOG_RET_E(TAG, "Not found outputColor in [%s].", sceneKey);
+            GP_LOG_E(TAG, "Not found outputColor in [%s].", sceneKey);
+            continue;
         }
         auto outputColorD = shaderResourceDM.AcquireDescriptor(shaderResourceDC++);
         outputColorD->BuildDescriptor(
