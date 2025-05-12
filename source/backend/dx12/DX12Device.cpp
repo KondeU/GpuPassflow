@@ -132,41 +132,41 @@ bool DX12Device::DestroyVertexAttribute(rhi::VertexAttribute* instance)
 }
 
 rhi::IndexBuffer*
-DX12Device::CreateInputIndex(rhi::IndexBuffer::Description description)
+DX12Device::CreateIndexBuffer(rhi::IndexBuffer::Description description)
 {
     return CreateInstance<rhi::IndexBuffer>(inputIndices, description, *this);
 }
 
-bool DX12Device::DestroyInputIndex(rhi::IndexBuffer* instance)
+bool DX12Device::DestroyIndexBuffer(rhi::IndexBuffer* instance)
 {
     return DestroyInstance(inputIndices, instance);
 }
 
 rhi::IndexAttribute*
-DX12Device::CreateInputIndexAttribute()
+DX12Device::CreateIndexAttribute()
 {
     return CreateInstance<rhi::IndexAttribute>(inputIndexAttributes, {});
 }
 
-bool DX12Device::DestroyInputIndexAttribute(rhi::IndexAttribute* instance)
+bool DX12Device::DestroyIndexAttribute(rhi::IndexAttribute* instance)
 {
     return DestroyInstance(inputIndexAttributes, instance);
 }
 
 rhi::UniformBuffer*
-DX12Device::CreateResourceBuffer(rhi::UniformBuffer::Description description)
+DX12Device::CreateUniformBuffer(rhi::UniformBuffer::Description description)
 {
     return CreateInstance<rhi::UniformBuffer>(
         resourceConstantBuffers, description, *this);
 }
 
-bool DX12Device::DestroyResourceBuffer(rhi::UniformBuffer* instance)
+bool DX12Device::DestroyUniformBuffer(rhi::UniformBuffer* instance)
 {
     return DestroyInstance(resourceConstantBuffers, instance);
 }
 
 rhi::StorageBuffer*
-DX12Device::CreateResourceBuffer(rhi::StorageBuffer::Description description)
+DX12Device::CreateStorageBuffer(rhi::StorageBuffer::Description description)
 {
     return CreateInstance<rhi::StorageBuffer>(
         resourceStorageBuffers, description, *this);
@@ -178,12 +178,12 @@ bool DX12Device::DestroyResourceBuffer(rhi::StorageBuffer* instance)
 }
 
 rhi::ImageBuffer*
-DX12Device::CreateResourceImage(rhi::ImageBuffer::Description description)
+DX12Device::CreateImageBuffer(rhi::ImageBuffer::Description description)
 {
     return CreateInstance<rhi::ImageBuffer>(resourceImages, description, *this);
 }
 
-bool DX12Device::DestroyResourceImage(rhi::ImageBuffer* instance)
+bool DX12Device::DestroyImageBuffer(rhi::ImageBuffer* instance)
 {
     return DestroyInstance(resourceImages, instance);
 }

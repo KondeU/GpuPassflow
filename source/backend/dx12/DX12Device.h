@@ -47,24 +47,24 @@ public:
     rhi::VertexAttribute* CreateVertexAttribute() override;
     bool DestroyVertexAttribute(rhi::VertexAttribute* instance) override;
 
-    rhi::IndexBuffer* CreateInputIndex(
+    rhi::IndexBuffer* CreateIndexBuffer(
         rhi::IndexBuffer::Description description) override;
-    bool DestroyInputIndex(rhi::IndexBuffer* instance) override;
+    bool DestroyIndexBuffer(rhi::IndexBuffer* instance) override;
 
-    rhi::IndexAttribute* CreateInputIndexAttribute() override;
-    bool DestroyInputIndexAttribute(rhi::IndexAttribute* instance) override;
+    rhi::IndexAttribute* CreateIndexAttribute() override;
+    bool DestroyIndexAttribute(rhi::IndexAttribute* instance) override;
 
-    rhi::UniformBuffer* CreateResourceBuffer(
+    rhi::UniformBuffer* CreateUniformBuffer(
         rhi::UniformBuffer::Description description) override;
-    bool DestroyResourceBuffer(rhi::UniformBuffer* instance) override;
+    bool DestroyUniformBuffer(rhi::UniformBuffer* instance) override;
 
-    rhi::StorageBuffer* CreateResourceBuffer(
+    rhi::StorageBuffer* CreateStorageBuffer(
         rhi::StorageBuffer::Description description) override;
     bool DestroyResourceBuffer(rhi::StorageBuffer* instance) override;
 
-    rhi::ImageBuffer* CreateResourceImage(
+    rhi::ImageBuffer* CreateImageBuffer(
         rhi::ImageBuffer::Description description) override;
-    bool DestroyResourceImage(rhi::ImageBuffer* instance) override;
+    bool DestroyImageBuffer(rhi::ImageBuffer* instance) override;
 
     rhi::ImageSampler* CreateImageSampler(
         rhi::ImageSampler::Description description) override;

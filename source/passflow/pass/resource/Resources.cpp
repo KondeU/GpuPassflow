@@ -90,9 +90,9 @@ void BaseConstantBuffer::ForceUploadConstantBuffer(unsigned int index)
     if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(buffer, RawCpuPtr(), description.bufferBytesSize);
     } else if (description.memoryType == rhi::TransferDirection::GPU_ONLY) {
-        auto staging = device->CreateResourceBuffer({ description.bufferBytesSize });
+        auto staging = device->CreateUniformBuffer({ description.bufferBytesSize });
         UploadRemote(device, buffer, staging, RawCpuPtr(), description.bufferBytesSize);
-        device->DestroyResourceBuffer(staging);
+        device->DestroyUniformBuffer(staging);
     } else {
         GP_LOG_RET_W(TAG, "Upload constant buffer failed, this buffer is in the readback heap.");
     }
@@ -141,14 +141,14 @@ void BaseConstantBuffer::SetupGPU()
     }
     buffers.resize(avoidInfight ? multipleBufferingCount : 1);
     for (auto& buffer : buffers) {
-        buffer = device->CreateResourceBuffer(description);
+        buffer = device->CreateUniformBuffer(description);
     }
 }
 
 void BaseConstantBuffer::CloseGPU()
 {
     for (auto buffer : buffers) {
-        device->DestroyResourceBuffer(buffer);
+        device->DestroyUniformBuffer(buffer);
     }
     buffers.resize(0);
 }
@@ -168,7 +168,7 @@ void BaseStructuredBuffer::ForceUploadStructuredBuffer(unsigned int index)
     }
     auto buffer = buffers[index];
     if (description.memoryType == rhi::TransferDirection::GPU_ONLY) {
-        auto staging = device->CreateResourceBuffer({ description.elementsCount,
+        auto staging = device->CreateStorageBuffer({ description.elementsCount,
             description.elementBytesSize, false, rhi::TransferDirection::CPU_TO_GPU });
         UploadRemote(device, buffer, staging, RawCpuPtr(),
             description.elementBytesSize, description.elementsCount);
@@ -218,7 +218,7 @@ void BaseStructuredBuffer::SetupGPU()
     }
     buffers.resize(avoidInfight ? multipleBufferingCount : 1);
     for (auto& buffer : buffers) {
-        buffer = device->CreateResourceBuffer(description);
+        buffer = device->CreateStorageBuffer(description);
     }
 }
 
@@ -251,11 +251,11 @@ void BaseIndexBuffer::ForceUploadIndexBuffer(unsigned int index)
     }
     auto indexBuffer = indices[index];
     if (description.memoryType == rhi::TransferDirection::GPU_ONLY) {
-        auto staging = device->CreateInputIndex({ description.indicesCount,
+        auto staging = device->CreateIndexBuffer({ description.indicesCount,
             description.indexByteSize, rhi::TransferDirection::CPU_TO_GPU });
         UploadRemote(device, indexBuffer, staging, RawCpuPtr(),
             description.indexByteSize, description.indicesCount);
-        device->DestroyInputIndex(staging);
+        device->DestroyIndexBuffer(staging);
     } else if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(indexBuffer, RawCpuPtr(), description.indexByteSize, description.indicesCount);
     } else {
@@ -300,14 +300,14 @@ void BaseIndexBuffer::SetupGPU()
     }
     indices.resize(avoidInfight ? multipleBufferingCount : 1);
     for (auto& index : indices) {
-        index = device->CreateInputIndex(description);
+        index = device->CreateIndexBuffer(description);
     }
 }
 
 void BaseIndexBuffer::CloseGPU()
 {
     for (auto index : indices) {
-        device->DestroyInputIndex(index);
+        device->DestroyIndexBuffer(index);
     }
     indices.resize(0);
 }
@@ -422,9 +422,9 @@ void BaseTexture::ForceUploadTextureBuffer(unsigned int index)
         auto stagingImageDescription = description;
         stagingImageDescription.usage = rhi::ImageType::ShaderResource;
         stagingImageDescription.memoryType = rhi::TransferDirection::CPU_TO_GPU;
-        auto staging = device->CreateResourceImage(stagingImageDescription);
+        auto staging = device->CreateImageBuffer(stagingImageDescription);
         UploadRemote(device, image, staging, RawCpuPtr(), bytes);
-        device->DestroyResourceImage(staging);
+        device->DestroyImageBuffer(staging);
     } else if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
         UploadHost(image, RawCpuPtr(), bytes);
     } else {
@@ -497,14 +497,14 @@ void BaseTexture::SetupGPU()
     }
     images.resize(avoidInfight ? multipleBufferingCount : 1);
     for (auto& image : images) {
-        image = device->CreateResourceImage(description);
+        image = device->CreateImageBuffer(description);
     }
 }
 
 void BaseTexture::CloseGPU()
 {
     for (auto image : images) {
-        device->DestroyResourceImage(image);
+        device->DestroyImageBuffer(image);
     }
     images.resize(0);
 }

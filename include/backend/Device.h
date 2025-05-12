@@ -31,40 +31,26 @@ public:
     virtual VertexAttribute* CreateVertexAttribute() = 0;
     virtual bool DestroyVertexAttribute(VertexAttribute* instance) = 0;
 
-    virtual IndexBuffer* CreateInputIndex(IndexBuffer::Description description) = 0;
-    virtual bool DestroyInputIndex(IndexBuffer* instance) = 0;
+    virtual IndexBuffer* CreateIndexBuffer(IndexBuffer::Description description) = 0;
+    virtual bool DestroyIndexBuffer(IndexBuffer* instance) = 0;
 
-    virtual IndexAttribute* CreateInputIndexAttribute() = 0;
-    virtual bool DestroyInputIndexAttribute(IndexAttribute* instance) = 0;
+    virtual IndexAttribute* CreateIndexAttribute() = 0;
+    virtual bool DestroyIndexAttribute(IndexAttribute* instance) = 0;
 
-    //----------------------------------------//
-    //                Resource                //
-    //----------------------------------------//
+    virtual UniformBuffer* CreateUniformBuffer(UniformBuffer::Description description) = 0;
+    virtual bool DestroyUniformBuffer(UniformBuffer* instance) = 0;
 
-    virtual UniformBuffer* CreateResourceBuffer(
-        UniformBuffer::Description description) = 0;
-    virtual bool DestroyResourceBuffer(UniformBuffer* instance) = 0;
-
-    virtual StorageBuffer* CreateResourceBuffer(
-        StorageBuffer::Description description) = 0;
+    virtual StorageBuffer* CreateStorageBuffer(StorageBuffer::Description description) = 0;
     virtual bool DestroyResourceBuffer(StorageBuffer* instance) = 0;
 
-    virtual ImageBuffer* CreateResourceImage(ImageBuffer::Description description) = 0;
-    virtual bool DestroyResourceImage(ImageBuffer* instance) = 0;
+    virtual ImageBuffer* CreateImageBuffer(ImageBuffer::Description description) = 0;
+    virtual bool DestroyImageBuffer(ImageBuffer* instance) = 0;
 
     virtual ImageSampler* CreateImageSampler(ImageSampler::Description description) = 0;
     virtual bool DestroyImageSampler(ImageSampler* instance) = 0;
 
-    //----------------------------------------//
-    //               Swapchain                //
-    //----------------------------------------//
-
     virtual Swapchain* CreateSwapchain(Swapchain::Description description) = 0;
     virtual bool DestroySwapchain(Swapchain* instance) = 0;
-
-    //----------------------------------------//
-    //                Pipeline                //
-    //----------------------------------------//
 
     virtual Shader* CreateShader(Shader::Description description) = 0;
     virtual bool DestroyShader(Shader* instance) = 0;
@@ -75,19 +61,11 @@ public:
     virtual PipelineState* CreatePipelineState(PipelineState::Description description) = 0;
     virtual bool DestroyPipelineState(PipelineState* instance) = 0;
 
-    //----------------------------------------//
-    //               Descriptor               //
-    //----------------------------------------//
-
     virtual DescriptorHeap* CreateDescriptorHeap(DescriptorHeap::Description description) = 0;
     virtual bool DestroyDescriptorHeap(DescriptorHeap* instance) = 0;
 
     virtual DescriptorGroup* CreateDescriptorGroup(DescriptorGroup::Description description) = 0;
     virtual bool DestroyDescriptorGroup(DescriptorGroup* instance) = 0;
-
-    //----------------------------------------//
-    //                Command                 //
-    //----------------------------------------//
 
     virtual CommandRecorder* CreateCommandRecorder(CommandRecorder::Description description) = 0;
     virtual bool DestroyCommandRecorder(CommandRecorder* instance) = 0;
