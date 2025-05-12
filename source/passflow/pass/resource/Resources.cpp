@@ -55,7 +55,8 @@ void DeviceHolder::CheckSize(unsigned int& size)
 {
     if (size == 0) {
         size = 1;
-        GP_LOG_RET_W(TAG, "Resource size check failed(size=0)! fallback to using 1.");
+        GP_LOG_W(TAG, "Resource size check failed(size=0)! fallback to using 1.");
+        return;
     } // else check pass.
 }
 
@@ -63,7 +64,8 @@ void DeviceHolder::CheckSize(unsigned int& size, unsigned int limit)
 {
     if (size > limit) {
         size = 1;
-        GP_LOG_RET_E(TAG, "Resource size check failed(size>limit)! fallback to using 1.");
+        GP_LOG_E(TAG, "Resource size check failed(size>limit)! fallback to using 1.");
+        return;
     } // else check pass, and goto next check.
     CheckSize(size);
 }
@@ -84,7 +86,8 @@ BaseConstantBuffer::~BaseConstantBuffer()
 void BaseConstantBuffer::ForceUploadConstantBuffer(unsigned int index)
 {
     if (index >= buffers.size()) {
-        GP_LOG_RET_W(TAG, "Upload constant buffer failed, index out of range.");
+        GP_LOG_W(TAG, "Upload constant buffer failed, index out of range.");
+        return;
     }
     auto buffer = buffers[index];
     if (description.memoryType == rhi::TransferDirection::CPU_TO_GPU) {
@@ -94,7 +97,8 @@ void BaseConstantBuffer::ForceUploadConstantBuffer(unsigned int index)
         UploadRemote(device, buffer, staging, RawCpuPtr(), description.bufferBytesSize);
         device->DestroyUniformBuffer(staging);
     } else {
-        GP_LOG_RET_W(TAG, "Upload constant buffer failed, this buffer is in the readback heap.");
+        GP_LOG_W(TAG, "Upload constant buffer failed, this buffer is in the readback heap.");
+        return;
     }
     dirty.reset(index);
 }
@@ -123,7 +127,8 @@ void BaseConstantBuffer::UploadConstantBuffers()
 rhi::UniformBuffer* BaseConstantBuffer::RawGpuInst(unsigned int index)
 {
     if (index >= buffers.size()) {
-        GP_LOG_RETN_W(TAG, "Acquire constant buffer backend instance failed, index out of range.");
+        GP_LOG_W(TAG, "Acquire constant buffer backend instance failed, index out of range.");
+        return nullptr;
     }
     return buffers[index];
 }
@@ -137,7 +142,8 @@ Resource<BaseConstantBuffer> BaseConstantBuffer::Clone() const
 void BaseConstantBuffer::SetupGPU()
 {
     if (!buffers.empty()) {
-        GP_LOG_RET_W(TAG, "The constant buffer GPU resource `%p` has already been setup.", this);
+        GP_LOG_W(TAG, "The constant buffer GPU resource `%p` has already been setup.", this);
+        return;
     }
     buffers.resize(avoidInfight ? multipleBufferingCount : 1);
     for (auto& buffer : buffers) {
@@ -719,7 +725,8 @@ void Sampler::ConfigureSamplerState(rhi::SamplerState samplerState)
 void Sampler::SetupSampler()
 {
     if (sampler) {
-        GP_LOG_RET_W(TAG, "The image sampler GPU resource `%p` has already been setup.", this);
+        GP_LOG_W(TAG, "The image sampler GPU resource `%p` has already been setup.", this);
+        return;
     }
     sampler = device->CreateImageSampler(description);
 }
