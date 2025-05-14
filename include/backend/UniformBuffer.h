@@ -4,6 +4,8 @@
 
 namespace au::rhi {
 
+// Uniform buffer object (UBO) in Vulkan
+// Constant buffer object (CBO) in DX12
 class UniformBuffer {
 public:
     struct Description final {

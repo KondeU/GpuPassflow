@@ -16,8 +16,8 @@ public:
         } cacheType;
 
         Description()
-            : cache() // No use cache.
-            , cacheType(CacheType::Data)
+            : cache() // This means not using the cache.
+            , cacheType(CacheType::Data) // Ignore cacheType if not using the cache.
         {}
 
         Description(
