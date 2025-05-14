@@ -12,7 +12,6 @@ public:
         uint32_t height; // 2nd dimension
         uint8_t arrays;  // 3rd dimension
         uint8_t mips;    // mipmap
-        MSAA msaa;
         ImageType usage;
         ImageDimension dimension;
         ClearValue clearValue;
@@ -29,10 +28,8 @@ public:
             ImageType usage = ImageType::ShaderResource,
             ImageDimension dimension = ImageDimension::Dimension2D,
             TransferDirection memoryType = TransferDirection::GPU_ONLY,
-            bool writableResourceInShader = false,
-            MSAA msaa = MSAA::MSAAx1)
+            bool writableResourceInShader = false)
             : format(format)
-            , msaa(msaa)
             , width(width)
             , height(height)
             , arrays(arrays)
@@ -45,8 +42,8 @@ public:
         {}
     };
 
-    virtual void* Map(unsigned int msaaLayer = 0) = 0;
-    virtual void Unmap(unsigned int msaaLayer = 0) = 0;
+    virtual void* Map() = 0;
+    virtual void Unmap() = 0;
 
 protected:
     ImageBuffer() = default;

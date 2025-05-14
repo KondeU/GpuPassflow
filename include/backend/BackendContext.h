@@ -57,9 +57,9 @@ private:
 
 }
 
+#define GP_LOG_TAG(name) static constexpr char* TAG = #name
 #define GP_LOG_D(tag, format, ...) au::gp::ErrorHandler::Logging("D", tag, format, ##__VA_ARGS__)
 #define GP_LOG_I(tag, format, ...) au::gp::ErrorHandler::Logging("I", tag, format, ##__VA_ARGS__)
 #define GP_LOG_W(tag, format, ...) au::gp::ErrorHandler::Logging("W", tag, format, ##__VA_ARGS__)
 #define GP_LOG_E(tag, format, ...) au::gp::ErrorHandler::Logging("E", tag, format, ##__VA_ARGS__)
 #define GP_LOG_F(tag, format, ...) au::gp::ErrorHandler::Logging("F", tag, format, ##__VA_ARGS__)
-#define GP_LOG_TAG(name) static constexpr char* TAG = #name
