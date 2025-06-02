@@ -8,15 +8,58 @@ using namespace rhi;
 DXGI_FORMAT ConvertBasicFormat(BasicFormat format)
 {
     static const std::unordered_map<BasicFormat, DXGI_FORMAT> map = {
-        { BasicFormat::R8G8B8A8_UNORM,     DXGI_FORMAT_R8G8B8A8_UNORM     },
-        { BasicFormat::R8G8B8A8_UINT,      DXGI_FORMAT_R8G8B8A8_UINT      },
-        { BasicFormat::R32G32B32_FLOAT,    DXGI_FORMAT_R32G32B32_FLOAT    },
-        { BasicFormat::R32G32B32A32_FLOAT, DXGI_FORMAT_R32G32B32A32_FLOAT },
-        { BasicFormat::D24_UNORM_S8_UINT,  DXGI_FORMAT_D24_UNORM_S8_UINT  },
-        { BasicFormat::V32_FLOAT,          DXGI_FORMAT_R32_FLOAT          },
-        { BasicFormat::V32V32_FLOAT,       DXGI_FORMAT_R32G32_FLOAT       },
-        { BasicFormat::V32V32V32_FLOAT,    DXGI_FORMAT_R32G32B32_FLOAT    },
-        { BasicFormat::V32V32V32V32_FLOAT, DXGI_FORMAT_R32G32B32A32_FLOAT }
+        { BasicFormat::R32G32B32A32_FLOAT,  DXGI_FORMAT_R32G32B32A32_FLOAT  },
+        { BasicFormat::R32G32B32A32_UINT,   DXGI_FORMAT_R32G32B32A32_UINT   },
+        { BasicFormat::R32G32B32A32_SINT,   DXGI_FORMAT_R32G32B32A32_SINT   },
+        { BasicFormat::R32G32B32_FLOAT,     DXGI_FORMAT_R32G32B32_FLOAT     },
+        { BasicFormat::R32G32B32_UINT,      DXGI_FORMAT_R32G32B32_UINT      },
+        { BasicFormat::R32G32B32_SINT,      DXGI_FORMAT_R32G32B32_SINT      },
+        { BasicFormat::R16G16B16A16_FLOAT,  DXGI_FORMAT_R16G16B16A16_FLOAT  },
+        { BasicFormat::R16G16B16A16_UINT,   DXGI_FORMAT_R16G16B16A16_UINT   },
+        { BasicFormat::R16G16B16A16_SINT,   DXGI_FORMAT_R16G16B16A16_SINT   },
+        { BasicFormat::R16G16B16A16_UNORM,  DXGI_FORMAT_R16G16B16A16_UNORM  },
+        { BasicFormat::R16G16B16A16_SNORM,  DXGI_FORMAT_R16G16B16A16_SNORM  },
+        { BasicFormat::R32G32_FLOAT,        DXGI_FORMAT_R32G32_FLOAT        },
+        { BasicFormat::R32G32_UINT,         DXGI_FORMAT_R32G32_UINT         },
+        { BasicFormat::R32G32_SINT,         DXGI_FORMAT_R32G32_SINT         },
+        { BasicFormat::R10G10B10A2_UINT,    DXGI_FORMAT_R10G10B10A2_UINT    },
+        { BasicFormat::R10G10B10A2_UNORM,   DXGI_FORMAT_R10G10B10A2_UNORM   },
+        { BasicFormat::R8G8B8A8_UINT,       DXGI_FORMAT_R8G8B8A8_UINT       },
+        { BasicFormat::R8G8B8A8_SINT,       DXGI_FORMAT_R8G8B8A8_SINT       },
+        { BasicFormat::R8G8B8A8_UNORM,      DXGI_FORMAT_R8G8B8A8_UNORM      },
+        { BasicFormat::R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB },
+        { BasicFormat::R8G8B8A8_SNORM,      DXGI_FORMAT_R8G8B8A8_SNORM      },
+        { BasicFormat::R16G16_FLOAT,        DXGI_FORMAT_R16G16_FLOAT        },
+        { BasicFormat::R16G16_UINT,         DXGI_FORMAT_R16G16_UINT         },
+        { BasicFormat::R16G16_SINT,         DXGI_FORMAT_R16G16_SINT         },
+        { BasicFormat::R16G16_UNORM,        DXGI_FORMAT_R16G16_UNORM        },
+        { BasicFormat::R16G16_SNORM,        DXGI_FORMAT_R16G16_SNORM        },
+        { BasicFormat::R32_FLOAT,           DXGI_FORMAT_R32_FLOAT           },
+        { BasicFormat::R32_UINT,            DXGI_FORMAT_R32_UINT            },
+        { BasicFormat::R32_SINT,            DXGI_FORMAT_R32_SINT            },
+        { BasicFormat::R8G8_UINT,           DXGI_FORMAT_R8G8_UINT           },
+        { BasicFormat::R8G8_SINT,           DXGI_FORMAT_R8G8_SINT           },
+        { BasicFormat::R8G8_UNORM,          DXGI_FORMAT_R8G8_UNORM          },
+        { BasicFormat::R8G8_SNORM,          DXGI_FORMAT_R8G8_SNORM          },
+        { BasicFormat::R16_FLOAT,           DXGI_FORMAT_R16_FLOAT           },
+        { BasicFormat::R16_UINT,            DXGI_FORMAT_R16_UINT            },
+        { BasicFormat::R16_SINT,            DXGI_FORMAT_R16_SINT            },
+        { BasicFormat::R16_UNORM,           DXGI_FORMAT_R16_UNORM           },
+        { BasicFormat::R16_SNORM,           DXGI_FORMAT_R16_SNORM           },
+        { BasicFormat::R8_UINT,             DXGI_FORMAT_R8_UINT             },
+        { BasicFormat::R8_SINT,             DXGI_FORMAT_R8_SINT             },
+        { BasicFormat::R8_UNORM,            DXGI_FORMAT_R8_UNORM            },
+        { BasicFormat::R8_SNORM,            DXGI_FORMAT_R8_SNORM            },
+        { BasicFormat::A8_UNORM,            DXGI_FORMAT_A8_UNORM            },
+        { BasicFormat::D32_FLOAT,           DXGI_FORMAT_D32_FLOAT           },
+        { BasicFormat::D24_UNORM_S8_UINT,   DXGI_FORMAT_D24_UNORM_S8_UINT   },
+        { BasicFormat::D16_UNORM,           DXGI_FORMAT_D16_UNORM,          },
+        { BasicFormat::B5G6R5_UNORM,        DXGI_FORMAT_B5G6R5_UNORM        },
+        { BasicFormat::B5G5R5A1_UNORM,      DXGI_FORMAT_B5G5R5A1_UNORM      },
+        { BasicFormat::B8G8R8A8_UNORM,      DXGI_FORMAT_B8G8R8A8_UNORM      },
+        { BasicFormat::B8G8R8X8_UNORM,      DXGI_FORMAT_B8G8R8X8_UNORM      },
+        { BasicFormat::B8G8R8A8_UNORM_SRGB, DXGI_FORMAT_B8G8R8A8_UNORM_SRGB },
+        { BasicFormat::B8G8R8X8_UNORM_SRGB, DXGI_FORMAT_B8G8R8X8_UNORM_SRGB }
     };
     return map.at(format);
 }
@@ -33,9 +76,38 @@ DXGI_FORMAT ConvertIndexFormat(IndexFormat format)
 DXGI_FORMAT ConvertVertexFormat(VertexFormat format)
 {
     static const std::unordered_map<VertexFormat, DXGI_FORMAT> map = {
-        { VertexFormat::FLOAT32x2, DXGI_FORMAT_R32G32_FLOAT       },
-        { VertexFormat::FLOAT32x3, DXGI_FORMAT_R32G32B32_FLOAT    },
-        { VertexFormat::FLOAT32x4, DXGI_FORMAT_R32G32B32A32_FLOAT }
+        { VertexFormat::UINT8,        DXGI_FORMAT_R8_UINT            },
+        { VertexFormat::UINT8_VEC2,   DXGI_FORMAT_R8G8_UINT          },
+        { VertexFormat::UINT8_VEC3,   DXGI_FORMAT_R8G8B8A8_UINT      },
+        { VertexFormat::UINT8_VEC4,   DXGI_FORMAT_R8G8B8A8_UINT      },
+        { VertexFormat::SINT8,        DXGI_FORMAT_R8_SINT            },
+        { VertexFormat::SINT8_VEC2,   DXGI_FORMAT_R8G8_SINT          },
+        { VertexFormat::SINT8_VEC3,   DXGI_FORMAT_R8G8B8A8_SINT      },
+        { VertexFormat::SINT8_VEC4,   DXGI_FORMAT_R8G8B8A8_SINT      },
+        { VertexFormat::UINT16,       DXGI_FORMAT_R16_UINT           },
+        { VertexFormat::UINT16_VEC2,  DXGI_FORMAT_R16G16_UINT        },
+        { VertexFormat::UINT16_VEC3,  DXGI_FORMAT_R16G16B16A16_UINT  },
+        { VertexFormat::UINT16_VEC4,  DXGI_FORMAT_R16G16B16A16_UINT  },
+        { VertexFormat::SINT16,       DXGI_FORMAT_R16_SINT           },
+        { VertexFormat::SINT16_VEC2,  DXGI_FORMAT_R16G16_SINT        },
+        { VertexFormat::SINT16_VEC3,  DXGI_FORMAT_R16G16B16A16_SINT  },
+        { VertexFormat::SINT16_VEC4,  DXGI_FORMAT_R16G16B16A16_SINT  },
+        { VertexFormat::FLOAT16,      DXGI_FORMAT_R16_FLOAT          },
+        { VertexFormat::FLOAT16_VEC2, DXGI_FORMAT_R16G16_FLOAT       },
+        { VertexFormat::FLOAT16_VEC3, DXGI_FORMAT_R16G16B16A16_FLOAT },
+        { VertexFormat::FLOAT16_VEC4, DXGI_FORMAT_R16G16B16A16_FLOAT },
+        { VertexFormat::UINT32,       DXGI_FORMAT_R32_UINT           },
+        { VertexFormat::UINT32_VEC2,  DXGI_FORMAT_R32G32_UINT        },
+        { VertexFormat::UINT32_VEC3,  DXGI_FORMAT_R32G32B32_UINT     },
+        { VertexFormat::UINT32_VEC4,  DXGI_FORMAT_R32G32B32A32_UINT  },
+        { VertexFormat::SINT32,       DXGI_FORMAT_R32_SINT           },
+        { VertexFormat::SINT32_VEC2,  DXGI_FORMAT_R32G32_SINT        },
+        { VertexFormat::SINT32_VEC3,  DXGI_FORMAT_R32G32B32_SINT     },
+        { VertexFormat::SINT32_VEC4,  DXGI_FORMAT_R32G32B32A32_SINT  },
+        { VertexFormat::FLOAT32,      DXGI_FORMAT_R32_FLOAT          },
+        { VertexFormat::FLOAT32_VEC2, DXGI_FORMAT_R32G32_FLOAT       },
+        { VertexFormat::FLOAT32_VEC3, DXGI_FORMAT_R32G32B32_FLOAT    },
+        { VertexFormat::FLOAT32_VEC4, DXGI_FORMAT_R32G32B32A32_FLOAT }
     };
     return map.at(format);
 }
@@ -105,16 +177,9 @@ D3D12_RESOURCE_STATES ConvertResourceState(ResourceState state)
         { ResourceState::DEPTH_STENCIL_READ,  D3D12_RESOURCE_STATE_DEPTH_READ       },
         { ResourceState::DEPTH_STENCIL_WRITE, D3D12_RESOURCE_STATE_DEPTH_WRITE      },
         { ResourceState::COPY_SOURCE,         D3D12_RESOURCE_STATE_COPY_SOURCE      },
-        { ResourceState::COPY_DESTINATION,    D3D12_RESOURCE_STATE_COPY_DEST        },
-        { ResourceState::RESOLVE_SOURCE,      D3D12_RESOURCE_STATE_RESOLVE_SOURCE   },
-        { ResourceState::RESOLVE_DESTINATION, D3D12_RESOURCE_STATE_RESOLVE_DEST     }
+        { ResourceState::COPY_DESTINATION,    D3D12_RESOURCE_STATE_COPY_DEST        }
     };
     return map.at(state);
-}
-
-unsigned int ConvertMSAA(MSAA msaa)
-{
-    return gp::EnumCast(msaa);
 }
 
 D3D12_RESOURCE_FLAGS ConvertImageResourceFlag(ImageType type)
@@ -170,8 +235,8 @@ D3D12_DESCRIPTOR_HEAP_FLAGS ConvertDescriptorHeapVisible(DescriptorType type)
 D3D12_DESCRIPTOR_RANGE_TYPE ConvertDescriptorRangeType(DescriptorType type, bool& success)
 {
     static const std::unordered_map<DescriptorType, D3D12_DESCRIPTOR_RANGE_TYPE> map = {
-        { DescriptorType::UniformBuffer,   D3D12_DESCRIPTOR_RANGE_TYPE_CBV     },
-        { DescriptorType::StorageBuffer,    D3D12_DESCRIPTOR_RANGE_TYPE_SRV     },
+        { DescriptorType::UniformBuffer,    D3D12_DESCRIPTOR_RANGE_TYPE_CBV     },
+        { DescriptorType::ReadOnlyBuffer,   D3D12_DESCRIPTOR_RANGE_TYPE_SRV     },
         { DescriptorType::ReadWriteBuffer,  D3D12_DESCRIPTOR_RANGE_TYPE_UAV     },
         { DescriptorType::ReadOnlyTexture,  D3D12_DESCRIPTOR_RANGE_TYPE_SRV     },
         { DescriptorType::ReadWriteTexture, D3D12_DESCRIPTOR_RANGE_TYPE_UAV     },
@@ -314,8 +379,7 @@ D3D12_RENDER_PASS_ENDING_ACCESS_TYPE ConvertRenderPassEndAccessType(PassAction a
 {
     static const std::unordered_map<PassAction, D3D12_RENDER_PASS_ENDING_ACCESS_TYPE> map = {
         { PassAction::Discard, D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_DISCARD  },
-        { PassAction::Store,   D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_PRESERVE },
-        { PassAction::Resolve, D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_RESOLVE  }
+        { PassAction::Store,   D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_PRESERVE }
     };
     if (gp::EnumCast(action) & gp::EnumCast(PassAction::EndAction)) {
         return map.at(action);

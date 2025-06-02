@@ -1,4 +1,4 @@
-#include "DX12BaseObject.h"
+#include "DX12Object.h"
 
 namespace au::backend {
 

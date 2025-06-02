@@ -1,5 +1,5 @@
 #include "DX12Context.h"
-#include "DX12BaseObject.h"
+#include "DX12Object.h"
 
 extern "C" {
 

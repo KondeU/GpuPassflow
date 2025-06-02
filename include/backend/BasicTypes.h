@@ -174,11 +174,11 @@ enum class ImageDimension : uint8_t {
 };
 
 enum class DescriptorType : uint8_t {
-    UniformBuffer    = (1 << 0),
-    ReadOnlyBuffer   = (1 << 1),
-    ReadWriteBuffer  = (1 << 2),
-    ReadOnlyTexture  = (1 << 3),
-    ReadWriteTexture = (1 << 4),
+    UniformBuffer    = (1 << 0), // HW Type is UniformBuffer
+    ReadOnlyBuffer   = (1 << 1), // HW Type is StorageBuffer
+    ReadWriteBuffer  = (1 << 2), // HW Type is StorageBuffer
+    ReadOnlyTexture  = (1 << 3), // HW Type is ImageBuffer
+    ReadWriteTexture = (1 << 4), // HW Type is ImageBuffer
     ShaderResource   = // descriptor for shader resource: buffer or texture
         UniformBuffer | ReadOnlyBuffer | ReadWriteBuffer | ReadOnlyTexture | ReadWriteTexture,
     ImageSampler     = (1 << 5), // descriptor for image sampler

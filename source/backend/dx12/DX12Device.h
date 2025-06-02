@@ -4,13 +4,14 @@
 #include "DX12Shader.h"
 #include "DX12Swapchain.h"
 #include "DX12CommandRecorder.h"
-#include "DX12InputVertex.h"
-#include "DX12InputVertexAttributes.h"
-#include "DX12InputIndex.h"
-#include "DX12InputIndexAttribute.h"
-#include "DX12ResourceConstantBuffer.h"
-#include "DX12ResourceStorageBuffer.h"
-#include "DX12ResourceImage.h"
+#include "DX12VertexBuffer.h"
+#include "DX12VertexAttribute.h"
+#include "DX12IndexBuffer.h"
+#include "DX12IndexAttribute.h"
+#include "DX12ConstantBuffer.h"
+#include "DX12UniformBuffer.h"
+#include "DX12StorageBuffer.h"
+#include "DX12ImageBuffer.h"
 #include "DX12ImageSampler.h"
 #include "DX12DescriptorHeap.h"
 #include "DX12DescriptorGroup.h"
@@ -46,6 +47,9 @@ public:
 
     rhi::VertexAttribute* CreateVertexAttribute() override;
     bool DestroyVertexAttribute(rhi::VertexAttribute* instance) override;
+
+    rhi::ConstantBuffer* CreateConstantBuffer() override;
+    bool DestroyConstantBuffer(rhi::ConstantBuffer* instance) override;
 
     rhi::IndexBuffer* CreateIndexBuffer(
         rhi::IndexBuffer::Description description) override;
@@ -109,20 +113,23 @@ private:
     // TODO: CommandMemory has not been abstracted into a separate class yet.
     std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D12CommandAllocator>> allocators;
 
-    std::vector<std::unique_ptr<DX12Shader>> shaders;
-    std::vector<std::unique_ptr<DX12Swapchain>> swapchains;
-    std::vector<std::unique_ptr<DX12CommandRecorder>> commandRecorders;
-    std::vector<std::unique_ptr<DX12InputVertex>> inputVertices;
-    std::vector<std::unique_ptr<DX12InputVertexAttributes>> inputVertexAttributes;
-    std::vector<std::unique_ptr<DX12InputIndex>> inputIndices;
-    std::vector<std::unique_ptr<DX12InputIndexAttribute>> inputIndexAttributes;
-    std::vector<std::unique_ptr<DX12ResourceConstantBuffer>> resourceConstantBuffers;
-    std::vector<std::unique_ptr<DX12ResourceStorageBuffer>> resourceStorageBuffers;
-    std::vector<std::unique_ptr<DX12ResourceImage>> resourceImages;
-    std::vector<std::unique_ptr<DX12ImageSampler>> imageSamplers;
-    std::vector<std::unique_ptr<DX12DescriptorHeap>> descriptorHeaps;
-    std::vector<std::unique_ptr<DX12DescriptorGroup>> descriptorGroups;
-    std::vector<std::unique_ptr<DX12PipelineLayout>> pipelineLayouts;
-    std::vector<std::unique_ptr<DX12PipelineState>> pipelineStates;
+    template <typename T>
+    using InstanceContainer = std::unordered_map<T*, std::unique_ptr<T>>;
+    InstanceContainer<DX12Shader> shaders;
+    InstanceContainer<DX12Swapchain> swapchains;
+    InstanceContainer<DX12CommandRecorder> commandRecorders;
+    InstanceContainer<DX12IndexBuffer> indexBuffers;
+    InstanceContainer<DX12VertexBuffer> vertexBuffers;
+    InstanceContainer<DX12IndexAttribute> indexAttributes;
+    InstanceContainer<DX12VertexAttribute> vertexAttributes;
+    InstanceContainer<DX12ConstantBuffer> constantBuffers;
+    InstanceContainer<DX12UniformBuffer> uniformBuffers;
+    InstanceContainer<DX12StorageBuffer> storageBuffers;
+    InstanceContainer<DX12ImageBuffer> imageBuffers;
+    InstanceContainer<DX12ImageSampler> imageSamplers;
+    InstanceContainer<DX12DescriptorHeap> descriptorHeaps;
+    InstanceContainer<DX12DescriptorGroup> descriptorGroups;
+    InstanceContainer<DX12PipelineLayout> pipelineLayouts;
+    InstanceContainer<DX12PipelineState> pipelineStates;
 };
 }

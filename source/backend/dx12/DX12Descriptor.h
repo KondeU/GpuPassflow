@@ -2,7 +2,7 @@
 
 #include <variant>
 #include "DX12BackendHeaders.h"
-#include "DX12BaseObject.h"
+#include "DX12Object.h"
 
 namespace au::backend {
 

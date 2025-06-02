@@ -14,10 +14,12 @@ public:
             Data,
             File
         } cacheType;
+        unsigned int constantBufferBytes;
 
-        Description()
+        Description(bool useConstantBuffer)
             : cache() // This means not using the cache.
-            , cacheType(CacheType::Data) // Ignore cacheType if not using the cache.
+            , cacheType(CacheType::Data) // Ignore cacheType because not using the cache.
+            , constantBufferBytes(useConstantBuffer ? 128 : 0)
         {}
 
         Description(
@@ -25,6 +27,7 @@ public:
             CacheType cacheType)
             : cache(cache)
             , cacheType(cacheType)
+            , constantBufferBytes(0) // Ignore it because layout is built from cache.
         {}
     };
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "DX12BackendHeaders.h"
-#include "DX12BaseObject.h"
+#include "DX12Object.h"
 
 namespace au::backend {
 
@@ -16,7 +16,7 @@ public:
 
     bool IsValid() const override;
 
-    Reflection Reflect() const override;
+    //Reflection Reflect() const override;
 
     std::string DumpBytecode() const override;
 

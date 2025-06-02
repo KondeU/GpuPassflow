@@ -223,36 +223,31 @@ void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
     RcUploadTemplate<DX12ResourceImage>(*this, *destination, *staging, size, data);
 }
 
-void DX12CommandRecorder::RcCopy(
-    VertexBuffer* const destination, VertexBuffer* const source)
+void DX12CommandRecorder::RcCopy(VertexBuffer* const destination, VertexBuffer* const source)
 {
     CHECK_RECORD(description.commandType, CommandType::All, RcCopy:VertexBuffer);
     RcCopyTemplate<DX12InputVertex>(*this, *destination, *source);
 }
 
-void DX12CommandRecorder::RcCopy(
-    IndexBuffer* const destination, IndexBuffer* const source)
+void DX12CommandRecorder::RcCopy(IndexBuffer* const destination, IndexBuffer* const source)
 {
     CHECK_RECORD(description.commandType, CommandType::All, RcCopy:IndexBuffer);
     RcCopyTemplate<DX12InputIndex>(*this, *destination, *source);
 }
 
-void DX12CommandRecorder::RcCopy(
-    UniformBuffer* const destination, UniformBuffer* const source)
+void DX12CommandRecorder::RcCopy(UniformBuffer* const destination, UniformBuffer* const source)
 {
     CHECK_RECORD(description.commandType, CommandType::All, RcCopy:UniformBuffer);
     RcCopyTemplate<DX12ResourceConstantBuffer>(*this, *destination, *source);
 }
 
-void DX12CommandRecorder::RcCopy(
-    StorageBuffer* const destination, StorageBuffer* const source)
+void DX12CommandRecorder::RcCopy(StorageBuffer* const destination, StorageBuffer* const source)
 {
     CHECK_RECORD(description.commandType, CommandType::All, RcCopy:StorageBuffer);
     RcCopyTemplate<DX12ResourceStorageBuffer>(*this, *destination, *source);
 }
 
-void DX12CommandRecorder::RcCopy(
-    ImageBuffer* const destination, ImageBuffer* const source)
+void DX12CommandRecorder::RcCopy(ImageBuffer* const destination, ImageBuffer* const source)
 {
     CHECK_RECORD(description.commandType, CommandType::All, RcCopy:ImageBuffer);
     RcCopyTemplate<DX12ResourceImage>(*this, *destination, *source);

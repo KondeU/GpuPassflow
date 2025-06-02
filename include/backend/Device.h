@@ -37,6 +37,9 @@ public:
     virtual IndexAttribute* CreateIndexAttribute() = 0;
     virtual bool DestroyIndexAttribute(IndexAttribute* instance) = 0;
 
+    virtual ConstantBuffer* CreateConstantBuffer() = 0;
+    virtual bool DestroyConstantBuffer(ConstantBuffer* instance) = 0;
+
     virtual UniformBuffer* CreateUniformBuffer(UniformBuffer::Description description) = 0;
     virtual bool DestroyUniformBuffer(UniformBuffer* instance) = 0;
 

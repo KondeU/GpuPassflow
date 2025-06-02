@@ -24,8 +24,8 @@ public:
     virtual void SetPipelineLayout(PipelineLayout* layout) = 0;
 
     // Input state.
-    virtual void SetIndexAssembly(IndexAttribute* iia) = 0;
-    virtual void SetVertexAssembly(VertexAttribute* iva) = 0;
+    virtual void SetIndexAssembly(IndexAttribute* ia) = 0;
+    virtual void SetVertexAssembly(VertexAttribute* va) = 0;
 
     // Shader program.
     virtual void SetShader(ShaderStage stage, Shader* shader) = 0;
@@ -38,7 +38,6 @@ public:
     virtual void SetRasterizerState(RasterizerState state) = 0;
     virtual void SetRasterizerStateFillMode(FillMode mode) = 0;
     virtual void SetRasterizerStateCullMode(CullMode mode) = 0;
-    virtual void SetMSAA(MSAA msaa) = 0;
 
     // Build PSO
     virtual void BuildState() = 0;

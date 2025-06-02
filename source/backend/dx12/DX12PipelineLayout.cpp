@@ -19,6 +19,13 @@ DX12PipelineLayout::~DX12PipelineLayout()
 void DX12PipelineLayout::Setup(Description description)
 {
     this->description = description;
+    if (unsigned int dwordCount = (description.constantBufferBytes + 3) / 4;
+        dwordCount > 0) {
+        CD3DX12_ROOT_PARAMETER parameter{};
+        // Constant buffer occupied register 0, space 0.
+        parameter.InitAsConstants(dwordCount, 0, 0);
+        parameters.emplace_back(parameter);
+    }
 }
 
 void DX12PipelineLayout::Shutdown()
@@ -58,7 +65,7 @@ bool DX12PipelineLayout::BuildLayout()
         static_cast<UINT>(parameters.size()),
         (parameters.size() > 0) ? parameters.data() : nullptr,
         static_cast<UINT>(samplers.size()),
-        (samplers.size()   > 0) ? samplers.data() : nullptr,
+        (samplers.size() > 0) ? samplers.data() : nullptr,
         // Setting this flag means that current application is opting in to using the Input
         // Assembler (requiring an input layout that defines a set of vertex buffer bindings).
         // Omitting this flag can result in one root argument space being saved on some hardware.

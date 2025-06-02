@@ -32,13 +32,6 @@ public:
 
     virtual bool IsValid() const = 0;
 
-    struct Reflection {
-        unsigned int descriptorsCount = 0;
-        // TODO...
-    };
-    // TODO
-    virtual Reflection Reflect() const = 0;
-
     virtual std::string DumpBytecode() const = 0;
 
 protected:

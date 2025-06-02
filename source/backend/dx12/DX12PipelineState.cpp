@@ -65,18 +65,18 @@ void DX12PipelineState::SetPipelineLayout(rhi::PipelineLayout* layout)
     graphicsPipelineState.pRootSignature = pLayout->Signature().Get();
 }
 
-void DX12PipelineState::SetIndexAssembly(rhi::IndexAttribute* iia)
+void DX12PipelineState::SetIndexAssembly(rhi::IndexAttribute* ia)
 {
-    auto dxIia = dynamic_cast<DX12InputIndexAttribute*>(iia);
+    auto dxIia = dynamic_cast<DX12InputIndexAttribute*>(ia);
     graphicsPipelineState.IBStripCutValue =
         dxIia->GetIndexInformation().StripCutValue;
     graphicsPipelineState.PrimitiveTopologyType =
         dxIia->GetIndexInformation().PrimitiveTopologyType;
 }
 
-void DX12PipelineState::SetVertexAssembly(rhi::VertexAttribute* iva)
+void DX12PipelineState::SetVertexAssembly(rhi::VertexAttribute* va)
 {
-    auto dxIva = dynamic_cast<DX12InputVertexAttributes*>(iva);
+    auto dxIva = dynamic_cast<DX12InputVertexAttributes*>(va);
     graphicsPipelineState.InputLayout = {
         dxIva->GetInputElements().data(),
         static_cast<UINT>(dxIva->GetInputElements().size())

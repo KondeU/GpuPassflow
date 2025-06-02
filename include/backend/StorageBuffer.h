@@ -5,7 +5,7 @@
 namespace au::rhi {
 
 // Storage buffer object (SBO) in Vulkan
-// Structured buffer object in DX12
+// Structured buffer object (SBO) in DX12
 class StorageBuffer {
 public:
     struct Description final {

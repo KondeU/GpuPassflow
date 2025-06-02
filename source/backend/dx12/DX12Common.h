@@ -48,7 +48,8 @@ GP_LOG_TAG(DX12Backend);
 std::string FormatResult(HRESULT result);
 
 template <typename Interface, typename Implement, class ...Arguments>
-Interface* CreateInstance(std::vector<std::unique_ptr<Implement>>& container,
+Interface* CreateInstance(
+    std::unordered_map<Implement*, std::unique_ptr<Implement>>& container,
     typename Interface::Description description, typename Arguments& ...arguments)
 {
     static_assert(std::is_base_of<Interface, Implement>::value,
@@ -61,7 +62,8 @@ Interface* CreateInstance(std::vector<std::unique_ptr<Implement>>& container,
 }
 
 template <typename Interface, typename Implement>
-bool DestroyInstance(std::vector<std::unique_ptr<Implement>>& container, Interface* instance)
+bool DestroyInstance(
+    std::unordered_map<Implement*, std::unique_ptr<Implement>>& container, Interface* instance)
 {
     static_assert(std::is_base_of<Interface, Implement>::value,
         "CreateInstance: Implement should inherit from Interface!");

@@ -87,8 +87,7 @@ bool DX12Device::DestroyShader(rhi::Shader* instance)
     return DestroyInstance(shaders, instance);
 }
 
-rhi::Swapchain*
-DX12Device::CreateSwapchain(rhi::Swapchain::Description description)
+rhi::Swapchain* DX12Device::CreateSwapchain(rhi::Swapchain::Description description)
 {
     return CreateInstance<rhi::Swapchain>(swapchains, description, *this);
 }
@@ -98,8 +97,8 @@ bool DX12Device::DestroySwapchain(rhi::Swapchain* instance)
     return DestroyInstance(swapchains, instance);
 }
 
-rhi::CommandRecorder*
-DX12Device::CreateCommandRecorder(rhi::CommandRecorder::Description description)
+rhi::CommandRecorder* DX12Device::CreateCommandRecorder(
+    rhi::CommandRecorder::Description description)
 {
     return CreateInstance<rhi::CommandRecorder>(commandRecorders, description, *this);
 }
@@ -109,8 +108,7 @@ bool DX12Device::DestroyCommandRecorder(rhi::CommandRecorder* instance)
     return DestroyInstance(commandRecorders, instance);
 }
 
-rhi::VertexBuffer*
-DX12Device::CreateVertexBuffer(rhi::VertexBuffer::Description description)
+rhi::VertexBuffer* DX12Device::CreateVertexBuffer(rhi::VertexBuffer::Description description)
 {
     return CreateInstance<rhi::VertexBuffer>(inputVertices, description, *this);
 }
@@ -120,8 +118,7 @@ bool DX12Device::DestroyVertexBuffer(rhi::VertexBuffer* instance)
     return DestroyInstance(inputVertices, instance);
 }
 
-rhi::VertexAttribute*
-DX12Device::CreateVertexAttribute()
+rhi::VertexAttribute* DX12Device::CreateVertexAttribute()
 {
     return CreateInstance<rhi::VertexAttribute>(inputVertexAttributes, {});
 }
@@ -131,8 +128,17 @@ bool DX12Device::DestroyVertexAttribute(rhi::VertexAttribute* instance)
     return DestroyInstance(inputVertexAttributes, instance);
 }
 
-rhi::IndexBuffer*
-DX12Device::CreateIndexBuffer(rhi::IndexBuffer::Description description)
+rhi::ConstantBuffer* DX12Device::CreateConstantBuffer()
+{
+    return CreateInstance<rhi::ConstantBuffer>(constantBuffers, {});
+}
+
+bool DX12Device::DestroyConstantBuffer(rhi::ConstantBuffer* instance)
+{
+    return DestroyInstance(constantBuffers, instance);
+}
+
+rhi::IndexBuffer* DX12Device::CreateIndexBuffer(rhi::IndexBuffer::Description description)
 {
     return CreateInstance<rhi::IndexBuffer>(inputIndices, description, *this);
 }
@@ -142,8 +148,7 @@ bool DX12Device::DestroyIndexBuffer(rhi::IndexBuffer* instance)
     return DestroyInstance(inputIndices, instance);
 }
 
-rhi::IndexAttribute*
-DX12Device::CreateIndexAttribute()
+rhi::IndexAttribute* DX12Device::CreateIndexAttribute()
 {
     return CreateInstance<rhi::IndexAttribute>(inputIndexAttributes, {});
 }
@@ -153,8 +158,7 @@ bool DX12Device::DestroyIndexAttribute(rhi::IndexAttribute* instance)
     return DestroyInstance(inputIndexAttributes, instance);
 }
 
-rhi::UniformBuffer*
-DX12Device::CreateUniformBuffer(rhi::UniformBuffer::Description description)
+rhi::UniformBuffer* DX12Device::CreateUniformBuffer(rhi::UniformBuffer::Description description)
 {
     return CreateInstance<rhi::UniformBuffer>(
         resourceConstantBuffers, description, *this);
@@ -165,8 +169,7 @@ bool DX12Device::DestroyUniformBuffer(rhi::UniformBuffer* instance)
     return DestroyInstance(resourceConstantBuffers, instance);
 }
 
-rhi::StorageBuffer*
-DX12Device::CreateStorageBuffer(rhi::StorageBuffer::Description description)
+rhi::StorageBuffer* DX12Device::CreateStorageBuffer(rhi::StorageBuffer::Description description)
 {
     return CreateInstance<rhi::StorageBuffer>(
         resourceStorageBuffers, description, *this);
@@ -177,8 +180,7 @@ bool DX12Device::DestroyResourceBuffer(rhi::StorageBuffer* instance)
     return DestroyInstance(resourceStorageBuffers, instance);
 }
 
-rhi::ImageBuffer*
-DX12Device::CreateImageBuffer(rhi::ImageBuffer::Description description)
+rhi::ImageBuffer* DX12Device::CreateImageBuffer(rhi::ImageBuffer::Description description)
 {
     return CreateInstance<rhi::ImageBuffer>(resourceImages, description, *this);
 }
@@ -188,8 +190,7 @@ bool DX12Device::DestroyImageBuffer(rhi::ImageBuffer* instance)
     return DestroyInstance(resourceImages, instance);
 }
 
-rhi::ImageSampler*
-DX12Device::CreateImageSampler(rhi::ImageSampler::Description description)
+rhi::ImageSampler* DX12Device::CreateImageSampler(rhi::ImageSampler::Description description)
 {
     return CreateInstance<rhi::ImageSampler>(imageSamplers, description);
 }
@@ -199,8 +200,8 @@ bool DX12Device::DestroyImageSampler(rhi::ImageSampler* instance)
     return DestroyInstance(imageSamplers, instance);
 }
 
-rhi::DescriptorHeap*
-DX12Device::CreateDescriptorHeap(rhi::DescriptorHeap::Description description)
+rhi::DescriptorHeap* DX12Device::CreateDescriptorHeap(
+    rhi::DescriptorHeap::Description description)
 {
     return CreateInstance<rhi::DescriptorHeap>(descriptorHeaps, description, *this);
 }
@@ -210,8 +211,8 @@ bool DX12Device::DestroyDescriptorHeap(rhi::DescriptorHeap* instance)
     return DestroyInstance(descriptorHeaps, instance);
 }
 
-rhi::DescriptorGroup*
-DX12Device::CreateDescriptorGroup(rhi::DescriptorGroup::Description description)
+rhi::DescriptorGroup* DX12Device::CreateDescriptorGroup(
+    rhi::DescriptorGroup::Description description)
 {
     return CreateInstance<rhi::DescriptorGroup>(descriptorGroups, description, *this);
 }
@@ -221,8 +222,8 @@ bool DX12Device::DestroyDescriptorGroup(rhi::DescriptorGroup* instance)
     return DestroyInstance(descriptorGroups, instance);
 }
 
-rhi::PipelineLayout*
-DX12Device::CreatePipelineLayout(rhi::PipelineLayout::Description description)
+rhi::PipelineLayout* DX12Device::CreatePipelineLayout(
+    rhi::PipelineLayout::Description description)
 {
     return CreateInstance<rhi::PipelineLayout>(pipelineLayouts, description, *this);
 }
@@ -232,8 +233,8 @@ bool DX12Device::DestroyPipelineLayout(rhi::PipelineLayout* instance)
     return DestroyInstance(pipelineLayouts, instance);
 }
 
-rhi::PipelineState*
-DX12Device::CreatePipelineState(rhi::PipelineState::Description description)
+rhi::PipelineState* DX12Device::CreatePipelineState(
+    rhi::PipelineState::Description description)
 {
     return CreateInstance<rhi::PipelineState>(pipelineStates, description, *this);
 }
