@@ -54,21 +54,22 @@ void DX12Device::Setup(Description description)
 
 void DX12Device::Shutdown()
 {
-    shaders.resize(0);
-    swapchains.resize(0);
-    commandRecorders.resize(0);
-    inputVertices.resize(0);
-    inputVertexAttributes.resize(0);
-    inputIndices.resize(0);
-    inputIndexAttributes.resize(0);
-    resourceConstantBuffers.resize(0);
-    resourceStorageBuffers.resize(0);
-    resourceImages.resize(0);
-    imageSamplers.resize(0);
-    descriptorHeaps.resize(0);
-    descriptorGroups.resize(0);
-    pipelineLayouts.resize(0);
-    pipelineStates.resize(0);
+    shaders.clear();
+    swapchains.clear();
+    commandRecorders.clear();
+    indexBuffers.clear();
+    vertexBuffers.clear();
+    indexAttributes.clear();
+    vertexAttributes.clear();
+    constantBuffers.clear();
+    uniformBuffers.clear();
+    storageBuffers.clear();
+    imageBuffers.clear();
+    imageSamplers.clear();
+    descriptorHeaps.clear();
+    descriptorGroups.clear();
+    pipelineLayouts.clear();
+    pipelineStates.clear();
     allocators.clear();
     queues.clear();
     fences.clear();
@@ -76,8 +77,7 @@ void DX12Device::Shutdown()
     ReleaseCOM(adapter);
 }
 
-rhi::Shader*
-DX12Device::CreateShader(rhi::Shader::Description description)
+rhi::Shader* DX12Device::CreateShader(rhi::Shader::Description description)
 {
     return CreateInstance<rhi::Shader>(shaders, description);
 }
@@ -110,22 +110,22 @@ bool DX12Device::DestroyCommandRecorder(rhi::CommandRecorder* instance)
 
 rhi::VertexBuffer* DX12Device::CreateVertexBuffer(rhi::VertexBuffer::Description description)
 {
-    return CreateInstance<rhi::VertexBuffer>(inputVertices, description, *this);
+    return CreateInstance<rhi::VertexBuffer>(vertexBuffers, description, *this);
 }
 
 bool DX12Device::DestroyVertexBuffer(rhi::VertexBuffer* instance)
 {
-    return DestroyInstance(inputVertices, instance);
+    return DestroyInstance(vertexBuffers, instance);
 }
 
 rhi::VertexAttribute* DX12Device::CreateVertexAttribute()
 {
-    return CreateInstance<rhi::VertexAttribute>(inputVertexAttributes, {});
+    return CreateInstance<rhi::VertexAttribute>(vertexAttributes, {});
 }
 
 bool DX12Device::DestroyVertexAttribute(rhi::VertexAttribute* instance)
 {
-    return DestroyInstance(inputVertexAttributes, instance);
+    return DestroyInstance(vertexAttributes, instance);
 }
 
 rhi::ConstantBuffer* DX12Device::CreateConstantBuffer()
@@ -140,54 +140,52 @@ bool DX12Device::DestroyConstantBuffer(rhi::ConstantBuffer* instance)
 
 rhi::IndexBuffer* DX12Device::CreateIndexBuffer(rhi::IndexBuffer::Description description)
 {
-    return CreateInstance<rhi::IndexBuffer>(inputIndices, description, *this);
+    return CreateInstance<rhi::IndexBuffer>(indexBuffers, description, *this);
 }
 
 bool DX12Device::DestroyIndexBuffer(rhi::IndexBuffer* instance)
 {
-    return DestroyInstance(inputIndices, instance);
+    return DestroyInstance(indexBuffers, instance);
 }
 
 rhi::IndexAttribute* DX12Device::CreateIndexAttribute()
 {
-    return CreateInstance<rhi::IndexAttribute>(inputIndexAttributes, {});
+    return CreateInstance<rhi::IndexAttribute>(indexAttributes, {});
 }
 
 bool DX12Device::DestroyIndexAttribute(rhi::IndexAttribute* instance)
 {
-    return DestroyInstance(inputIndexAttributes, instance);
+    return DestroyInstance(indexAttributes, instance);
 }
 
 rhi::UniformBuffer* DX12Device::CreateUniformBuffer(rhi::UniformBuffer::Description description)
 {
-    return CreateInstance<rhi::UniformBuffer>(
-        resourceConstantBuffers, description, *this);
+    return CreateInstance<rhi::UniformBuffer>(uniformBuffers, description, *this);
 }
 
 bool DX12Device::DestroyUniformBuffer(rhi::UniformBuffer* instance)
 {
-    return DestroyInstance(resourceConstantBuffers, instance);
+    return DestroyInstance(uniformBuffers, instance);
 }
 
 rhi::StorageBuffer* DX12Device::CreateStorageBuffer(rhi::StorageBuffer::Description description)
 {
-    return CreateInstance<rhi::StorageBuffer>(
-        resourceStorageBuffers, description, *this);
+    return CreateInstance<rhi::StorageBuffer>(storageBuffers, description, *this);
 }
 
 bool DX12Device::DestroyResourceBuffer(rhi::StorageBuffer* instance)
 {
-    return DestroyInstance(resourceStorageBuffers, instance);
+    return DestroyInstance(storageBuffers, instance);
 }
 
 rhi::ImageBuffer* DX12Device::CreateImageBuffer(rhi::ImageBuffer::Description description)
 {
-    return CreateInstance<rhi::ImageBuffer>(resourceImages, description, *this);
+    return CreateInstance<rhi::ImageBuffer>(imageBuffers, description, *this);
 }
 
 bool DX12Device::DestroyImageBuffer(rhi::ImageBuffer* instance)
 {
-    return DestroyInstance(resourceImages, instance);
+    return DestroyInstance(imageBuffers, instance);
 }
 
 rhi::ImageSampler* DX12Device::CreateImageSampler(rhi::ImageSampler::Description description)

@@ -239,7 +239,8 @@ void RasterizePass::DeclareResource(const ShaderResourceProperties& properties)
 {
     descriptorCounter.ClearResourcesAndSamplersCount();
 
-    pipelineLayout = device->CreatePipelineLayout({});
+    const bool useConstantBuffer = false;
+    pipelineLayout = device->CreatePipelineLayout({ useConstantBuffer });
     for (const auto& [resourceSpace, resourceAttributes] : properties.resources) {
         auto space = EnumCast(resourceSpace); // Cast resource space to a integer.
         auto group = descriptorGroups[space] = device->CreateDescriptorGroup({ space });
