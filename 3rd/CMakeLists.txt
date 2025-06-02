@@ -10,10 +10,10 @@ option(BUILD_DEBUG_OPEN_SOURCE "Build dependent open-source libraries with Debug
 if(${DOWNLOAD_OPEN_SOURCE})
   if(WIN32)
     execute_process(WORKING_DIRECTORY ${THIRD_PARTY_PATH}
-      COMMAND curl -LOJ https://github.com/microsoft/DirectX-Headers/archive/refs/tags/v1.610.0.zip)
+      COMMAND curl -LOJ https://github.com/microsoft/DirectX-Headers/archive/refs/tags/v1.616.0.zip)
   endif()
   execute_process(WORKING_DIRECTORY ${THIRD_PARTY_PATH}
-    COMMAND curl -LOJ https://github.com/microsoft/DirectXMath/archive/refs/tags/dec2022.zip)
+    COMMAND curl -LOJ https://github.com/microsoft/DirectXMath/archive/refs/tags/apr2025.zip)
 endif()
 
 if(NOT ${REARCHIVE_OPEN_SOURCE})
@@ -24,17 +24,17 @@ if(WIN32)
   execute_process(WORKING_DIRECTORY ${THIRD_PARTY_PATH}
     COMMAND ${CMAKE_COMMAND} -E remove_directory dxheaders)
   execute_process(WORKING_DIRECTORY ${THIRD_PARTY_PATH}
-    COMMAND ${CMAKE_COMMAND} -E tar xzf DirectX-Headers-1.610.0.zip)
+    COMMAND ${CMAKE_COMMAND} -E tar xzf DirectX-Headers-1.616.0.zip)
   execute_process(WORKING_DIRECTORY ${THIRD_PARTY_PATH}
-    COMMAND ${CMAKE_COMMAND} -E rename DirectX-Headers-1.610.0 dxheaders)
+    COMMAND ${CMAKE_COMMAND} -E rename DirectX-Headers-1.616.0 dxheaders)
 endif()
 
 execute_process(WORKING_DIRECTORY ${THIRD_PARTY_PATH}
   COMMAND ${CMAKE_COMMAND} -E remove_directory dxmath)
 execute_process(WORKING_DIRECTORY ${THIRD_PARTY_PATH}
-  COMMAND ${CMAKE_COMMAND} -E tar xzf DirectXMath-dec2022.zip)
+  COMMAND ${CMAKE_COMMAND} -E tar xzf DirectXMath-apr2025.zip)
 execute_process(WORKING_DIRECTORY ${THIRD_PARTY_PATH}
-  COMMAND ${CMAKE_COMMAND} -E rename DirectXMath-dec2022 dxmath)
+  COMMAND ${CMAKE_COMMAND} -E rename DirectXMath-apr2025 dxmath)
 
 if(${BUILD_DEBUG_OPEN_SOURCE})
   set(BUILD_OPEN_SOURCE_MODE Debug)
