@@ -352,7 +352,7 @@ D3D12_SAMPLER_DESC ConvertSamplerState(SamplerState state)
     samplerState.AddressW = ConvertAddressMode(state.addressMode[2]);
     samplerState.MipLODBias = 0; // TODO: Mip level filter is no supported yet.
     samplerState.MaxAnisotropy = state.maxAnisotropy;
-    samplerState.ComparisonFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL; // TODO: No supported yet.
+    samplerState.ComparisonFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL; // TODO: No supported set yet.
     samplerState.BorderColor[0] = state.borderColor[0];
     samplerState.BorderColor[1] = state.borderColor[1];
     samplerState.BorderColor[2] = state.borderColor[2];
@@ -372,7 +372,7 @@ D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE ConvertRenderPassBeginAccessType(PassAct
     if (gp::EnumCast(action) & gp::EnumCast(PassAction::BeginAction)) {
         return map.at(action);
     }
-    return {};
+    return D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_DISCARD;
 }
 
 D3D12_RENDER_PASS_ENDING_ACCESS_TYPE ConvertRenderPassEndAccessType(PassAction action)
@@ -384,7 +384,7 @@ D3D12_RENDER_PASS_ENDING_ACCESS_TYPE ConvertRenderPassEndAccessType(PassAction a
     if (gp::EnumCast(action) & gp::EnumCast(PassAction::EndAction)) {
         return map.at(action);
     }
-    return {};
+    return D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_DISCARD;
 }
 
 }

@@ -45,31 +45,15 @@ public:
     void RcUpload(const void* const data, size_t size,
         rhi::ImageBuffer* const destination, rhi::ImageBuffer* const staging) override;
 
-    void RcCopy(rhi::VertexBuffer* const destination,
-        rhi::VertexBuffer* const source) override;
-    void RcCopy(rhi::IndexBuffer* const destination,
-        rhi::IndexBuffer* const source) override;
-    void RcCopy(rhi::UniformBuffer* const destination,
-        rhi::UniformBuffer* const source) override;
-    void RcCopy(rhi::StorageBuffer* const destination,
-        rhi::StorageBuffer* const source) override;
-    void RcCopy(rhi::ImageBuffer* const destination,
-        rhi::ImageBuffer* const source) override;
-    void RcCopy(rhi::Swapchain* const destination,
-        rhi::ImageBuffer* const source) override;
+    void RcCopy(rhi::VertexBuffer* const destination, rhi::VertexBuffer* const source) override;
+    void RcCopy(rhi::IndexBuffer* const destination, rhi::IndexBuffer* const source) override;
+    void RcCopy(rhi::UniformBuffer* const destination, rhi::UniformBuffer* const source) override;
+    void RcCopy(rhi::StorageBuffer* const destination, rhi::StorageBuffer* const source) override;
+    void RcCopy(rhi::ImageBuffer* const destination, rhi::ImageBuffer* const source) override;
+    void RcCopy(rhi::Swapchain* const destination, rhi::ImageBuffer* const source) override;
 
     void RcSetViewports(const std::vector<rhi::Viewport>& viewports) override;
     void RcSetScissors(const std::vector<rhi::Scissor>& scissors) override;
-
-    void RcClearColorAttachment(rhi::Swapchain* const swapchain) override;
-    void RcClearDepthStencilAttachment(rhi::Swapchain* const swapchain) override;
-    void RcClearColorAttachment(rhi::Descriptor* const descriptor) override;
-    void RcClearDepthStencilAttachment(rhi::Descriptor* const descriptor) override;
-    void RcSetRenderAttachments(
-        rhi::Swapchain* const swapchain,
-        const std::vector<rhi::Descriptor*>& colorAttachments,
-        const std::vector<rhi::Descriptor*>& depthStencilAttachments,
-        bool descriptorsContinuous) override;
 
     void RcBeginPass(
         rhi::Swapchain* const swapchain,

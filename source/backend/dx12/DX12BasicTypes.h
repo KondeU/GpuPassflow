@@ -22,8 +22,6 @@ D3D12_HEAP_TYPE ConvertHeap(rhi::TransferDirection type);
 
 D3D12_RESOURCE_STATES ConvertResourceState(rhi::ResourceState state);
 
-unsigned int ConvertMSAA(rhi::MSAA msaa);
-
 D3D12_RESOURCE_FLAGS ConvertImageResourceFlag(rhi::ImageType type);
 
 D3D12_RESOURCE_DIMENSION ConvertImageDimension(rhi::ImageDimension dimension);
