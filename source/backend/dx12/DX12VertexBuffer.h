@@ -6,13 +6,13 @@
 namespace au::backend {
 
 class DX12Device;
-class DX12InputVertexAttributes;
+class DX12VertexAttribute;
 
-class DX12InputVertex : public rhi::VertexBuffer
-    , DX12Object<DX12InputVertex> {
+class DX12VertexBuffer : public rhi::VertexBuffer
+    , DX12Object<DX12VertexBuffer> {
 public:
-    explicit DX12InputVertex(DX12Device& device);
-    ~DX12InputVertex() override;
+    explicit DX12VertexBuffer(DX12Device& device);
+    ~DX12VertexBuffer() override;
 
     void Setup(Description description);
     void Shutdown();
@@ -21,7 +21,7 @@ public:
     void Unmap() override;
 
     Microsoft::WRL::ComPtr<ID3D12Resource> Buffer();
-    D3D12_VERTEX_BUFFER_VIEW BufferView(DX12InputVertexAttributes* attributes) const;
+    D3D12_VERTEX_BUFFER_VIEW BufferView(DX12VertexAttribute* attributes) const;
 
 private:
     DX12Device& internal;

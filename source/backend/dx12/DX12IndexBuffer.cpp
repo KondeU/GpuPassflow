@@ -1,20 +1,20 @@
-#include "DX12InputIndex.h"
+#include "DX12IndexBuffer.h"
 #include "DX12BasicTypes.h"
 #include "DX12Device.h"
 
 namespace au::backend {
 
-DX12InputIndex::DX12InputIndex(DX12Device& internal) : internal(internal)
+DX12IndexBuffer::DX12IndexBuffer(DX12Device& internal) : internal(internal)
 {
     device = internal.NativeDevice();
 }
 
-DX12InputIndex::~DX12InputIndex()
+DX12IndexBuffer::~DX12IndexBuffer()
 {
     Shutdown();
 }
 
-void DX12InputIndex::Setup(Description description)
+void DX12IndexBuffer::Setup(Description description)
 {
     this->description = description;
 
@@ -31,14 +31,14 @@ void DX12InputIndex::Setup(Description description)
         NULL, IID_PPV_ARGS(&buffer)));
 }
 
-void DX12InputIndex::Shutdown()
+void DX12IndexBuffer::Shutdown()
 {
     description = { 0u, 0u };
     bufferTotalByteSize = 0u;
     buffer.Reset();
 }
 
-void* DX12InputIndex::Map()
+void* DX12IndexBuffer::Map()
 {
     void* mapped = nullptr;
     if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
@@ -47,19 +47,19 @@ void* DX12InputIndex::Map()
     return mapped;
 }
 
-void DX12InputIndex::Unmap()
+void DX12IndexBuffer::Unmap()
 {
     if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
         buffer->Unmap(0, NULL);
     }
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> DX12InputIndex::Buffer()
+Microsoft::WRL::ComPtr<ID3D12Resource> DX12IndexBuffer::Buffer()
 {
     return buffer;
 }
 
-D3D12_INDEX_BUFFER_VIEW DX12InputIndex::BufferView(DX12InputIndexAttribute* attribute) const
+D3D12_INDEX_BUFFER_VIEW DX12IndexBuffer::BufferView(DX12IndexAttribute* attribute) const
 {
     D3D12_INDEX_BUFFER_VIEW ibv{};
     ibv.BufferLocation = buffer->GetGPUVirtualAddress();
@@ -68,7 +68,7 @@ D3D12_INDEX_BUFFER_VIEW DX12InputIndex::BufferView(DX12InputIndexAttribute* attr
     return ibv;
 }
 
-UINT DX12InputIndex::IndicesCount() const
+UINT DX12IndexBuffer::IndicesCount() const
 {
     return description.indicesCount;
 }

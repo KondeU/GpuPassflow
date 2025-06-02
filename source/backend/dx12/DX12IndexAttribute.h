@@ -5,11 +5,11 @@
 
 namespace au::backend {
 
-class DX12InputIndexAttribute : public rhi::IndexAttribute
-    , DX12Object<DX12InputIndexAttribute> {
+class DX12IndexAttribute : public rhi::IndexAttribute
+    , DX12Object<DX12IndexAttribute> {
 public:
-    explicit DX12InputIndexAttribute();
-    ~DX12InputIndexAttribute() override;
+    explicit DX12IndexAttribute();
+    ~DX12IndexAttribute() override;
 
     void Setup(Description description);
     void Shutdown();

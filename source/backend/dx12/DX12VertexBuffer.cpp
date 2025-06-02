@@ -1,20 +1,20 @@
-#include "DX12InputVertex.h"
+#include "DX12VertexBuffer.h"
 #include "DX12BasicTypes.h"
 #include "DX12Device.h"
 
 namespace au::backend {
 
-DX12InputVertex::DX12InputVertex(DX12Device& internal) : internal(internal)
+DX12VertexBuffer::DX12VertexBuffer(DX12Device& internal) : internal(internal)
 {
     device = internal.NativeDevice();
 }
 
-DX12InputVertex::~DX12InputVertex()
+DX12VertexBuffer::~DX12VertexBuffer()
 {
     Shutdown();
 }
 
-void DX12InputVertex::Setup(Description description)
+void DX12VertexBuffer::Setup(Description description)
 {
     this->description = description;
 
@@ -31,19 +31,19 @@ void DX12InputVertex::Setup(Description description)
         NULL, IID_PPV_ARGS(&buffer)));
 }
 
-void DX12InputVertex::Shutdown()
+void DX12VertexBuffer::Shutdown()
 {
     description = { 0u, 0u };
     bufferTotalByteSize = 0u;
     buffer.Reset();
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> DX12InputVertex::Buffer()
+Microsoft::WRL::ComPtr<ID3D12Resource> DX12VertexBuffer::Buffer()
 {
     return buffer;
 }
 
-D3D12_VERTEX_BUFFER_VIEW DX12InputVertex::BufferView(DX12InputVertexAttributes* attributes) const
+D3D12_VERTEX_BUFFER_VIEW DX12VertexBuffer::BufferView(DX12VertexAttribute* attributes) const
 {
     D3D12_VERTEX_BUFFER_VIEW vbv{};
     vbv.BufferLocation = buffer->GetGPUVirtualAddress();
@@ -52,7 +52,7 @@ D3D12_VERTEX_BUFFER_VIEW DX12InputVertex::BufferView(DX12InputVertexAttributes* 
     return vbv;
 }
 
-void* DX12InputVertex::Map()
+void* DX12VertexBuffer::Map()
 {
     void* mapped = nullptr;
     if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
@@ -61,7 +61,7 @@ void* DX12InputVertex::Map()
     return mapped;
 }
 
-void DX12InputVertex::Unmap()
+void DX12VertexBuffer::Unmap()
 {
     if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
         buffer->Unmap(0, NULL);

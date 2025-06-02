@@ -72,7 +72,7 @@ void DX12Descriptor::BuildDescriptor(rhi::UniformBuffer* resource)
         return;
     }
 
-    auto dxResource = dynamic_cast<DX12ResourceConstantBuffer*>(resource);
+    auto dxResource = dynamic_cast<DX12UniformBuffer*>(resource);
 
     D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc{};
     cbvDesc.BufferLocation = dxResource->Buffer()->GetGPUVirtualAddress();
@@ -90,7 +90,7 @@ void DX12Descriptor::BuildDescriptor(rhi::StorageBuffer* resource, bool write)
         return;
     }
 
-    auto dxResource = dynamic_cast<DX12ResourceStorageBuffer*>(resource);
+    auto dxResource = dynamic_cast<DX12StorageBuffer*>(resource);
 
     if (!write) {
         D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
@@ -121,7 +121,7 @@ void DX12Descriptor::BuildDescriptor(rhi::StorageBuffer* resource, bool write)
 
 void DX12Descriptor::BuildDescriptor(rhi::ImageBuffer* resource, bool write)
 {
-    auto dxResource = dynamic_cast<DX12ResourceImage*>(resource);
+    auto dxResource = dynamic_cast<DX12ImageBuffer*>(resource);
 
     switch (heap.GetHeapType()) {
     case D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV:
@@ -192,9 +192,9 @@ bool DX12Descriptor::IsNativeDescriptorsContinuous(
     return false; // descriptors is empty!
 }
 
-DX12ResourceConstantBuffer* DX12Descriptor::BindedResourceConstantBuffer() const
+DX12UniformBuffer* DX12Descriptor::BindedResourceConstantBuffer() const
 {
-    auto ptr = std::get_if<DX12ResourceConstantBuffer*>(&pResource);
+    auto ptr = std::get_if<DX12UniformBuffer*>(&pResource);
     if (!ptr) {
         GP_LOG_E(TAG, "Get binded resource buffer failed, this descriptor is not build with "
             "UniformBuffer, or maybe you forgot to call the BuildDescriptor function.");
@@ -203,9 +203,9 @@ DX12ResourceConstantBuffer* DX12Descriptor::BindedResourceConstantBuffer() const
     return *ptr;
 }
 
-DX12ResourceStorageBuffer* DX12Descriptor::BindedResourceStorageBuffer() const
+DX12StorageBuffer* DX12Descriptor::BindedResourceStorageBuffer() const
 {
-    auto ptr = std::get_if<DX12ResourceStorageBuffer*>(&pResource);
+    auto ptr = std::get_if<DX12StorageBuffer*>(&pResource);
     if (!ptr) {
         GP_LOG_E(TAG, "Get binded resource buffer failed, this descriptor is not build with "
             "StorageBuffer, or maybe you forgot to call the BuildDescriptor function.");
@@ -214,9 +214,9 @@ DX12ResourceStorageBuffer* DX12Descriptor::BindedResourceStorageBuffer() const
     return *ptr;
 }
 
-DX12ResourceImage* DX12Descriptor::BindedResourceImage() const
+DX12ImageBuffer* DX12Descriptor::BindedResourceImage() const
 {
-    auto ptr = std::get_if<DX12ResourceImage*>(&pResource);
+    auto ptr = std::get_if<DX12ImageBuffer*>(&pResource);
     if (!ptr) {
         GP_LOG_E(TAG, "Get binded resource buffer failed, this descriptor is not build with "
             "ImageBuffer, or maybe you forgot to call the BuildDescriptor function.");

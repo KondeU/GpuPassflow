@@ -8,9 +8,9 @@ namespace au::backend {
 
 class DX12Device;
 class DX12DescriptorHeap;
-class DX12ResourceConstantBuffer;
-class DX12ResourceStorageBuffer;
-class DX12ResourceImage;
+class DX12UniformBuffer;
+class DX12StorageBuffer;
+class DX12ImageBuffer;
 class DX12ImageSampler;
 
 class DX12Descriptor : public rhi::Descriptor
@@ -32,9 +32,9 @@ public:
     D3D12_GPU_DESCRIPTOR_HANDLE NativeGpuDescriptor() const; // CBV/SRV/UAV/Sampler
     bool IsNativeDescriptorsContinuous(const std::vector<D3D12_CPU_DESCRIPTOR_HANDLE>& handles);
 
-    DX12ResourceConstantBuffer* BindedResourceConstantBuffer() const;
-    DX12ResourceStorageBuffer* BindedResourceStorageBuffer() const;
-    DX12ResourceImage* BindedResourceImage() const;
+    DX12UniformBuffer* BindedResourceConstantBuffer() const;
+    DX12StorageBuffer* BindedResourceStorageBuffer() const;
+    DX12ImageBuffer* BindedResourceImage() const;
     DX12ImageSampler* BindedImageSampler() const;
 
 private:
@@ -57,9 +57,9 @@ private:
     D3D12_GPU_DESCRIPTOR_HANDLE hGpuDescriptor;
 
     std::variant<void*,
-        DX12ResourceConstantBuffer*,
-        DX12ResourceStorageBuffer*,
-        DX12ResourceImage*,
+        DX12UniformBuffer*,
+        DX12StorageBuffer*,
+        DX12ImageBuffer*,
         DX12ImageSampler*
     > pResource;
 };

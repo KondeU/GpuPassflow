@@ -7,11 +7,11 @@ namespace au::backend {
 
 class DX12Device;
 
-class DX12ResourceConstantBuffer : public rhi::UniformBuffer
-    , DX12Object<DX12ResourceConstantBuffer> {
+class DX12UniformBuffer : public rhi::UniformBuffer
+    , DX12Object<DX12UniformBuffer> {
 public:
-    explicit DX12ResourceConstantBuffer(DX12Device& device);
-    ~DX12ResourceConstantBuffer() override;
+    explicit DX12UniformBuffer(DX12Device& device);
+    ~DX12UniformBuffer() override;
 
     void Setup(Description description);
     void Shutdown();

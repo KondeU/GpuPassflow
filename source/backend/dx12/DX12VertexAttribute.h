@@ -5,11 +5,11 @@
 
 namespace au::backend {
 
-class DX12InputVertexAttributes : public rhi::VertexAttribute
-    , DX12Object<DX12InputVertexAttributes> {
+class DX12VertexAttribute : public rhi::VertexAttribute
+    , DX12Object<DX12VertexAttribute> {
 public:
-    explicit DX12InputVertexAttributes();
-    ~DX12InputVertexAttributes() override;
+    explicit DX12VertexAttribute();
+    ~DX12VertexAttribute() override;
 
     void Setup(Description description);
     void Shutdown();

@@ -1,20 +1,20 @@
-#include "DX12ResourceImage.h"
+#include "DX12ImageBuffer.h"
 #include "DX12BasicTypes.h"
 #include "DX12Device.h"
 
 namespace au::backend {
 
-DX12ResourceImage::DX12ResourceImage(DX12Device& internal) : internal(internal)
+DX12ImageBuffer::DX12ImageBuffer(DX12Device& internal) : internal(internal)
 {
     device = internal.NativeDevice();
 }
 
-DX12ResourceImage::~DX12ResourceImage()
+DX12ImageBuffer::~DX12ImageBuffer()
 {
     Shutdown();
 }
 
-void DX12ResourceImage::Setup(Description description)
+void DX12ImageBuffer::Setup(Description description)
 {
     this->description = description;
 
@@ -52,13 +52,13 @@ void DX12ResourceImage::Setup(Description description)
             NULL : &clearValue), IID_PPV_ARGS(&buffer)));
 }
 
-void DX12ResourceImage::Shutdown()
+void DX12ImageBuffer::Shutdown()
 {
     description = { rhi::BasicFormat::R32G32B32A32_FLOAT, 0u, 0u };
     buffer.Reset();
 }
 
-void* DX12ResourceImage::Map(unsigned int msaaLayer)
+void* DX12ImageBuffer::Map(unsigned int msaaLayer)
 {
     void* mapped = nullptr;
     if (description.memoryType != rhi::TransferDirection::GPU_ONLY
@@ -68,7 +68,7 @@ void* DX12ResourceImage::Map(unsigned int msaaLayer)
     return mapped;
 }
 
-void DX12ResourceImage::Unmap(unsigned int msaaLayer)
+void DX12ImageBuffer::Unmap(unsigned int msaaLayer)
 {
     if (description.memoryType != rhi::TransferDirection::GPU_ONLY
         && msaaLayer < ConvertMSAA(description.msaa)) {
@@ -76,32 +76,32 @@ void DX12ResourceImage::Unmap(unsigned int msaaLayer)
     }
 }
 
-D3D12_CLEAR_VALUE DX12ResourceImage::RenderTargetClearValue() const
+D3D12_CLEAR_VALUE DX12ImageBuffer::RenderTargetClearValue() const
 {
     return ConvertClearValue(description.format, description.clearValue);
 }
 
-D3D12_CLEAR_VALUE DX12ResourceImage::DepthStencilClearValue() const
+D3D12_CLEAR_VALUE DX12ImageBuffer::DepthStencilClearValue() const
 {
     return ConvertClearValue(description.format, description.clearValue);
 }
 
-D3D12_CLEAR_FLAGS DX12ResourceImage::DepthStencilClearFlags() const
+D3D12_CLEAR_FLAGS DX12ImageBuffer::DepthStencilClearFlags() const
 {
     return ConvertClearFlags(description.format);
 }
 
-unsigned int DX12ResourceImage::GetRowBytesSize() const
+unsigned int DX12ImageBuffer::GetRowBytesSize() const
 {
     return QueryBasicFormatBytes(description.format) * description.width;
 }
 
-unsigned int DX12ResourceImage::GetSliceBytesSize() const
+unsigned int DX12ImageBuffer::GetSliceBytesSize() const
 {
     return GetRowBytesSize() * description.height * description.arrays;
 }
 
-unsigned int DX12ResourceImage::GetTotalBytesSize() const
+unsigned int DX12ImageBuffer::GetTotalBytesSize() const
 {
     unsigned int size = 0;
 
@@ -121,7 +121,7 @@ unsigned int DX12ResourceImage::GetTotalBytesSize() const
     return size;
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> DX12ResourceImage::Buffer()
+Microsoft::WRL::ComPtr<ID3D12Resource> DX12ImageBuffer::Buffer()
 {
     return buffer;
 }

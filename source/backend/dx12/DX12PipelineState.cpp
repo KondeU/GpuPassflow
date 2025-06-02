@@ -67,7 +67,7 @@ void DX12PipelineState::SetPipelineLayout(rhi::PipelineLayout* layout)
 
 void DX12PipelineState::SetIndexAssembly(rhi::IndexAttribute* ia)
 {
-    auto dxIia = dynamic_cast<DX12InputIndexAttribute*>(ia);
+    auto dxIia = dynamic_cast<DX12IndexAttribute*>(ia);
     graphicsPipelineState.IBStripCutValue =
         dxIia->GetIndexInformation().StripCutValue;
     graphicsPipelineState.PrimitiveTopologyType =
@@ -76,7 +76,7 @@ void DX12PipelineState::SetIndexAssembly(rhi::IndexAttribute* ia)
 
 void DX12PipelineState::SetVertexAssembly(rhi::VertexAttribute* va)
 {
-    auto dxIva = dynamic_cast<DX12InputVertexAttributes*>(va);
+    auto dxIva = dynamic_cast<DX12VertexAttribute*>(va);
     graphicsPipelineState.InputLayout = {
         dxIva->GetInputElements().data(),
         static_cast<UINT>(dxIva->GetInputElements().size())

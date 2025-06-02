@@ -1,30 +1,30 @@
-#include "DX12InputVertexAttributes.h"
+#include "DX12VertexAttribute.h"
 #include "DX12BasicTypes.h"
 
 namespace au::backend {
 
-DX12InputVertexAttributes::DX12InputVertexAttributes()
+DX12VertexAttribute::DX12VertexAttribute()
 {
 }
 
-DX12InputVertexAttributes::~DX12InputVertexAttributes()
+DX12VertexAttribute::~DX12VertexAttribute()
 {
     Shutdown();
 }
 
-void DX12InputVertexAttributes::Setup(Description description)
+void DX12VertexAttribute::Setup(Description description)
 {
     semantics.reserve(description.reserved);
     elements.reserve(description.reserved);
 }
 
-void DX12InputVertexAttributes::Shutdown()
+void DX12VertexAttribute::Shutdown()
 {
     semantics.resize(0);
     elements.resize(0);
 }
 
-void DX12InputVertexAttributes::AddAttribute(Attribute attribute)
+void DX12VertexAttribute::AddAttribute(Attribute attribute)
 {
     // NB: Make sure the semantic name is unique and the slot+location is unique.
     semantics.emplace_back(attribute.semantic);
@@ -43,13 +43,13 @@ void DX12InputVertexAttributes::AddAttribute(Attribute attribute)
     }
 }
 
-void DX12InputVertexAttributes::ClearAttributes()
+void DX12VertexAttribute::ClearAttributes()
 {
     semantics.clear();
     elements.clear();
 }
 
-const std::vector<D3D12_INPUT_ELEMENT_DESC>& DX12InputVertexAttributes::GetInputElements() const
+const std::vector<D3D12_INPUT_ELEMENT_DESC>& DX12VertexAttribute::GetInputElements() const
 {
     return elements;
 }

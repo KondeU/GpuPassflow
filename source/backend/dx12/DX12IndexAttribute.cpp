@@ -1,18 +1,18 @@
-#include "DX12InputIndexAttribute.h"
+#include "DX12IndexAttribute.h"
 #include "DX12BasicTypes.h"
 
 namespace au::backend {
 
-DX12InputIndexAttribute::DX12InputIndexAttribute()
+DX12IndexAttribute::DX12IndexAttribute()
 {
 }
 
-DX12InputIndexAttribute::~DX12InputIndexAttribute()
+DX12IndexAttribute::~DX12IndexAttribute()
 {
     Shutdown();
 }
 
-void DX12InputIndexAttribute::Setup(Description description)
+void DX12IndexAttribute::Setup(Description description)
 {
     if (description.reserved != 1) {
         description.reserved = 1;
@@ -20,12 +20,12 @@ void DX12InputIndexAttribute::Setup(Description description)
     informations.resize(description.reserved, { DXGI_FORMAT_UNKNOWN });
 }
 
-void DX12InputIndexAttribute::Shutdown()
+void DX12IndexAttribute::Shutdown()
 {
     informations.resize(0, { DXGI_FORMAT_UNKNOWN });
 }
 
-void DX12InputIndexAttribute::SetAttribute(Attribute attribute)
+void DX12IndexAttribute::SetAttribute(Attribute attribute)
 {
     informations.back() = {
         ConvertIndexFormat(attribute.format),
@@ -35,8 +35,8 @@ void DX12InputIndexAttribute::SetAttribute(Attribute attribute)
     };
 }
 
-const DX12InputIndexAttribute::IndexInformation&
-DX12InputIndexAttribute::GetIndexInformation() const
+const DX12IndexAttribute::IndexInformation&
+DX12IndexAttribute::GetIndexInformation() const
 {
     return informations.back();
 }

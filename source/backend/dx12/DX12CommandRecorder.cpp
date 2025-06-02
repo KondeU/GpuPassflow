@@ -44,7 +44,7 @@ inline void RcUploadTemplate(DX12CommandRecorder& recorder,
         Implement& stag = dynamic_cast<Implement&>(staging);
         D3D12_SUBRESOURCE_DATA subResourceData{};
         subResourceData.pData = data;
-        if constexpr (std::is_same<DX12ResourceImage, Implement>::value) {
+        if constexpr (std::is_same<DX12ImageBuffer, Implement>::value) {
             subResourceData.RowPitch = std::min(size,
                 static_cast<size_t>(dest.GetRowBytesSize()));
             subResourceData.SlicePitch = std::min(size,
@@ -148,31 +148,31 @@ void DX12CommandRecorder::EndRecord()
 void DX12CommandRecorder::RcBarrier(
     VertexBuffer* const resource, ResourceState before, ResourceState after)
 {
-    RcBarrierTemplate<DX12InputVertex>(*this, *resource, before, after);
+    RcBarrierTemplate<DX12VertexBuffer>(*this, *resource, before, after);
 }
 
 void DX12CommandRecorder::RcBarrier(
     IndexBuffer* const resource, ResourceState before, ResourceState after)
 {
-    RcBarrierTemplate<DX12InputIndex>(*this, *resource, before, after);
+    RcBarrierTemplate<DX12IndexBuffer>(*this, *resource, before, after);
 }
 
 void DX12CommandRecorder::RcBarrier(
     UniformBuffer* const resource, ResourceState before, ResourceState after)
 {
-    RcBarrierTemplate<DX12ResourceConstantBuffer>(*this, *resource, before, after);
+    RcBarrierTemplate<DX12UniformBuffer>(*this, *resource, before, after);
 }
 
 void DX12CommandRecorder::RcBarrier(
     StorageBuffer* const resource, ResourceState before, ResourceState after)
 {
-    RcBarrierTemplate<DX12ResourceStorageBuffer>(*this, *resource, before, after);
+    RcBarrierTemplate<DX12StorageBuffer>(*this, *resource, before, after);
 }
 
 void DX12CommandRecorder::RcBarrier(
     ImageBuffer* const resource, ResourceState before, ResourceState after)
 {
-    RcBarrierTemplate<DX12ResourceImage>(*this, *resource, before, after);
+    RcBarrierTemplate<DX12ImageBuffer>(*this, *resource, before, after);
 }
 
 void DX12CommandRecorder::RcBarrier(
@@ -192,71 +192,71 @@ void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
     VertexBuffer* const destination, VertexBuffer* const staging)
 {
     CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:VertexBuffer);
-    RcUploadTemplate<DX12InputVertex>(*this, *destination, *staging, size, data);
+    RcUploadTemplate<DX12VertexBuffer>(*this, *destination, *staging, size, data);
 }
 
 void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
     IndexBuffer* const destination, IndexBuffer* const staging)
 {
     CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:IndexBuffer);
-    RcUploadTemplate<DX12InputIndex>(*this, *destination, *staging, size, data);
+    RcUploadTemplate<DX12IndexBuffer>(*this, *destination, *staging, size, data);
 }
 
 void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
     UniformBuffer* const destination, UniformBuffer* const staging)
 {
     CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:UniformBuffer);
-    RcUploadTemplate<DX12ResourceConstantBuffer>(*this, *destination, *staging, size, data);
+    RcUploadTemplate<DX12UniformBuffer>(*this, *destination, *staging, size, data);
 }
 
 void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
     StorageBuffer* const destination, StorageBuffer* const staging)
 {
     CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:ImageBuffer);
-    RcUploadTemplate<DX12ResourceStorageBuffer>(*this, *destination, *staging, size, data);
+    RcUploadTemplate<DX12StorageBuffer>(*this, *destination, *staging, size, data);
 }
 
 void DX12CommandRecorder::RcUpload(const void* const data, size_t size,
     ImageBuffer* const destination, ImageBuffer* const staging)
 {
     CHECK_RECORD(description.commandType, CommandType::Transfer, RcUpload:ImageBuffer);
-    RcUploadTemplate<DX12ResourceImage>(*this, *destination, *staging, size, data);
+    RcUploadTemplate<DX12ImageBuffer>(*this, *destination, *staging, size, data);
 }
 
 void DX12CommandRecorder::RcCopy(VertexBuffer* const destination, VertexBuffer* const source)
 {
     CHECK_RECORD(description.commandType, CommandType::All, RcCopy:VertexBuffer);
-    RcCopyTemplate<DX12InputVertex>(*this, *destination, *source);
+    RcCopyTemplate<DX12VertexBuffer>(*this, *destination, *source);
 }
 
 void DX12CommandRecorder::RcCopy(IndexBuffer* const destination, IndexBuffer* const source)
 {
     CHECK_RECORD(description.commandType, CommandType::All, RcCopy:IndexBuffer);
-    RcCopyTemplate<DX12InputIndex>(*this, *destination, *source);
+    RcCopyTemplate<DX12IndexBuffer>(*this, *destination, *source);
 }
 
 void DX12CommandRecorder::RcCopy(UniformBuffer* const destination, UniformBuffer* const source)
 {
     CHECK_RECORD(description.commandType, CommandType::All, RcCopy:UniformBuffer);
-    RcCopyTemplate<DX12ResourceConstantBuffer>(*this, *destination, *source);
+    RcCopyTemplate<DX12UniformBuffer>(*this, *destination, *source);
 }
 
 void DX12CommandRecorder::RcCopy(StorageBuffer* const destination, StorageBuffer* const source)
 {
     CHECK_RECORD(description.commandType, CommandType::All, RcCopy:StorageBuffer);
-    RcCopyTemplate<DX12ResourceStorageBuffer>(*this, *destination, *source);
+    RcCopyTemplate<DX12StorageBuffer>(*this, *destination, *source);
 }
 
 void DX12CommandRecorder::RcCopy(ImageBuffer* const destination, ImageBuffer* const source)
 {
     CHECK_RECORD(description.commandType, CommandType::All, RcCopy:ImageBuffer);
-    RcCopyTemplate<DX12ResourceImage>(*this, *destination, *source);
+    RcCopyTemplate<DX12ImageBuffer>(*this, *destination, *source);
 }
 
 void DX12CommandRecorder::RcCopy(Swapchain* const destination, ImageBuffer* const source)
 {
     CHECK_RECORD(description.commandType, CommandType::Graphics, RcCopy:ImageBuffer);
-    auto image = dynamic_cast<DX12ResourceImage*>(source);
+    auto image = dynamic_cast<DX12ImageBuffer*>(source);
     auto swapchain = dynamic_cast<DX12Swapchain*>(destination);
     recorder->CopyResource(swapchain->CurrentRenderTargetBuffer().Get(), image->Buffer().Get());
 }
@@ -406,11 +406,11 @@ void DX12CommandRecorder::RcSetVertex(
 {
     CHECK_RECORD(description.commandType, CommandType::Graphics, RcSetVertex);
 
-    std::vector<DX12InputVertex*> dxVertices(vertices.size());
+    std::vector<DX12VertexBuffer*> dxVertices(vertices.size());
     for (size_t n = 0; n < vertices.size(); n++) {
-        dxVertices[n] = dynamic_cast<DX12InputVertex*>(vertices[n]);
+        dxVertices[n] = dynamic_cast<DX12VertexBuffer*>(vertices[n]);
     }
-    auto dxAttributes = dynamic_cast<DX12InputVertexAttributes*>(attributes);
+    auto dxAttributes = dynamic_cast<DX12VertexAttribute*>(attributes);
     std::vector<D3D12_VERTEX_BUFFER_VIEW> bufferViews(dxVertices.size());
     for (size_t n = 0; n < dxVertices.size(); n++) {
         bufferViews[n] = dxVertices[n]->BufferView(dxAttributes);
@@ -424,8 +424,8 @@ void DX12CommandRecorder::RcSetIndex(
 {
     CHECK_RECORD(description.commandType, CommandType::Graphics, RcSetIndex);
 
-    auto dxIndex = dynamic_cast<DX12InputIndex*>(index);
-    auto dxAttribute = dynamic_cast<DX12InputIndexAttribute*>(attribute);
+    auto dxIndex = dynamic_cast<DX12IndexBuffer*>(index);
+    auto dxAttribute = dynamic_cast<DX12IndexAttribute*>(attribute);
     recorder->IASetIndexBuffer(&dxIndex->BufferView(dxAttribute));
     recorder->IASetPrimitiveTopology(dxAttribute->GetIndexInformation().PrimitiveTopology);
 }
@@ -522,7 +522,7 @@ void DX12CommandRecorder::RcSetComputeDescriptors(
 void DX12CommandRecorder::RcDraw(IndexBuffer* const index)
 {
     CHECK_RECORD(description.commandType, CommandType::Graphics, RcDraw);
-    recorder->DrawIndexedInstanced(dynamic_cast<DX12InputIndex*>(index)->IndicesCount(), 1, 0, 0, 0);
+    recorder->DrawIndexedInstanced(dynamic_cast<DX12IndexBuffer*>(index)->IndicesCount(), 1, 0, 0, 0);
 }
 
 void DX12CommandRecorder::RcDispatch(unsigned int xThreadGroupsCount,

@@ -1,20 +1,20 @@
-#include "DX12ResourceStorageBuffer.h"
+#include "DX12StorageBuffer.h"
 #include "DX12BasicTypes.h"
 #include "DX12Device.h"
 
 namespace au::backend {
 
-DX12ResourceStorageBuffer::DX12ResourceStorageBuffer(DX12Device& internal) : internal(internal)
+DX12StorageBuffer::DX12StorageBuffer(DX12Device& internal) : internal(internal)
 {
     device = internal.NativeDevice();
 }
 
-DX12ResourceStorageBuffer::~DX12ResourceStorageBuffer()
+DX12StorageBuffer::~DX12StorageBuffer()
 {
     Shutdown();
 }
 
-void DX12ResourceStorageBuffer::Setup(Description description)
+void DX12StorageBuffer::Setup(Description description)
 {
     this->description = description;
 
@@ -31,13 +31,13 @@ void DX12ResourceStorageBuffer::Setup(Description description)
         NULL, IID_PPV_ARGS(&buffer)));
 }
 
-void DX12ResourceStorageBuffer::Shutdown()
+void DX12StorageBuffer::Shutdown()
 {
     description = { 0, 0 };
     buffer.Reset();
 }
 
-void* DX12ResourceStorageBuffer::Map()
+void* DX12StorageBuffer::Map()
 {
     void* mapped = nullptr;
     if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
@@ -46,24 +46,24 @@ void* DX12ResourceStorageBuffer::Map()
     return mapped;
 }
 
-void DX12ResourceStorageBuffer::Unmap()
+void DX12StorageBuffer::Unmap()
 {
     if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
         buffer->Unmap(0, NULL);
     }
 }
 
-unsigned int DX12ResourceStorageBuffer::GetElementsCount() const
+unsigned int DX12StorageBuffer::GetElementsCount() const
 {
     return description.elementsCount;
 }
 
-unsigned int DX12ResourceStorageBuffer::GetElementBytesSize() const
+unsigned int DX12StorageBuffer::GetElementBytesSize() const
 {
     return description.elementBytesSize;
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> DX12ResourceStorageBuffer::Buffer()
+Microsoft::WRL::ComPtr<ID3D12Resource> DX12StorageBuffer::Buffer()
 {
     return buffer;
 }

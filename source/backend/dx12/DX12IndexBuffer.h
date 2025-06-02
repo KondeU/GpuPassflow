@@ -6,13 +6,13 @@
 namespace au::backend {
 
 class DX12Device;
-class DX12InputIndexAttribute;
+class DX12IndexAttribute;
 
-class DX12InputIndex : public rhi::IndexBuffer
-    , DX12Object<DX12InputIndex> {
+class DX12IndexBuffer : public rhi::IndexBuffer
+    , DX12Object<DX12IndexBuffer> {
 public:
-    explicit DX12InputIndex(DX12Device& device);
-    ~DX12InputIndex() override;
+    explicit DX12IndexBuffer(DX12Device& device);
+    ~DX12IndexBuffer() override;
 
     void Setup(Description description);
     void Shutdown();
@@ -21,7 +21,7 @@ public:
     void Unmap() override;
 
     Microsoft::WRL::ComPtr<ID3D12Resource> Buffer();
-    D3D12_INDEX_BUFFER_VIEW BufferView(DX12InputIndexAttribute* attribute) const;
+    D3D12_INDEX_BUFFER_VIEW BufferView(DX12IndexAttribute* attribute) const;
 
     UINT IndicesCount() const;
 

@@ -1,20 +1,20 @@
-#include "DX12ResourceConstantBuffer.h"
+#include "DX12UniformBuffer.h"
 #include "DX12BasicTypes.h"
 #include "DX12Device.h"
 
 namespace au::backend {
 
-DX12ResourceConstantBuffer::DX12ResourceConstantBuffer(DX12Device& internal) : internal(internal)
+DX12UniformBuffer::DX12UniformBuffer(DX12Device& internal) : internal(internal)
 {
     device = internal.NativeDevice();
 }
 
-DX12ResourceConstantBuffer::~DX12ResourceConstantBuffer()
+DX12UniformBuffer::~DX12UniformBuffer()
 {
     Shutdown();
 }
 
-void DX12ResourceConstantBuffer::Setup(Description description)
+void DX12UniformBuffer::Setup(Description description)
 {
     this->description = description;
 
@@ -31,14 +31,14 @@ void DX12ResourceConstantBuffer::Setup(Description description)
         NULL, IID_PPV_ARGS(&buffer)));
 }
 
-void DX12ResourceConstantBuffer::Shutdown()
+void DX12UniformBuffer::Shutdown()
 {
     description = { 0 };
     allocatedBytesSize = 0;
     buffer.Reset();
 }
 
-void* DX12ResourceConstantBuffer::Map()
+void* DX12UniformBuffer::Map()
 {
     void* mapped = nullptr;
     if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
@@ -47,29 +47,29 @@ void* DX12ResourceConstantBuffer::Map()
     return mapped;
 }
 
-void DX12ResourceConstantBuffer::Unmap()
+void DX12UniformBuffer::Unmap()
 {
     if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
         buffer->Unmap(0, NULL);
     }
 }
 
-unsigned int DX12ResourceConstantBuffer::GetBufferBytesSize() const
+unsigned int DX12UniformBuffer::GetBufferBytesSize() const
 {
     return description.bufferBytesSize;
 }
 
-unsigned int DX12ResourceConstantBuffer::GetAllocatedBytesSize() const
+unsigned int DX12UniformBuffer::GetAllocatedBytesSize() const
 {
     return allocatedBytesSize;
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> DX12ResourceConstantBuffer::Buffer()
+Microsoft::WRL::ComPtr<ID3D12Resource> DX12UniformBuffer::Buffer()
 {
     return buffer;
 }
 
-unsigned int DX12ResourceConstantBuffer::CalculateAlignedBytesSize(unsigned int input)
+unsigned int DX12UniformBuffer::CalculateAlignedBytesSize(unsigned int input)
 {
     // Constant buffers must be a multiple of the minimum hardware allocation size,
     // it usually 256 bytes. So round up to nearest multiple of 256. We do this by
