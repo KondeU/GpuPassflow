@@ -1,6 +1,5 @@
 #pragma once
 
-#include <unordered_map>
 #include "DX12Shader.h"
 #include "DX12Swapchain.h"
 #include "DX12CommandRecorder.h"
@@ -113,8 +112,6 @@ private:
     // TODO: CommandMemory has not been abstracted into a separate class yet.
     std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D12CommandAllocator>> allocators;
 
-    template <typename T>
-    using InstanceContainer = std::unordered_map<T*, std::unique_ptr<T>>;
     InstanceContainer<DX12Shader> shaders;
     InstanceContainer<DX12Swapchain> swapchains;
     InstanceContainer<DX12CommandRecorder> commandRecorders;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include <comdef.h> // DX12 COM.
 #include "backend/BackendContext.h"
 
@@ -47,9 +48,11 @@ GP_LOG_TAG(DX12Backend);
 
 std::string FormatResult(HRESULT result);
 
+template <typename T>
+using InstanceContainer = std::unordered_map<T*, std::unique_ptr<T>>;
+
 template <typename Interface, typename Implement, class ...Arguments>
-Interface* CreateInstance(
-    std::unordered_map<Implement*, std::unique_ptr<Implement>>& container,
+Interface* CreateInstance(InstanceContainer<Implement>& container,
     typename Interface::Description description, typename Arguments& ...arguments)
 {
     static_assert(std::is_base_of<Interface, Implement>::value,
@@ -62,20 +65,13 @@ Interface* CreateInstance(
 }
 
 template <typename Interface, typename Implement>
-bool DestroyInstance(
-    std::unordered_map<Implement*, std::unique_ptr<Implement>>& container, Interface* instance)
+bool DestroyInstance(InstanceContainer<Implement>& container, Interface* instance)
 {
     static_assert(std::is_base_of<Interface, Implement>::value,
         "CreateInstance: Implement should inherit from Interface!");
     static_assert(std::is_base_of<DX12Object<Implement>, Implement>::value,
         "CreateInstance: Implement should inherit from DX12Object<Implement>!");
-    for (auto iter = container.begin(); iter != container.end(); iter++) {
-        if (instance == iter->get()) {
-            container.erase(iter);
-            return true;
-        }
-    }
-    return false;
+    return (container.erase(instance) > 0);
 }
 
 }
