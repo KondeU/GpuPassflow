@@ -27,7 +27,7 @@ void DX12ImageBuffer::Setup(Description description)
         resourceDesc.DepthOrArraySize = description.arrays;
         resourceDesc.MipLevels = description.mips;
         resourceDesc.Format = ConvertBasicFormat(description.format);
-        resourceDesc.SampleDesc.Count = ConvertMSAA(description.msaa);
+        resourceDesc.SampleDesc.Count = 1; // Only use MSAAx1 now.
         resourceDesc.SampleDesc.Quality = 0;
         resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
         resourceDesc.Flags = ConvertImageResourceFlag(description.usage);
@@ -58,20 +58,20 @@ void DX12ImageBuffer::Shutdown()
     buffer.Reset();
 }
 
-void* DX12ImageBuffer::Map(unsigned int msaaLayer)
+void* DX12ImageBuffer::Map()
 {
     void* mapped = nullptr;
-    if (description.memoryType != rhi::TransferDirection::GPU_ONLY
-        && msaaLayer < ConvertMSAA(description.msaa)) {
+    if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
+        const unsigned int msaaLayer = 0;
         LogIfFailedF(buffer->Map(msaaLayer, NULL, &mapped));
     }
     return mapped;
 }
 
-void DX12ImageBuffer::Unmap(unsigned int msaaLayer)
+void DX12ImageBuffer::Unmap()
 {
-    if (description.memoryType != rhi::TransferDirection::GPU_ONLY
-        && msaaLayer < ConvertMSAA(description.msaa)) {
+    if (description.memoryType != rhi::TransferDirection::GPU_ONLY) {
+        const unsigned int msaaLayer = 0;
         buffer->Unmap(msaaLayer, NULL);
     }
 }

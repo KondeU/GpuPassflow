@@ -35,7 +35,7 @@ void DX12DescriptorHeap::Shutdown()
 {
     description = { 0u, rhi::DescriptorType::ShaderResource };
     heap.Reset();
-    descriptors.resize(0);
+    descriptors.clear();
 }
 
 rhi::Descriptor* DX12DescriptorHeap::AllocateDescriptor(rhi::Descriptor::Description description)

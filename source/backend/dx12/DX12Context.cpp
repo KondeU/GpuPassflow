@@ -34,7 +34,7 @@ DX12Context::DX12Context()
 
 DX12Context::~DX12Context()
 {
-    devices.resize(0);
+    devices.clear();
     if (dxgi.Reset() > 0) {
         GP_LOG_E(TAG, "dxgi leak!");
     }

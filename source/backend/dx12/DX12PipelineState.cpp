@@ -151,11 +151,6 @@ void DX12PipelineState::SetRasterizerStateCullMode(rhi::CullMode mode)
     graphicsPipelineState.RasterizerState.CullMode = ConvertCullMode(mode);
 }
 
-void DX12PipelineState::SetMSAA(rhi::MSAA msaa)
-{
-    graphicsPipelineState.SampleDesc.Count = ConvertMSAA(msaa);
-}
-
 void DX12PipelineState::BuildState()
 {
     if (gp::EnumCast(description.enabledStage) &

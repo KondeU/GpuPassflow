@@ -30,7 +30,6 @@ public:
     void SetRasterizerState(rhi::RasterizerState state) override;
     void SetRasterizerStateFillMode(rhi::FillMode mode) override;
     void SetRasterizerStateCullMode(rhi::CullMode mode) override;
-    void SetMSAA(rhi::MSAA msaa) override;
 
     void BuildState() override;
 

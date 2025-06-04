@@ -16,8 +16,8 @@ public:
     void Setup(Description description);
     void Shutdown();
 
-    void* Map(unsigned int msaaLayer) override;
-    void Unmap(unsigned int msaaLayer) override;
+    void* Map() override;
+    void Unmap() override;
 
     D3D12_CLEAR_VALUE RenderTargetClearValue() const;
     D3D12_CLEAR_VALUE DepthStencilClearValue() const;

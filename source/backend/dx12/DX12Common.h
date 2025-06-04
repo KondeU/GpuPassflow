@@ -59,9 +59,13 @@ Interface* CreateInstance(InstanceContainer<Implement>& container,
         "CreateInstance: Implement should inherit from Interface!");
     static_assert(std::is_base_of<DX12Object<Implement>, Implement>::value,
         "CreateInstance: Implement should inherit from DX12Object<Implement>!");
-    container.emplace_back(std::make_unique<Implement>(arguments...));
-    container.back()->Setup(description);
-    return container.back().get();
+    auto implement = std::make_unique<Implement>(arguments...);
+    if (!implement->Setup(description)) {
+        return nullptr;
+    }
+    auto instance = implement.get();
+    container[instance] = std::move(implement);
+    return instance;
 }
 
 template <typename Interface, typename Implement>

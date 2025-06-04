@@ -27,7 +27,7 @@ private:
     Description description{ 0u, rhi::DescriptorType::ShaderResource };
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> heap;
 
-    std::vector<std::unique_ptr<DX12Descriptor>> descriptors;
+    InstanceContainer<DX12Descriptor> descriptors;
 };
 
 }

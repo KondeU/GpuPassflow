@@ -18,7 +18,7 @@ public:
 
 private:
     Microsoft::WRL::ComPtr<IDXGIFactory4> dxgi;
-    std::vector<std::unique_ptr<DX12Device>> devices;
+    InstanceContainer<DX12Device> devices;
 };
 
 }
