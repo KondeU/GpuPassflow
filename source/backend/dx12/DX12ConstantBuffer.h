@@ -17,7 +17,7 @@ public:
     void* Map() override;
     void Unmap() override;
 
-    uint32_t* Buffer();
+    const std::vector<uint32_t>& Buffer();
 
 private:
     Description description{ 0 };

@@ -83,6 +83,10 @@ public:
     void RcSetComputeDescriptors(
         unsigned int index, const std::vector<rhi::Descriptor*>& descriptors) override;
 
+    void RcSetGraphicsConstant(rhi::ConstantBuffer* const constant) override;
+
+    void RcSetComputeConstant(rhi::ConstantBuffer* const constant) override;
+
     void RcDraw(rhi::IndexBuffer* const index) override;
 
     void RcDispatch(

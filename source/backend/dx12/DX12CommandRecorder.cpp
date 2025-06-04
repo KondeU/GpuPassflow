@@ -521,6 +521,24 @@ void DX12CommandRecorder::RcSetComputeDescriptors(
     }
 }
 
+void DX12CommandRecorder::RcSetGraphicsConstant(ConstantBuffer* const constant)
+{
+    CHECK_RECORD(description.commandType, CommandType::Graphics, RcSetGraphicsConstant);
+
+    auto dxConstant = dynamic_cast<DX12ConstantBuffer*>(constant);
+    const std::vector<uint32_t>& constantBuffer = dxConstant->Buffer();
+    recorder->SetGraphicsRoot32BitConstants(0, constantBuffer.size(), constantBuffer.data(), 0);
+}
+
+void DX12CommandRecorder::RcSetComputeConstant(ConstantBuffer* const constant)
+{
+    CHECK_RECORD(description.commandType, CommandType::Compute, RcSetComputeConstant);
+
+    auto dxConstant = dynamic_cast<DX12ConstantBuffer*>(constant);
+    const std::vector<uint32_t>& constantBuffer = dxConstant->Buffer();
+    recorder->SetComputeRoot32BitConstants(0, constantBuffer.size(), constantBuffer.data(), 0);
+}
+
 void DX12CommandRecorder::RcDraw(IndexBuffer* const index)
 {
     CHECK_RECORD(description.commandType, CommandType::Graphics, RcDraw);

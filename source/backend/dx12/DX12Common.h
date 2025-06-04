@@ -48,8 +48,8 @@ GP_LOG_TAG(DX12Backend);
 
 std::string FormatResult(HRESULT result);
 
-template <typename T>
-using InstanceContainer = std::unordered_map<T*, std::unique_ptr<T>>;
+template <typename Implement>
+using InstanceContainer = std::unordered_map<Implement*, std::unique_ptr<Implement>>;
 
 template <typename Interface, typename Implement, class ...Arguments>
 Interface* CreateInstance(InstanceContainer<Implement>& container,
@@ -72,10 +72,10 @@ template <typename Interface, typename Implement>
 bool DestroyInstance(InstanceContainer<Implement>& container, Interface* instance)
 {
     static_assert(std::is_base_of<Interface, Implement>::value,
-        "CreateInstance: Implement should inherit from Interface!");
+        "DestroyInstance: Implement should inherit from Interface!");
     static_assert(std::is_base_of<DX12Object<Implement>, Implement>::value,
-        "CreateInstance: Implement should inherit from DX12Object<Implement>!");
-    return (container.erase(instance) > 0);
+        "DestroyInstance: Implement should inherit from DX12Object<Implement>!");
+    return (container.erase(static_cast<Implement*>(instance)) > 0);
 }
 
 }

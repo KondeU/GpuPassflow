@@ -26,16 +26,16 @@ void DX12ConstantBuffer::Shutdown()
 
 void* DX12ConstantBuffer::Map()
 {
-    return Buffer();
+    return buffer.data();
 }
 
 void DX12ConstantBuffer::Unmap()
 {
 }
 
-uint32_t* DX12ConstantBuffer::Buffer()
+const std::vector<uint32_t>& DX12ConstantBuffer::Buffer()
 {
-    return buffer.data();
+    return buffer;
 }
 
 }

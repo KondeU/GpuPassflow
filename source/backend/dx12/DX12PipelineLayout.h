@@ -29,7 +29,7 @@ private:
     DX12Device& internal;
     Microsoft::WRL::ComPtr<ID3D12Device> device;
 
-    Description description;
+    Description description{ false };
     std::vector<CD3DX12_ROOT_PARAMETER> parameters;
     std::vector<D3D12_STATIC_SAMPLER_DESC> samplers;
     Microsoft::WRL::ComPtr<ID3D12RootSignature> signature;

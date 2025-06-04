@@ -80,8 +80,6 @@ public:
         VertexAttribute* const attributes, unsigned int startSlot = 0) = 0;
     virtual void RcSetIndex(IndexBuffer* const index, IndexAttribute* const attribute) = 0;
 
-    virtual void RcSetConstant(ConstantBuffer* const constant) = 0;
-
     virtual void RcSetDescriptorHeap(const std::vector<DescriptorHeap*>& heaps) = 0;
 
     virtual void RcSetGraphicsDescriptor(
@@ -93,6 +91,10 @@ public:
         unsigned int index, Descriptor* const descriptor) = 0;
     virtual void RcSetComputeDescriptors(
         unsigned int index, const std::vector<Descriptor*>& descriptors) = 0;
+
+    virtual void RcSetGraphicsConstant(ConstantBuffer* const constant) = 0;
+
+    virtual void RcSetComputeConstant(ConstantBuffer* const constant) = 0;
 
     virtual void RcDraw(IndexBuffer* const index) = 0;
 
