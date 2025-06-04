@@ -13,7 +13,7 @@ public:
     explicit DX12StorageBuffer(DX12Device& device);
     ~DX12StorageBuffer() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     void* Map() override;

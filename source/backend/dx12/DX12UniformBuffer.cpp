@@ -14,14 +14,14 @@ DX12UniformBuffer::~DX12UniformBuffer()
     Shutdown();
 }
 
-void DX12UniformBuffer::Setup(Description description)
+bool DX12UniformBuffer::Setup(Description description)
 {
     this->description = description;
 
     allocatedBytesSize = CalculateAlignedBytesSize(description.bufferBytesSize);
     if (allocatedBytesSize == 0) {
         GP_LOG_F(TAG, "Create constant buffer failed, buffer size is zero!");
-        return;
+        return false;
     }
 
     LogIfFailedF(device->CreateCommittedResource(
@@ -29,6 +29,8 @@ void DX12UniformBuffer::Setup(Description description)
         D3D12_HEAP_FLAG_NONE, &CD3DX12_RESOURCE_DESC::Buffer(allocatedBytesSize),
         ConvertResourceState(rhi::ResourceState::GENERAL_READ),
         NULL, IID_PPV_ARGS(&buffer)));
+
+    return true;
 }
 
 void DX12UniformBuffer::Shutdown()

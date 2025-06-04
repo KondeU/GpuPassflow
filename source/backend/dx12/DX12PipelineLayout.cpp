@@ -16,7 +16,7 @@ DX12PipelineLayout::~DX12PipelineLayout()
     Shutdown();
 }
 
-void DX12PipelineLayout::Setup(Description description)
+bool DX12PipelineLayout::Setup(Description description)
 {
     this->description = description;
     if (unsigned int dwordCount = (description.constantBufferBytes + 3) / 4;
@@ -26,6 +26,7 @@ void DX12PipelineLayout::Setup(Description description)
         parameter.InitAsConstants(dwordCount, 0, 0);
         parameters.emplace_back(parameter);
     }
+    return true;
 }
 
 void DX12PipelineLayout::Shutdown()

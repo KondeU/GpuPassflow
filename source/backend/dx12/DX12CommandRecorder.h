@@ -13,7 +13,7 @@ public:
     explicit DX12CommandRecorder(DX12Device& device);
     ~DX12CommandRecorder() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     void BeginRecord() override;

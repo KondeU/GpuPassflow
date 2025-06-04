@@ -17,7 +17,7 @@ DX12Swapchain::~DX12Swapchain()
     Shutdown();
 }
 
-void DX12Swapchain::Setup(Description description)
+bool DX12Swapchain::Setup(Description description)
 {
     this->description = description;
 
@@ -55,6 +55,7 @@ void DX12Swapchain::Setup(Description description)
     LogIfFailedF(device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap)));
 
     Resize(description.width, description.height);
+    return true;
 }
 
 void DX12Swapchain::Shutdown()

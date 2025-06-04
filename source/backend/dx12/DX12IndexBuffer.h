@@ -14,7 +14,7 @@ public:
     explicit DX12IndexBuffer(DX12Device& device);
     ~DX12IndexBuffer() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     void* Map() override;

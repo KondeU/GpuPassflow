@@ -12,7 +12,7 @@ DX12Shader::~DX12Shader()
     Shutdown();
 }
 
-void DX12Shader::Setup(Description description)
+bool DX12Shader::Setup(Description description)
 {
     this->description = description;
 
@@ -22,6 +22,8 @@ void DX12Shader::Setup(Description description)
     case Description::SourceType::Bytecode:     ProcessBytecode(false); break;
     case Description::SourceType::BytecodeFile: ProcessBytecode(true);  break;
     }
+
+    return true;
 }
 
 void DX12Shader::Shutdown()

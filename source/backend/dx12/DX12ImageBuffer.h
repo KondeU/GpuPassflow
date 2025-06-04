@@ -13,7 +13,7 @@ public:
     explicit DX12ImageBuffer(DX12Device& device);
     ~DX12ImageBuffer() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     void* Map() override;

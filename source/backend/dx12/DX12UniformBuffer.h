@@ -13,7 +13,7 @@ public:
     explicit DX12UniformBuffer(DX12Device& device);
     ~DX12UniformBuffer() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     void* Map() override;

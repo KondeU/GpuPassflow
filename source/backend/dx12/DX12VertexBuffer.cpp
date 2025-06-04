@@ -14,14 +14,14 @@ DX12VertexBuffer::~DX12VertexBuffer()
     Shutdown();
 }
 
-void DX12VertexBuffer::Setup(Description description)
+bool DX12VertexBuffer::Setup(Description description)
 {
     this->description = description;
 
     bufferTotalByteSize = description.verticesCount * description.attributesByteSize;
     if (bufferTotalByteSize == 0) {
         GP_LOG_F(TAG, "Create vertex buffer failed, buffer size is zero!");
-        return;
+        return false;
     }
 
     LogIfFailedF(device->CreateCommittedResource(
@@ -29,6 +29,7 @@ void DX12VertexBuffer::Setup(Description description)
         D3D12_HEAP_FLAG_NONE, &CD3DX12_RESOURCE_DESC::Buffer(bufferTotalByteSize),
         ConvertResourceState(rhi::ResourceState::GENERAL_READ),
         NULL, IID_PPV_ARGS(&buffer)));
+    return true;
 }
 
 void DX12VertexBuffer::Shutdown()

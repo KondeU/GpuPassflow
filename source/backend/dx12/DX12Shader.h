@@ -11,7 +11,7 @@ public:
     explicit DX12Shader();
     ~DX12Shader() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     bool IsValid() const override;

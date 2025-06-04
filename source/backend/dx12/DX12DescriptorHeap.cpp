@@ -14,13 +14,13 @@ DX12DescriptorHeap::~DX12DescriptorHeap()
     Shutdown();
 }
 
-void DX12DescriptorHeap::Setup(Description description)
+bool DX12DescriptorHeap::Setup(Description description)
 {
     this->description = description;
 
     if (description.capacity == 0) {
         GP_LOG_F(TAG, "Create descriptor heap failed, capacity is zero!");
-        return;
+        return false;
     }
 
     D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
@@ -29,6 +29,7 @@ void DX12DescriptorHeap::Setup(Description description)
     heapDesc.Flags = ConvertDescriptorHeapVisible(description.type);
     heapDesc.NodeMask = 0;
     LogIfFailedF(device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&heap)));
+    return true;
 }
 
 void DX12DescriptorHeap::Shutdown()

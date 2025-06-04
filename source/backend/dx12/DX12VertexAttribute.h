@@ -11,7 +11,7 @@ public:
     explicit DX12VertexAttribute();
     ~DX12VertexAttribute() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     void AddAttribute(Attribute attribute) override;

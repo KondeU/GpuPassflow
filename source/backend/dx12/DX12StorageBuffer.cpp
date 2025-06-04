@@ -14,7 +14,7 @@ DX12StorageBuffer::~DX12StorageBuffer()
     Shutdown();
 }
 
-void DX12StorageBuffer::Setup(Description description)
+bool DX12StorageBuffer::Setup(Description description)
 {
     this->description = description;
 
@@ -29,6 +29,8 @@ void DX12StorageBuffer::Setup(Description description)
         &CD3DX12_RESOURCE_DESC::Buffer(allocatedBytesSize, bufferResourceFlag),
         ConvertResourceState(rhi::ResourceState::GENERAL_READ),
         NULL, IID_PPV_ARGS(&buffer)));
+
+    return true;
 }
 
 void DX12StorageBuffer::Shutdown()

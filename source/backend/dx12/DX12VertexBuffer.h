@@ -14,7 +14,7 @@ public:
     explicit DX12VertexBuffer(DX12Device& device);
     ~DX12VertexBuffer() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     void* Map() override;

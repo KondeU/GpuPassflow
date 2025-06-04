@@ -25,7 +25,7 @@ DX12Descriptor::~DX12Descriptor()
     Shutdown();
 }
 
-void DX12Descriptor::Setup(Description description)
+bool DX12Descriptor::Setup(Description description)
 {
     this->description = description;
 
@@ -40,12 +40,12 @@ void DX12Descriptor::Setup(Description description)
         descriptorHandleIncrementSize = mDepthStencilViewDescriptorHandleIncrementSize;
     } else {
         GP_LOG_E(TAG, "The descriptor type is invalid!");
-        return;
+        return false;
     }
 
     if (ConvertDescriptorHeap(description.type) != heap.GetHeapType()) {
         GP_LOG_E(TAG, "The descriptor type is not match with the heap type!");
-        return;
+        return false;
     }
 
     auto hCpu = CD3DX12_CPU_DESCRIPTOR_HANDLE(heap.Heap()->GetCPUDescriptorHandleForHeapStart());
@@ -55,6 +55,8 @@ void DX12Descriptor::Setup(Description description)
     auto hGpu = CD3DX12_GPU_DESCRIPTOR_HANDLE(heap.Heap()->GetGPUDescriptorHandleForHeapStart());
     hGpu.Offset(indexInHeap, descriptorHandleIncrementSize);
     hGpuDescriptor = hGpu;
+
+    return true;
 }
 
 void DX12Descriptor::Shutdown()

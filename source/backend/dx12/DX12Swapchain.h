@@ -13,7 +13,7 @@ public:
     explicit DX12Swapchain(DX12Device& device);
     ~DX12Swapchain() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     void Resize(unsigned int width, unsigned int height) override;

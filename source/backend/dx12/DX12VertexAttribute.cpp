@@ -12,10 +12,11 @@ DX12VertexAttribute::~DX12VertexAttribute()
     Shutdown();
 }
 
-void DX12VertexAttribute::Setup(Description description)
+bool DX12VertexAttribute::Setup(Description description)
 {
     semantics.reserve(description.reserved);
     elements.reserve(description.reserved);
+    return true;
 }
 
 void DX12VertexAttribute::Shutdown()

@@ -14,9 +14,10 @@ DX12DescriptorGroup::~DX12DescriptorGroup()
     Shutdown();
 }
 
-void DX12DescriptorGroup::Setup(Description description)
+bool DX12DescriptorGroup::Setup(Description description)
 {
     this->description = description;
+    return true;
 }
 
 void DX12DescriptorGroup::Shutdown()

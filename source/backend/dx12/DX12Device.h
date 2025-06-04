@@ -25,7 +25,7 @@ public:
     explicit DX12Device(Microsoft::WRL::ComPtr<IDXGIFactory4> dxgi);
     ~DX12Device() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     rhi::Shader* CreateShader(

@@ -11,7 +11,7 @@ DX12Device::~DX12Device()
     Shutdown();
 }
 
-void DX12Device::Setup(Description description)
+bool DX12Device::Setup(Description description)
 {
     this->description = description;
 
@@ -50,6 +50,8 @@ void DX12Device::Setup(Description description)
         &commandQueueDesc, IID_PPV_ARGS(&queues[rhi::CommandType::Graphics])));
     LogIfFailedF(device->CreateFence(fences[rhi::CommandType::Graphics].second,
         D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fences[rhi::CommandType::Graphics].first)));
+
+    return true;
 }
 
 void DX12Device::Shutdown()

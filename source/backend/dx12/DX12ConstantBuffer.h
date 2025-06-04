@@ -11,7 +11,7 @@ public:
     explicit DX12ConstantBuffer();
     ~DX12ConstantBuffer() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     void* Map() override;

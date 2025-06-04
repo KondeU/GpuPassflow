@@ -97,7 +97,7 @@ DX12CommandRecorder::~DX12CommandRecorder()
     Shutdown();
 }
 
-void DX12CommandRecorder::Setup(Description description)
+bool DX12CommandRecorder::Setup(Description description)
 {
     this->description = description;
     queue = internal.CommandQueue(description.commandType);
@@ -123,6 +123,8 @@ void DX12CommandRecorder::Setup(Description description)
     // CommandRecord recorded commands is executed.
     LogIfFailedF(device->CreateFence(currentFence,
         D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence)));
+
+    return true;
 }
 
 void DX12CommandRecorder::Shutdown()

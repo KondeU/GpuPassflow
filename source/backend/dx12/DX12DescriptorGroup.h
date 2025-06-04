@@ -13,7 +13,7 @@ public:
     explicit DX12DescriptorGroup(DX12Device& device);
     ~DX12DescriptorGroup() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     void AddDescriptor(rhi::DescriptorType type,

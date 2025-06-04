@@ -12,7 +12,7 @@ public:
     explicit DX12DescriptorHeap(DX12Device& device);
     ~DX12DescriptorHeap() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     rhi::Descriptor* AllocateDescriptor(rhi::Descriptor::Description description) override;

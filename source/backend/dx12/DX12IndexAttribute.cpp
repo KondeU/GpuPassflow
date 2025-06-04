@@ -12,12 +12,13 @@ DX12IndexAttribute::~DX12IndexAttribute()
     Shutdown();
 }
 
-void DX12IndexAttribute::Setup(Description description)
+bool DX12IndexAttribute::Setup(Description description)
 {
     if (description.reserved != 1) {
         description.reserved = 1;
     }
     informations.resize(description.reserved, { DXGI_FORMAT_UNKNOWN });
+    return true;
 }
 
 void DX12IndexAttribute::Shutdown()

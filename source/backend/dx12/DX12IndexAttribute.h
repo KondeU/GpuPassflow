@@ -11,7 +11,7 @@ public:
     explicit DX12IndexAttribute();
     ~DX12IndexAttribute() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     void SetAttribute(Attribute attribute) override;

@@ -12,9 +12,10 @@ DX12ImageSampler::~DX12ImageSampler()
     Shutdown();
 }
 
-void DX12ImageSampler::Setup(Description description)
+bool DX12ImageSampler::Setup(Description description)
 {
     samplerState = ConvertSamplerState(description.state);
+    return true;
 }
 
 void DX12ImageSampler::Shutdown()

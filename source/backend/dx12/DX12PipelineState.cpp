@@ -14,7 +14,7 @@ DX12PipelineState::~DX12PipelineState()
     Shutdown();
 }
 
-void DX12PipelineState::Setup(Description description)
+bool DX12PipelineState::Setup(Description description)
 {
     this->description = description;
     ZeroMemory(&computePipelineState, sizeof(D3D12_COMPUTE_PIPELINE_STATE_DESC));
@@ -49,6 +49,7 @@ void DX12PipelineState::Setup(Description description)
     graphicsPipelineState.SampleDesc.Count = 1;
     graphicsPipelineState.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
     graphicsPipelineState.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+    return true;
 }
 
 void DX12PipelineState::Shutdown()

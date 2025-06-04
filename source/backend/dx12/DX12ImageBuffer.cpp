@@ -14,7 +14,7 @@ DX12ImageBuffer::~DX12ImageBuffer()
     Shutdown();
 }
 
-void DX12ImageBuffer::Setup(Description description)
+bool DX12ImageBuffer::Setup(Description description)
 {
     this->description = description;
 
@@ -50,6 +50,8 @@ void DX12ImageBuffer::Setup(Description description)
         ConvertResourceState(rhi::ResourceState::GENERAL_READ),
         ((description.usage == rhi::ImageType::ShaderResource) ?
             NULL : &clearValue), IID_PPV_ARGS(&buffer)));
+
+    return true;
 }
 
 void DX12ImageBuffer::Shutdown()

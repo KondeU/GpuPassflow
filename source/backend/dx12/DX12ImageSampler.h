@@ -13,7 +13,7 @@ public:
     explicit DX12ImageSampler();
     ~DX12ImageSampler() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     const D3D12_SAMPLER_DESC& NativeSamplerState() const;

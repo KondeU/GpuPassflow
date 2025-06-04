@@ -14,7 +14,7 @@ public:
     explicit DX12PipelineState(DX12Device& device);
     ~DX12PipelineState() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     void SetPipelineLayout(rhi::PipelineLayout* layout) override;

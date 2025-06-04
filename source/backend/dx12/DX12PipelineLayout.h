@@ -13,7 +13,7 @@ public:
     explicit DX12PipelineLayout(DX12Device& device);
     ~DX12PipelineLayout() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     bool AddGroup(rhi::DescriptorGroup* group) override;

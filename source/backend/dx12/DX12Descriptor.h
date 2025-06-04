@@ -19,7 +19,7 @@ public:
     explicit DX12Descriptor(DX12Device& device, DX12DescriptorHeap& heap, unsigned int index);
     ~DX12Descriptor() override;
 
-    void Setup(Description description);
+    bool Setup(Description description);
     void Shutdown();
 
     void BuildDescriptor(rhi::UniformBuffer* resource) override;

@@ -11,10 +11,11 @@ DX12ConstantBuffer::~DX12ConstantBuffer()
     Shutdown();
 }
 
-void DX12ConstantBuffer::Setup(Description description)
+bool DX12ConstantBuffer::Setup(Description description)
 {
     this->description = description;
     buffer.resize(description.bufferBytesSize);
+    return true;
 }
 
 void DX12ConstantBuffer::Shutdown()
