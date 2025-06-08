@@ -16,6 +16,7 @@ DX12DescriptorHeap::~DX12DescriptorHeap()
 
 bool DX12DescriptorHeap::Setup(Description description)
 {
+    bool success = true;
     this->description = description;
 
     if (description.capacity == 0) {
@@ -28,7 +29,9 @@ bool DX12DescriptorHeap::Setup(Description description)
     heapDesc.Type = ConvertDescriptorHeap(description.type);
     heapDesc.Flags = ConvertDescriptorHeapVisible(description.type);
     heapDesc.NodeMask = 0;
-    LogIfFailedF(device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&heap)));
+    LogOutIfFailedF(device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&heap)), success);
+    RetValIfFailed(success, false);
+
     return true;
 }
 

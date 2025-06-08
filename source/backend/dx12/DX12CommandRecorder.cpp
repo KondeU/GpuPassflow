@@ -99,15 +99,18 @@ DX12CommandRecorder::~DX12CommandRecorder()
 
 bool DX12CommandRecorder::Setup(Description description)
 {
+    bool success = true;
     this->description = description;
+
     queue = internal.CommandQueue(description.commandType);
     allocator = internal.CommandAllocator(description.container);
 
-    LogIfFailedF(device->CreateCommandList(0,
-        D3D12_COMMAND_LIST_TYPE_DIRECT,
+    LogOutIfFailedF(device->CreateCommandList(
+        0, D3D12_COMMAND_LIST_TYPE_DIRECT,
         allocator.Get(), // Associated command allocator
         NULL,            // Initial PipelineStateObject
-        IID_PPV_ARGS(&recorder)));
+        IID_PPV_ARGS(&recorder)), success);
+    RetValIfFailed(success, false);
 
     // Start with closed state.
     // The first time we refer to the command list will Reset
@@ -117,12 +120,14 @@ bool DX12CommandRecorder::Setup(Description description)
     //   commandList.Xxx... // Commands
     //   commandList.Close();
     //   ExecuteCommandLists...
-    LogIfFailedF(recorder->Close());
+    LogOutIfFailedF(recorder->Close(), success);
+    RetValIfFailed(success, false);
 
     // This Fence is used to synchronize and wait until this
     // CommandRecord recorded commands is executed.
-    LogIfFailedF(device->CreateFence(currentFence,
-        D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence)));
+    LogOutIfFailedF(device->CreateFence(currentFence,
+        D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence)), success);
+    RetValIfFailed(success, false);
 
     return true;
 }

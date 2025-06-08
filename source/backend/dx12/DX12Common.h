@@ -34,6 +34,9 @@ do {                                            \
 #define LogIfFailedE(expression) LogIfFailed(E, expression)
 #define LogIfFailedF(expression) LogIfFailed(F, expression)
 
+#define ReturnIfFailed(success)         if (!success) { return;        }
+#define RetValIfFailed(success, retval) if (!success) { return retval; }
+
 #define ReleaseCOM(com) \
 do {                    \
     if (com) {          \
