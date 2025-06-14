@@ -1,6 +1,7 @@
 #pragma once
 
 #include "VulkanBackendHeaders.h"
+#include "backend/BasicTypes.h"
 
 namespace au::backend {
 
@@ -32,7 +33,7 @@ VkDescriptorType ConvertDescriptorType(rhi::DescriptorType type);
 
 VkShaderStageFlags ConvertShaderStage(rhi::ShaderStage stage);
 
-VkClearValue ConvertClearValue(rhi::BasicFormat format, rhi::ClearValue value);
+VkClearValue ConvertClearValue(rhi::BasicFormat format, const rhi::ClearValue& value);
 
 VkPolygonMode ConvertFillMode(rhi::FillMode mode);
 
@@ -40,9 +41,9 @@ VkCullModeFlags ConvertCullMode(rhi::CullMode mode);
 
 VkSamplerAddressMode ConvertAddressMode(rhi::AddressMode mode);
 
-VkFilter ConvertFilter(rhi::Filter filter);
+VkFilter ConvertFilter(rhi::SamplerState::Filter filter);
 
-VkSamplerMipmapMode ConvertMipmapMode(rhi::Filter filter);
+VkSamplerMipmapMode ConvertMipmapMode(rhi::SamplerState::Filter filter);
 
 VkAttachmentLoadOp ConvertLoadOp(rhi::PassAction action);
 

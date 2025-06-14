@@ -14,25 +14,13 @@
 
 namespace au::backend {
 
-// VulkanVertexBuffer
-VulkanVertexBuffer::VulkanVertexBuffer() {}
-VulkanVertexBuffer::~VulkanVertexBuffer() { Shutdown(); }
-bool VulkanVertexBuffer::Setup(Description description) { return true; }
-void VulkanVertexBuffer::Shutdown() {}
-void* VulkanVertexBuffer::Map() { return nullptr; }
-void VulkanVertexBuffer::Unmap() {}
-VkBuffer VulkanVertexBuffer::GetBuffer() const { return buffer; }
-VkDeviceMemory VulkanVertexBuffer::GetMemory() const { return memory; }
+// VulkanVertexBuffer is now implemented in its own file
 
 // VulkanVertexAttribute
 VulkanVertexAttribute::VulkanVertexAttribute() {}
 VulkanVertexAttribute::~VulkanVertexAttribute() {}
 
-// VulkanIndexBuffer
-VulkanIndexBuffer::VulkanIndexBuffer() {}
-VulkanIndexBuffer::~VulkanIndexBuffer() { Shutdown(); }
-bool VulkanIndexBuffer::Setup(Description description) { return true; }
-VkBuffer VulkanIndexBuffer::GetBuffer() const { return buffer; }
+// VulkanIndexBuffer is now implemented in its own file
 
 // VulkanIndexAttribute
 VulkanIndexAttribute::VulkanIndexAttribute() {}

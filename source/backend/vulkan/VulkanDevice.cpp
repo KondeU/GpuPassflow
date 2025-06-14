@@ -21,11 +21,30 @@ bool VulkanDevice::Setup(Description description)
     if (!SetupLogicalDevice()) return false;
     if (!SetupQueues()) return false;
     
+    // Setup memory allocator
+    memoryAllocator = std::make_unique<VulkanMemoryAllocator>(this);
+    if (!memoryAllocator->Setup()) {
+        GP_LOG_E(TAG, "Failed to setup memory allocator");
+        return false;
+    }
+    
     return true;
 }
 
 void VulkanDevice::Shutdown()
 {
+    // Clean up memory allocator first
+    if (memoryAllocator) {
+        memoryAllocator->Shutdown();
+        memoryAllocator.reset();
+    }
+    
+    // Clean up command pools
+    for (auto& pair : commandPools) {
+        vkDestroyCommandPool(device, pair.second, nullptr);
+    }
+    commandPools.clear();
+    
     if (device != VK_NULL_HANDLE) {
         vkDestroyDevice(device, nullptr);
         device = VK_NULL_HANDLE;
@@ -65,7 +84,13 @@ bool VulkanDevice::DestroyCommandRecorder(rhi::CommandRecorder* instance)
 
 rhi::VertexBuffer* VulkanDevice::CreateVertexBuffer(rhi::VertexBuffer::Description description)
 {
-    return CreateInstance<rhi::VertexBuffer, VulkanVertexBuffer>(vertexBuffers, description);
+    auto vertexBuffer = std::make_unique<VulkanVertexBuffer>(*this);
+    if (!vertexBuffer->Setup(description)) {
+        return nullptr;
+    }
+    auto instance = vertexBuffer.get();
+    vertexBuffers[instance] = std::move(vertexBuffer);
+    return instance;
 }
 
 bool VulkanDevice::DestroyVertexBuffer(rhi::VertexBuffer* instance)
@@ -97,7 +122,13 @@ bool VulkanDevice::DestroyConstantBuffer(rhi::ConstantBuffer* instance)
 
 rhi::IndexBuffer* VulkanDevice::CreateIndexBuffer(rhi::IndexBuffer::Description description)
 {
-    return CreateInstance<rhi::IndexBuffer, VulkanIndexBuffer>(indexBuffers, description);
+    auto indexBuffer = std::make_unique<VulkanIndexBuffer>(*this);
+    if (!indexBuffer->Setup(description)) {
+        return nullptr;
+    }
+    auto instance = indexBuffer.get();
+    indexBuffers[instance] = std::move(indexBuffer);
+    return instance;
 }
 
 bool VulkanDevice::DestroyIndexBuffer(rhi::IndexBuffer* instance)
@@ -218,6 +249,8 @@ VkQueue VulkanDevice::ComputeQueue() { return computeQueue; }
 uint32_t VulkanDevice::GraphicsQueueFamily() const { return graphicsQueueFamily; }
 uint32_t VulkanDevice::PresentQueueFamily() const { return presentQueueFamily; }
 uint32_t VulkanDevice::ComputeQueueFamily() const { return computeQueueFamily; }
+
+VulkanMemoryAllocator* VulkanDevice::GetMemoryAllocator() { return memoryAllocator.get(); }
 
 VkCommandPool VulkanDevice::CommandPool(const std::string& name)
 {

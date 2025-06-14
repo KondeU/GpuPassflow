@@ -17,6 +17,7 @@
 #include "VulkanDescriptorGroup.h"
 #include "VulkanPipelineLayout.h"
 #include "VulkanPipelineState.h"
+#include "VulkanMemoryAllocator.h"
 
 namespace au::backend {
 
@@ -104,6 +105,8 @@ public:
     uint32_t GraphicsQueueFamily() const;
     uint32_t PresentQueueFamily() const;
     uint32_t ComputeQueueFamily() const;
+    
+    VulkanMemoryAllocator* GetMemoryAllocator();
 
 private:
     VkInstance instance = VK_NULL_HANDLE;
@@ -124,6 +127,9 @@ private:
     
     // Command pools
     std::unordered_map<std::string, VkCommandPool> commandPools;
+    
+    // Memory allocator
+    std::unique_ptr<VulkanMemoryAllocator> memoryAllocator;
 
     InstanceContainer<VulkanShader> shaders;
     InstanceContainer<VulkanSwapchain> swapchains;
