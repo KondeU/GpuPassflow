@@ -1,6 +1,12 @@
 #include "DX12BasicTypes.h"
 #include <unordered_map>
 
+#if defined(DEBUG) || defined(_DEBUG)
+#define CONVERT_UNSUPPORTED(...) throw std::logic_error("bad conversion from rhi to dx12!")
+#else
+#define CONVERT_UNSUPPORTED(...) GP_LOG_W(TAG, __VA_ARGS__)
+#endif
+
 namespace au::backend {
 
 using namespace rhi;

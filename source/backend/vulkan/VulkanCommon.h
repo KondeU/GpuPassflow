@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unordered_map>
-#include <vector>
+#include <vulkan/vk_enum_string_helper.h>
 #include "backend/BackendContext.h"
 
 #define LogOutIfFailed(level, expression, success)    \
@@ -73,4 +73,4 @@ bool DestroyInstance(InstanceContainer<Implement>& container, Interface* instanc
     return (container.erase(static_cast<Implement*>(instance)) > 0);
 }
 
-} 
+}

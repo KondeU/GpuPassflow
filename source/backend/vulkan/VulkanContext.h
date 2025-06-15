@@ -17,13 +17,20 @@ public:
     std::vector<std::string> GetAvailableAdaptors() const override;
 
 private:
-    VkInstance instance = VK_NULL_HANDLE;
-    InstanceContainer<VulkanDevice> devices;
-    
-    bool SetupInstance();
+    void CreateInstance();
+    void SetupDebugMessenger();
     void EnumeratePhysicalDevices();
-    
+    void DestroyDebugMessenger();
+
+    std::vector<const char*> GetRequiredInstanceExtensions() const;
+    std::vector<const char*> GetRequiredValidationLayers() const;
+    bool CheckValidationLayerSupport() const;
+    bool IsDeviceSuitable(VkPhysicalDevice device) const;
+
+    VkInstance vkinst;
+    InstanceContainer<VulkanDevice> devices;
+    VkDebugUtilsMessengerEXT debugMessenger;
     std::vector<VkPhysicalDevice> physicalDevices;
 };
 
-} 
+}

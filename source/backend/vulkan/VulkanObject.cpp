@@ -13,7 +13,7 @@ VulkanObjectCounter::Object VulkanObjectCounter::GetObjectCount()
 VulkanObjectCounter::Object VulkanObjectCounter::CreateObject()
 {
     counter++;
-    return ++generator;
+    return (generator++);
 }
 
 void VulkanObjectCounter::DestroyObject()

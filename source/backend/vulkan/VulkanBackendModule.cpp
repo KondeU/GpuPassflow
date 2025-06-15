@@ -22,4 +22,4 @@ BackendApiExport void DestroyBackend(au::rhi::BackendContext* context)
     }
 }
 
-} 
+}

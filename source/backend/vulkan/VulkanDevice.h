@@ -1,6 +1,5 @@
 #pragma once
 
-#include <set>
 #include "VulkanShader.h"
 #include "VulkanSwapchain.h"
 #include "VulkanCommandRecorder.h"
@@ -17,7 +16,6 @@
 #include "VulkanDescriptorGroup.h"
 #include "VulkanPipelineLayout.h"
 #include "VulkanPipelineState.h"
-#include "VulkanMemoryAllocator.h"
 
 namespace au::backend {
 
