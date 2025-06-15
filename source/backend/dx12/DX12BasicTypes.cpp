@@ -50,7 +50,6 @@ DXGI_FORMAT ConvertBasicFormat(BasicFormat format)
         { BasicFormat::R8_SINT,             DXGI_FORMAT_R8_SINT             },
         { BasicFormat::R8_UNORM,            DXGI_FORMAT_R8_UNORM            },
         { BasicFormat::R8_SNORM,            DXGI_FORMAT_R8_SNORM            },
-        { BasicFormat::A8_UNORM,            DXGI_FORMAT_A8_UNORM            },
         { BasicFormat::D32_FLOAT,           DXGI_FORMAT_D32_FLOAT           },
         { BasicFormat::D24_UNORM_S8_UINT,   DXGI_FORMAT_D24_UNORM_S8_UINT   },
         { BasicFormat::D16_UNORM,           DXGI_FORMAT_D16_UNORM,          },

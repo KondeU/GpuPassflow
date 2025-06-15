@@ -47,8 +47,6 @@ do {                    \
 
 namespace au::backend {
 
-GP_LOG_TAG(DX12Backend);
-
 std::string FormatResult(HRESULT result);
 
 template <typename Implement>

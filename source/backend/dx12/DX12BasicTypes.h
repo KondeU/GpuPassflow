@@ -4,6 +4,8 @@
 
 namespace au::backend {
 
+GP_LOG_TAG(DX12Backend);
+
 DXGI_FORMAT ConvertBasicFormat(rhi::BasicFormat format);
 
 DXGI_FORMAT ConvertIndexFormat(rhi::IndexFormat format);

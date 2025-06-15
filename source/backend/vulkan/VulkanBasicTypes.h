@@ -1,9 +1,10 @@
 #pragma once
 
 #include "VulkanBackendHeaders.h"
-#include "backend/BasicTypes.h"
 
 namespace au::backend {
+
+GP_LOG_TAG(VulkanBackend);
 
 VkFormat ConvertBasicFormat(rhi::BasicFormat format);
 
@@ -45,8 +46,8 @@ VkFilter ConvertFilter(rhi::SamplerState::Filter filter);
 
 VkSamplerMipmapMode ConvertMipmapMode(rhi::SamplerState::Filter filter);
 
-VkAttachmentLoadOp ConvertLoadOp(rhi::PassAction action);
+VkAttachmentLoadOp ConvertAttachmentLoadOp(rhi::PassAction action);
 
-VkAttachmentStoreOp ConvertStoreOp(rhi::PassAction action);
+VkAttachmentStoreOp ConvertAttachmentStoreOp(rhi::PassAction action);
 
-} 
+}

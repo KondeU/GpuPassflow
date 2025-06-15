@@ -62,7 +62,6 @@ enum class BasicFormat {
     R8_SINT,
     R8_UNORM,
     R8_SNORM,
-    A8_UNORM,
     D32_FLOAT,
     D24_UNORM_S8_UINT,
     D16_UNORM,
